@@ -19,7 +19,7 @@ export class UserLoginUseCase {
 
     const hashString = await this.hashService.compare(password, user.password);
     if (!hashString) {
-      return ResponseService.NotFound('Usuário não encontrado Password');
+      return ResponseService.NotFound('Usuário não encontrado');
     }
 
     const jwt = this.hashService.generateAccessToken({
