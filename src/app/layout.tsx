@@ -1,4 +1,4 @@
-import Header from '@/app/components/layouts/Header/Header';
+import Header from '@/app/components/layouts/Header/Header.layout';
 import theme from '@/app/theme/theme';
 import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';

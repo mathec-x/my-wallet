@@ -1,3 +1,3 @@
 // Estruturas da página
 
-export * from './Header/Header';
+export * from './Header/Header.layout';
