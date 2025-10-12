@@ -22,7 +22,14 @@ export class UserCurrentUseCase {
         select: {
           uuid: true,
           name: true,
-          email: true
+          email: true,
+          accounts: {
+            select: {
+              uuid: true,
+              name: true,
+              balance: true
+            }
+          }
         },
         where: {
           uuid: payload.uuid
