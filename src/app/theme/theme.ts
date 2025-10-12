@@ -4,6 +4,7 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
       light: '#ba68c8',
       main: '#9c27b0',
@@ -17,7 +18,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'var(--font-roboto)',
-  }
+  },
 });
 
 export default theme;

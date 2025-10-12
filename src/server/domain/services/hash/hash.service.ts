@@ -1,5 +1,8 @@
 import { compare, hash } from 'bcrypt';
 import { sign, SignOptions, verify } from 'jsonwebtoken';
+
+interface JwtPayloadInterface { uuid: string, email: string, exp: SignOptions['expiresIn'] }
+
 const jwtSecret: string = process.env.JWT_SECRET || '';
 export class HashService {
   hash(password: string): Promise<string> {
@@ -10,11 +13,11 @@ export class HashService {
     return compare(password, hash);
   }
 
-  generateAccessToken({ exp = '1h', ...payload }: { uuid: string, email: string, exp: SignOptions['expiresIn'] }) {
+  generateAccessToken({ exp = '1h', ...payload }: JwtPayloadInterface) {
     return sign(payload, jwtSecret, { expiresIn: exp });
   }
 
   verifyAccessToken(token: string) {
-    return verify(token, jwtSecret);
+    return verify(token, jwtSecret) as JwtPayloadInterface;
   }
 }

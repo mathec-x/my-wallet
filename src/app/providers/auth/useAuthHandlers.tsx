@@ -3,12 +3,12 @@ import { ApplicationError } from '@/shared/ApplicationError/ApplicationError';
 import { LoginFormSchema, LoginRegisterFormSchema, LoginResetFormSchema } from '@/shared/schemas';
 import { useState } from 'react';
 
-interface UseAuthenticationHandlersProps {
+interface UseAuthHandlersProps {
   onLoginSuccess?: (params: LoginFormSchema) => void;
   onRegisterSuccess?: (params: LoginRegisterFormSchema) => void;
 }
 
-export const useAuthenticationHandlers = (callbacks: UseAuthenticationHandlersProps) => {
+export const useAuthHandlers = (callbacks?: UseAuthHandlersProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
     login: null as string | null,
@@ -20,7 +20,7 @@ export const useAuthenticationHandlers = (callbacks: UseAuthenticationHandlersPr
       setLoading(true);
       await loginAction(params);
       setError({ ...error, login: null });
-      callbacks.onLoginSuccess?.(params);
+      callbacks?.onLoginSuccess?.(params);
     } catch (err: unknown) {
       setError({ ...error, login: ApplicationError.handleError(err) });
     } finally {
@@ -33,7 +33,7 @@ export const useAuthenticationHandlers = (callbacks: UseAuthenticationHandlersPr
       setLoading(true);
       await registerAction(params);
       setError({ ...error, register: null });
-      callbacks.onRegisterSuccess?.(params);
+      callbacks?.onRegisterSuccess?.(params);
     } catch (err: unknown) {
       setError({ ...error, register: ApplicationError.handleError(err) });
     } finally {
@@ -42,6 +42,7 @@ export const useAuthenticationHandlers = (callbacks: UseAuthenticationHandlersPr
   };
 
   const handleReset = async (params: LoginResetFormSchema) => {
+    console.log(params);
     alert('Não implementado ainda');
   };
 

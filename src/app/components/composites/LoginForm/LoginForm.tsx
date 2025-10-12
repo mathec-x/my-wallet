@@ -1,7 +1,7 @@
 import FlexBox from '@/app/components/elements/FlexBox';
 import SlidePanel from '@/app/components/elements/SlidePanel';
 import FormControlSchema, { FormControlRef } from '@/app/components/primitives/Form/FormControlSchema';
-import { useAuthenticationHandlers } from '@/app/hooks/useAuthenticationHandlers/useAuthenticationHandlers';
+import { useAuthHandlers } from '@/app/providers/auth/useAuthHandlers';
 import {
   LoginFormSchema, loginFormSchema, LoginRegisterFormSchema, loginRegisterFormSchema,
   loginResetFormSchema
@@ -22,9 +22,10 @@ const LoginForm = () => {
   const [tab, setTab] = useState(0);
   const loginFormRef = useRef<FormControlRef<LoginFormSchema>>(null);
   const registerFormRef = useRef<FormControlRef<LoginRegisterFormSchema>>(null);
-  const { error, handleLogin, handleRegister, handleReset, loading } = useAuthenticationHandlers({
+  const { error, handleLogin, handleRegister, handleReset, loading } = useAuthHandlers({
     onLoginSuccess: () => {
       console.log('login success, redirecting to home...');
+      router.push('/', { scroll: false });
       router.push('/menu', { scroll: false });
     },
     onRegisterSuccess: ({ email, password }) => {
