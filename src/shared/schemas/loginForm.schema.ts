@@ -18,6 +18,13 @@ export const loginFormSchema = z.object({
       description: 'Sua senha de acesso',
       type: 'password'
     }),
+  remeberMe: z
+    .boolean()
+    .meta({
+      title: 'Lembrar-me',
+      description: 'Mantenha-me conectado neste dispositivo',
+      type: 'checkbox'
+    }),
 });
 
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;

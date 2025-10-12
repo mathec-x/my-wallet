@@ -1,32 +1,45 @@
+import { ResponseService } from '@/server/domain/common/response.service';
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
-import { LoginRegisterFormSchema } from '@/shared/schemas';
+import { LoginFormSchema } from '@/shared/schemas';
+import { cookies } from 'next/headers';
 
-export class UserUseCase {
+export class UserLoginUseCase {
 
   constructor(
     private readonly hashService: HashService,
   ) { }
 
-  async getUserByEmail(email: string) {
+  async execute({ email, password, remeberMe }: LoginFormSchema) {
     const user = await prisma.user.findFirst({ where: { email } });
-    return user;
-  }
 
-  async getUserByUuid(uuid: string) {
-    const user = await prisma.user.findFirst({ where: { uuid } });
-    return user;
-  }
+    if (!user) {
+      return ResponseService.NotFound('Usuário não encontrado');
+    }
 
-  async registerUser(data: LoginRegisterFormSchema) {
-    const hashedPassword = await this.hashService.hash(data.password);
-    const newUser = await prisma.user.create({
-      data: {
-        email: data.email,
-        password: hashedPassword,
-        name: data.name
-      }
+    const hashString = await this.hashService.compare(password, user.password);
+    if (!hashString) {
+      return ResponseService.NotFound('Usuário não encontrado Password');
+    }
+
+    const jwt = this.hashService.generateAccessToken({
+      uuid: user.uuid,
+      email: user.email,
+      exp: remeberMe ? '1d' : '7d'
     });
-    return newUser;
+
+    const cookStore = await cookies();
+
+    cookStore.set('auth', jwt, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      expires: remeberMe
+        // expires in 1d
+        ? new Date(Date.now() + 24 * 60 * 60 * 1000)
+        // expires in 7d
+        : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    });
   }
 };

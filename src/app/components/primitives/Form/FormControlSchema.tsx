@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { forwardRef, useId, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodObject } from 'zod';
+import FormSingleInput from './FormSingleInput';
 
 export interface FormControlRef<T> {
   reset: (values?: T) => void;
@@ -12,12 +13,12 @@ export interface FormControlRef<T> {
 interface FormControlSchemaProps {
   children?: React.ReactNode;
   schema: ZodObject;
-  error?: string;
+  errorMessage?: string | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit?: (data: any) => void;
 }
 const FormControlSchema = forwardRef(
-  ({ schema, onSubmit, children, error }: FormControlSchemaProps, ref) => {
+  ({ schema, onSubmit, children, errorMessage }: FormControlSchemaProps, ref) => {
 
     const id = useId();
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
@@ -39,25 +40,22 @@ const FormControlSchema = forwardRef(
         {schema.shape && Object.keys(schema.shape).map((key) => {
           const meta = schema.shape[key].meta();
           return (
-            <TextField
+            <FormSingleInput
               key={`${id}-${key}`}
-              variant="standard"
-              margin="normal"
-              size='medium'
+              fullWidth
               label={meta?.title || key}
               type={meta?.type || 'text'}
-              fullWidth
               error={!!errors[key]}
               helperText={errors?.[key]?.message || meta?.description || ''}
-              sx={{
-                backgroundColor: (theme) => theme.palette.background.paper,
-              }}
-              {...register(key)}
-            />
-          );
+              form={register(key)}
+            />);
         })}
         {children}
-        {error && <Typography color='error' variant='body2' align='center' mt={2}>{error}</Typography>}
+        {errorMessage &&
+          <Typography color='error' variant='body2' align='center' mt={2}>
+            {errorMessage}
+          </Typography>
+        }
       </Box>
     );
   });
