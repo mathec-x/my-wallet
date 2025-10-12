@@ -1,0 +1,23 @@
+{
+	"editor.tabSize": 2,
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.organizeImports": "explicit",
+		"source.removeUnusedImports": "explicit",
+		"source.addMissingImports.ts": "explicit"
+	},
+	"scm.compactFolders": true,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.next": true,
+		"**/node_modules": true,
+		"src/server/infra/prisma/generated": true
+	},
+	"files.watcherExclude": {},
+	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.patterns": {
+		"next.config.ts": "next-env.d.ts, tsconfig.json, eslint.config.mjs, prisma.config.ts",
+		"package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock, README.md, .gitignore",
+	}
+}

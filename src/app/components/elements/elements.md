@@ -1,0 +1,1 @@
+# Cards, modais, tabelas (blocos visuais)
