@@ -42,7 +42,7 @@ export const useAuthenticationHandlers = (callbacks: UseAuthenticationHandlersPr
   };
 
   const handleReset = async (params: LoginResetFormSchema) => {
-    console.log(params);
+    alert('Não implementado ainda');
   };
 
   return {

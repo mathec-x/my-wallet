@@ -25,8 +25,7 @@ const LoginForm = () => {
   const { error, handleLogin, handleRegister, handleReset, loading } = useAuthenticationHandlers({
     onLoginSuccess: () => {
       console.log('login success, redirecting to home...');
-      router.push('/', { scroll: false });
-      setTimeout(() => router.refresh(), 100);
+      router.push('/menu', { scroll: false });
     },
     onRegisterSuccess: ({ email, password }) => {
       loginFormRef.current?.setValue('email', email);
@@ -39,7 +38,7 @@ const LoginForm = () => {
   return (
     <FlexBox flexDirection='column' p={{ md: 4, xs: 1 }} overflow='hidden'>
       <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue' }}>
-        <WalletIcon fontSize='large' color='info' />
+        <WalletIcon fontSize='large' color='primary' />
       </Avatar>
       <Typography variant="button" fontSize='1.36rem' component="h1" color='primary.light' gutterBottom sx={{ mt: 2 }}>
         My Wallet
@@ -70,7 +69,7 @@ const LoginForm = () => {
               Código fonte no <a href="https://github.com/mathec-x/my-wallet" target="_blank" rel="noopener noreferrer">GitHub</a>
             </Typography>
             <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue', margin: '24px auto' }}>
-              <GitHubIcon fontSize='large' color='info' />
+              <GitHubIcon fontSize='large' color='primary' />
             </Avatar>
           </Box>
         </SlidePanel>
