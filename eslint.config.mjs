@@ -19,7 +19,7 @@ export default defineConfig([
       'out/**',
       'build/**',
       'next-env.d.ts',
-      'infra/prisma/generated/**',
+      'src/server/infra/prisma/generated/**',
     ],
     rules: {
       'camelcase': 'off',
@@ -27,6 +27,6 @@ export default defineConfig([
       'semi': ['error', 'always'],
       'max-lines': ['error', { 'max': 120, 'skipBlankLines': true, 'skipComments': true }],
       'max-len': ['error', { 'code': 150, 'ignoreComments': true, 'ignoreTrailingComments': true }],
-    }
+    },
   }
 ]);
