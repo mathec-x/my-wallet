@@ -25,7 +25,7 @@ const LoginForm = () => {
   const { error, handleLogin, handleRegister, handleReset, loading } = useAuthHandlers({
     onLoginSuccess: () => {
       console.log('login success, redirecting to home...');
-      router.push('/', { scroll: false });
+      router.replace('/', { scroll: false });
       router.push('/menu', { scroll: false });
     },
     onRegisterSuccess: ({ email, password }) => {
@@ -57,7 +57,7 @@ const LoginForm = () => {
             onSubmit={handleLogin}
             errorMessage={error.login}>
             <Box textAlign='center'>
-              <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
+              <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ width: 250 }}>
                 Entrar
               </Button>
             </Box>
@@ -69,7 +69,7 @@ const LoginForm = () => {
             <Typography variant="caption" color='text.secondary' sx={{ mt: 4 }}>
               Código fonte no <a href="https://github.com/mathec-x/my-wallet" target="_blank" rel="noopener noreferrer">GitHub</a>
             </Typography>
-            <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue', margin: '24px auto' }}>
+            <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue', margin: '12px auto' }}>
               <GitHubIcon fontSize='large' color='primary' />
             </Avatar>
           </Box>
