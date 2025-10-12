@@ -1,8 +1,11 @@
+import { registerAction } from '@/app/actions/login/register.actions';
 import FlexBox from '@/app/components/elements/FlexBox';
-import FormControlSchema from '@/app/components/primitives/Form/FormControlSchema';
+import SlidePanel from '@/app/components/elements/SlidePanel';
+import FormControlSchema, { FormControlRef } from '@/app/components/primitives/Form/FormControlSchema';
+import { ApplicationError } from '@/shared/ApplicationError/ApplicationError';
 import {
   LoginFormSchema, loginFormSchema, LoginRegisterFormSchema, loginRegisterFormSchema, LoginResetFormSchema, loginResetFormSchema
-} from '@/app/components/schemas';
+} from '@/shared/schemas';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import WalletIcon from '@mui/icons-material/Wallet';
 import Avatar from '@mui/material/Avatar';
@@ -11,20 +14,33 @@ import Button from '@mui/material/Button';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import SlidePanel from '../../elements/SlidePanel';
-import { registerAction } from './actions';
+import { useRef, useState } from 'react';
 
 const LoginForm = () => {
   const [tab, setTab] = useState(0);
+  const loginFormRef = useRef<FormControlRef<LoginFormSchema>>(null);
+  const registerFormRef = useRef<FormControlRef<LoginRegisterFormSchema>>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
 
   const handleLogin = async (data: LoginFormSchema) => {
     console.log(data);
   };
 
   const handleRegister = async (data: LoginRegisterFormSchema) => {
-    const result = await registerAction(data);
-    console.log(result);
+    try {
+      setLoading(true);
+      await registerAction(data);
+      loginFormRef.current?.setValue('email', data.email);
+      loginFormRef.current?.setValue('password', data.password);
+      registerFormRef.current?.reset();
+      setError(undefined);
+      setTab(0);
+    } catch (error: unknown) {
+      setError(ApplicationError.handleError(error));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = async (data: LoginResetFormSchema) => {
@@ -46,9 +62,9 @@ const LoginForm = () => {
           {tab === 2 && <Tab label="Redefinir" />}
         </Tabs>
         <SlidePanel direction='right' in={tab === 0}>
-          <FormControlSchema schema={loginFormSchema} onSubmit={handleLogin}>
+          <FormControlSchema ref={loginFormRef} schema={loginFormSchema} onSubmit={handleLogin}>
             <Box textAlign='center'>
-              <Button type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
+              <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
                 Entrar
               </Button>
             </Box>
@@ -66,9 +82,9 @@ const LoginForm = () => {
           </Box>
         </SlidePanel>
         <SlidePanel direction='left' in={tab === 1}>
-          <FormControlSchema schema={loginRegisterFormSchema} onSubmit={handleRegister}>
+          <FormControlSchema ref={registerFormRef} schema={loginRegisterFormSchema} onSubmit={handleRegister} error={error}>
             <Box textAlign='center'>
-              <Button type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
+              <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
                 Cadastrar
               </Button>
             </Box>
@@ -77,7 +93,7 @@ const LoginForm = () => {
         <SlidePanel direction={'left'} in={tab === 2}>
           <FormControlSchema schema={loginResetFormSchema} onSubmit={handleReset}>
             <Box textAlign='center'>
-              <Button type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
+              <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
                 Enviar
               </Button>
             </Box>

@@ -1,7 +1,6 @@
-import { LoginRegisterFormSchema } from '@/app/components/schemas';
-import { ResponseService } from '@/server/domain/common/ResponseService';
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
+import { LoginRegisterFormSchema } from '@/shared/schemas';
 
 export class UserUseCase {
 
@@ -20,12 +19,6 @@ export class UserUseCase {
   }
 
   async registerUser(data: LoginRegisterFormSchema) {
-    const currentUser = await this.getUserByEmail(data.email);
-
-    if (currentUser) {
-      return ResponseService.Conflict('Email já cadastrado');
-    }
-
     const hashedPassword = await this.hashService.hash(data.password);
     const newUser = await prisma.user.create({
       data: {
@@ -34,6 +27,6 @@ export class UserUseCase {
         name: data.name
       }
     });
-    return ResponseService.Created({ uuid: newUser.uuid });
+    return newUser;
   }
 };
