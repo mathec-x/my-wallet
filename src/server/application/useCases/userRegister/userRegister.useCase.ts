@@ -10,30 +10,32 @@ export class UserRegisterUseCase {
   ) { }
 
   async execute(data: LoginRegisterFormSchema) {
-    const parsed = loginRegisterFormSchema.parse(data);
-    if (!parsed) {
-      return ResponseService.PreconditionFailed('Formulário inválido');
-    }
-
-    const currentUser = await prisma.user.findFirst({ where: { email: data.email } });
-
-    if (currentUser) {
-      return ResponseService.Conflict('Usuário já esta registrado');
-    }
-
-    const hashedPassword = await this.hashService.hash(data.password);
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        password: hashedPassword,
-        name: data.name
+    try {
+      const parsed = loginRegisterFormSchema.parse(data);
+      if (!parsed) {
+        return ResponseService.PreconditionFailed('Formulário inválido');
       }
-    });
 
-    if (!user) {
-      return ResponseService.BadRequest('Falha ao cadastrar usuário');
+      const currentUser = await prisma.user.findFirst({ where: { email: data.email } });
+      if (currentUser) {
+        return ResponseService.Conflict('Usuário já esta registrado');
+      }
+
+      const hashedPassword = await this.hashService.hash(data.password);
+      const user = await prisma.user.create({
+        data: {
+          email: data.email,
+          password: hashedPassword,
+          name: data.name
+        }
+      });
+
+      if (!user) {
+        return ResponseService.BadRequest('Falha ao cadastrar usuário');
+      }
+      return ResponseService.Created({ uuid: user.uuid });
+    } catch (error: Error | unknown) {
+      return ResponseService.InternalError((error as Error)?.message || 'Error interno', error);
     }
-
-    return ResponseService.Created({ uuid: user.uuid });
   }
 };

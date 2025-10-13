@@ -1,14 +1,23 @@
-import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
+import Box, { type BoxProps } from '@mui/material/Box';
 
-const FlexBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: theme.palette.background.paper,
-  height: '100%',
-  width: '100%',
-  boxSizing: 'border-box',
-}));
+interface FlexBoxProps extends BoxProps {
+  col?: boolean
+}
+
+const FlexBox: React.FC<FlexBoxProps> = ({ col, ...boxProps }) => {
+  return (
+    <Box
+      flexDirection={col ? 'column' : 'row'}
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      bgcolor={(theme) => theme.palette.background.paper}
+      height='100%'
+      width='100%'
+      boxSizing='border-box'
+      {...boxProps}
+    />
+  );
+};
 
 export default FlexBox;

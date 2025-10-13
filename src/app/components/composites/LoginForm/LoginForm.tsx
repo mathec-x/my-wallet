@@ -37,8 +37,8 @@ const LoginForm = () => {
   });
 
   return (
-    <FlexBox flexDirection='column' p={{ md: 4, xs: 1 }} overflow='hidden'>
-      <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue' }}>
+    <FlexBox col p={{ md: 4, xs: 1 }} overflow='hidden'>
+      <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue' }} variant='circular'>
         <WalletIcon fontSize='large' color='primary' />
       </Avatar>
       <Typography variant="button" fontSize='1.36rem' component="h1" color='primary.light' gutterBottom sx={{ mt: 2 }}>
@@ -69,7 +69,7 @@ const LoginForm = () => {
             <Typography variant="caption" color='text.secondary' sx={{ mt: 4 }}>
               Código fonte no <a href="https://github.com/mathec-x/my-wallet" target="_blank" rel="noopener noreferrer">GitHub</a>
             </Typography>
-            <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue', margin: '12px auto' }}>
+            <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue', margin: '12px auto' }} variant='circular'>
               <GitHubIcon fontSize='large' color='primary' />
             </Avatar>
           </Box>
