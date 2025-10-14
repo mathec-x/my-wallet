@@ -1,5 +1,5 @@
 export const privateRoutes = [
   '/dashboard',
-  '/menu',
-  '/dashboard/[uuid]'
+  '/dashboard/:uuid',
+  '/menu'
 ] as string[];
