@@ -26,7 +26,7 @@ export default function MenuDrawer(props: NextAsyncPageProps) {
 
   const handleClose = useCallback((path?: string) => {
     setOpen(false);
-    setTimeout(() => path ? router.replace(path, { scroll: false }) : router.back(), 155);
+    setTimeout(() => path ? router.replace(path, { scroll: false }) : router.back(), 355);
   }, [router]);
 
   return (

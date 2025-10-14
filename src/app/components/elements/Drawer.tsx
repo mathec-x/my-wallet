@@ -14,6 +14,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
   return (
     <SwipeableDrawer
       disableSwipeToOpen
+      keepMounted={false}
       anchor={props.anchor || 'left'}
       open={props.open}
       onOpen={props.onOpen}
