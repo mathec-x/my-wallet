@@ -1,3 +1,5 @@
+import { styleText } from 'node:util';
+import 'server-only';
 import { PrismaClient } from './generated';
 
 export class PrismaService {
@@ -7,6 +9,7 @@ export class PrismaService {
 
   public static getInstance(): PrismaClient {
     if (!PrismaService.instance) {
+      console.log(styleText('bgCyan', 'prisma:instance'), 'Creating new instance of PrismaClient');
       PrismaService.instance = new PrismaClient({
         log: ['query', 'info', 'warn', 'error'],
       });

@@ -1,5 +1,6 @@
 import { compare, hash } from 'bcrypt';
 import { sign, SignOptions, verify } from 'jsonwebtoken';
+import 'server-only';
 
 interface JwtPayloadInterface { uuid: string, email: string, exp: SignOptions['expiresIn'] }
 

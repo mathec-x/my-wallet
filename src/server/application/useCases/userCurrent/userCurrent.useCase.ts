@@ -1,6 +1,7 @@
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
 import { cookies } from 'next/headers';
+import 'server-only';
 
 export class UserCurrentUseCase {
 

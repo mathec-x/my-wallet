@@ -1,5 +1,6 @@
 import { ResponseService } from '@/server/domain/common/response.service';
 import { prisma } from '@/server/infra/prisma/client';
+import 'server-only';
 
 export interface AccountRegisterUseCaseParams {
   userUuid: string

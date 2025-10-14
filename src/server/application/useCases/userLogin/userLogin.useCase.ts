@@ -3,6 +3,7 @@ import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
 import { LoginFormSchema } from '@/shared/schemas';
 import { cookies } from 'next/headers';
+import 'server-only';
 
 export class UserLoginUseCase {
 

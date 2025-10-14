@@ -2,6 +2,7 @@ import { ResponseService } from '@/server/domain/common/response.service';
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
 import { loginRegisterFormSchema, LoginRegisterFormSchema } from '@/shared/schemas';
+import 'server-only';
 
 export class UserRegisterUseCase {
 
