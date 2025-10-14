@@ -1,13 +1,15 @@
 'use client';
 
-import { registerAccountAction } from '@/app/actions/accounts/account.actions';
+import { deleteAccountAction, registerAccountAction } from '@/app/actions/accounts/account.actions';
 import FlexBox from '@/app/components/elements/FlexBox';
 import { ListContainer } from '@/app/components/elements/ListContainer';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import AddBusinessIcon from '@mui/icons-material/AddBusinessOutlined';
-import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import SendIcon from '@mui/icons-material/SendOutlined';
+import { CircularProgress, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import FormControl from '@mui/material/FormControl';
 import InputBase from '@mui/material/InputBase';
@@ -18,28 +20,46 @@ import ListItemText from '@mui/material/ListItemText';
 import React from 'react';
 
 interface MenuLayoutProps {
-  onClose?: (path?: string) => void;
+  onClose: (path?: string) => void;
 }
 
 const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
-  const { user, setUser } = useAuthProvider();
-
+  const { user, setUserAccounts } = useAuthProvider();
   const handleSelect = (value: string) => {
-    props.onClose?.('/dashboard/' + value);
+    props.onClose('/dashboard/' + value);
   };
 
   if (!user) return null;
 
+  const handleDelete = async (param: { uuid: string }) => {
+    setUserAccounts(user.accounts.map(account => ({
+      ...account,
+      uuid: account.uuid === param.uuid ? '' : account.uuid
+    })));
+    const res = await deleteAccountAction({ accountUuid: param.uuid, userUuid: user.uuid + 1 });
+    if (res?.success) {
+      setUserAccounts(user.accounts.filter(account => account.uuid !== res.data.uuid));
+    } else {
+      alert(res?.error || 'Erro ao deletar conta');
+      setUserAccounts(user.accounts);
+    }
+  };
+
   const handleAddAccount = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { value } = e.currentTarget.elements.namedItem('add-account-name') as HTMLInputElement;
+    if (value.length < 4) return;
+
+    setUserAccounts([...user.accounts, { name: value, uuid: '', balance: 0 }]);
     e.currentTarget.reset();
-    const newAccount = await registerAccountAction({
+    const res = await registerAccountAction({
       accountName: value,
       userUuid: user!.uuid
     });
-    if (user && newAccount?.success) {
-      setUser({ ...user, accounts: [...user.accounts, newAccount.data!] });
+    if (res?.success) {
+      setUserAccounts([...user.accounts, res.data!]);
+    } else {
+      setUserAccounts([...user.accounts]);
     }
   };
 
@@ -47,8 +67,17 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
     <FlexBox col alignItems='flex-start' justifyContent='space-between'>
       <ListContainer header={`${user.accounts.length} Contas Registradas`} disablePadding>
         {user.accounts.map(account => (
-          <ListItem key={account.uuid} divider disablePadding>
-            <ListItemButton onClick={() => handleSelect(account.uuid)}>
+          <ListItem
+            divider
+            disablePadding
+            key={account.uuid + account.name}
+            secondaryAction={
+              !account.uuid
+                ? <CircularProgress size={15} />
+                : <IconButton onClick={() => handleDelete(account)} aria-label='delete account'>
+                  <DeleteIcon />
+                </IconButton>}>
+            <ListItemButton onClick={() => handleSelect(account.uuid)} disabled={!account.uuid}>
               <ListItemAvatar>
                 <Avatar>
                   <WalletIcon />
@@ -62,7 +91,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
       <ListContainer header='Opções' disablePadding>
         <ListItem>
           <ListItemAvatar>
-            <Avatar>
+            <Avatar variant='default'>
               <AccountBalanceIcon />
             </Avatar>
           </ListItemAvatar>
@@ -73,12 +102,12 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
         </ListItem>
         <ListItem disablePadding secondaryAction={
           <IconButton type='submit' form='add-account-form' aria-label='add account'>
-            <AddBusinessIcon />
+            <SendIcon />
           </IconButton>
         }>
           <ListItemButton>
             <ListItemAvatar>
-              <Avatar>
+              <Avatar variant='default'>
                 <AddBusinessIcon />
               </Avatar>
             </ListItemAvatar>

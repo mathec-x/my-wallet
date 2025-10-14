@@ -12,7 +12,7 @@ const Header = async () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <LinkButton href='/menu' sx={{ mr: 2 }}>
+        <LinkButton href='/menu' scroll={false} sx={{ mr: 2 }}>
           <IconButton size="large" edge="start" color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
