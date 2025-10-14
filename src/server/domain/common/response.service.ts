@@ -48,4 +48,12 @@ export class ResponseService {
   static InternalError<T = never>(message = 'Internal Server Error', error?: Error | unknown): ServiceResponse<T> {
     return { success: false, message, status: 500, error };
   }
+
+  static unknow<T = never>(error?: unknown): ServiceResponse<T> {
+    if (error instanceof Error) {
+      return { success: false, message: error.message, status: 400, error };
+    }
+
+    return { success: false, message: 'unknown', status: 400, error };
+  }
 }
