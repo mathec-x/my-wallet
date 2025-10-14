@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
 import { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
-import { getCurrentUser } from './actions/user/getCurrentUser.actions';
+import { getCurrentUser } from './actions/user/user.actions';
 import { AuthProvider } from './providers/auth/AuthProvider';
 
 const roboto = Roboto({
