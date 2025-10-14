@@ -37,11 +37,16 @@ program
   .description('Add a new action to the project')
   .argument('<name>', 'Name of the action to add')
   .action(function (name) {
-    const path = commands.paths.actions;
+    const path = commands.paths.action;
     const fnName = commands.pascalCase(name);
     commands.createFile(
-      `${path}/(.)${commands.sanitizePath(name)}/page.tsx`,
-      `export default function ${fnName}Drawer() {\r\treturn (\r\t\t<div>Drawer ${fnName}</div>\r\t);\r}`
+      `${path}/${commands.sanitizePath(name)}/${name}.actions.ts`,
+      '\'use server\';',
+      `\nimport { ${fnName}UseCase } from '@/server/application/useCases/${name}/${name}.useCase';`,
+      `\nconst ${name}UseCase = new ${fnName}UseCase();\n`,
+      `export async function ${name}Action() {`,
+      `\treturn ${name}UseCase.execute();`,
+      '};'
     );
   });
 
@@ -79,8 +84,9 @@ program
     commands.createFile(`${path}/${name}/${name}.spec.ts`, '');
     commands.createFile(
       `${path}/${name}/${name}.useCase.ts`,
-      `export interface ${fnName}UseCaseParams {\r\r}`,
-      `export class ${fnName}UseCase {\r\texecute() { };\r}`
+      'import \'server-only\';\n',
+      `export interface ${fnName}UseCaseParams { }\n`,
+      `export class ${fnName}UseCase {\r\texecute() { };\r}\n`
     );
   });
 
