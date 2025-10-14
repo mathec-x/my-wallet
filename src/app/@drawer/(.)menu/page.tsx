@@ -23,19 +23,17 @@ export default function LoginDrawer() {
     return () => setOpen(false);
   }, []);
 
-  const handleClose = () => {
+  const handleClose = (path?: string) => {
     setOpen(false);
-    setTimeout(() => {
-      router.back();
-    }, 155);
+    setTimeout(() => path ? router.push(path) : router.back(), 155);
   };
 
   return (
     <SwipeableDrawer
       anchor="left"
       open={open}
-      onOpen={() => { }}
-      onClose={handleClose}
+      onOpen={() => setOpen(true)}
+      onClose={() => handleClose()}
       slotProps={{
         paper: {
           sx: {
@@ -58,11 +56,11 @@ export default function LoginDrawer() {
             {user?.email}
           </Typography>
         </Box>
-        <IconButton onClick={handleClose}>
+        <IconButton onClick={() => handleClose()}>
           <CloseIcon />
         </IconButton>
       </Toolbar>
-      <MenuLayout />
+      <MenuLayout onClose={handleClose} />
     </SwipeableDrawer >
   );
 }

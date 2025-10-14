@@ -1,4 +1,7 @@
-import { registerAccountAction } from '@/app/actions/accounts/registerAccount.actions';
+'use client';
+
+import { registerAccountAction } from '@/app/actions/accounts/account.actions';
+import FlexBox from '@/app/components/elements/FlexBox';
 import { ListContainer } from '@/app/components/elements/ListContainer';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
@@ -12,10 +15,18 @@ import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import FlexBox from '../../elements/FlexBox';
+import React from 'react';
 
-const MenuLayout = () => {
+interface MenuLayoutProps {
+  onClose?: (path?: string) => void;
+}
+
+const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
   const { user, setUser } = useAuthProvider();
+
+  const handleSelect = (value: string) => {
+    props.onClose?.('/dashboard/' + value);
+  };
 
   if (!user) return null;
 
@@ -37,7 +48,7 @@ const MenuLayout = () => {
       <ListContainer header={`${user.accounts.length} Contas Registradas`} disablePadding>
         {user.accounts.map(account => (
           <ListItem key={account.uuid} divider disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => handleSelect(account.uuid)}>
               <ListItemAvatar>
                 <Avatar>
                   <WalletIcon />
