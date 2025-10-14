@@ -2,6 +2,12 @@
 
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/Avatar' {
+  interface AvatarPropsVariantOverrides {
+    default: true;
+  }
+}
+
 let theme = createTheme({
   palette: {
     // mode: 'dark',
@@ -28,7 +34,16 @@ theme = createTheme(theme, {
         root: {
           backgroundColor: theme.palette.primary.main,
         }
-      }
+      },
+      variants: [
+        {
+          props: { variant: 'default' },
+          style: {
+            backgroundColor: 'transparent',
+            color: theme.palette.text.primary,
+          },
+        },
+      ],
     }
   },
   MuiInputBase: {
