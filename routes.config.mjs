@@ -7,7 +7,11 @@ const privateRoutes = readdirSync('src/app/(private)', {
   withFileTypes: true
 })
   .filter((file) => file.isFile())
-  .map((file) => file.parentPath.replace('src/app/(private)', ''));
+  .map((file) => file
+    .parentPath
+    .replace('src/app/(private)', '')
+    .replace(/\[([^\]]+)\]/g, ':$1')
+  ).sort((a, b) => a.localeCompare(b));
 
 if (!existsSync('./src/server/infra/routes')) {
   console.log('Creating directory: ./src/server/infra/routes');
