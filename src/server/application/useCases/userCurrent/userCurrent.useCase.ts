@@ -25,6 +25,9 @@ export class UserCurrentUseCase {
           name: true,
           email: true,
           accounts: {
+            where: {
+              deletedAt: null
+            },
             select: {
               uuid: true,
               name: true,
