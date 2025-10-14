@@ -1,5 +1,4 @@
 import { loginAction, registerAction } from '@/app/actions/login/login.actions';
-import { ApplicationError } from '@/shared/ApplicationError/ApplicationError';
 import { LoginFormSchema, LoginRegisterFormSchema, LoginResetFormSchema } from '@/shared/schemas';
 import { useState } from 'react';
 
@@ -16,29 +15,27 @@ export const useAuthHandlers = (callbacks?: UseAuthHandlersProps) => {
   });
 
   const handleLogin = async (params: LoginFormSchema) => {
-    try {
-      setLoading(true);
-      await loginAction(params);
+    setLoading(true);
+    const res = await loginAction(params);
+    if (res.success) {
       setError({ ...error, login: null });
       callbacks?.onLoginSuccess?.(params);
-    } catch (err: unknown) {
-      setError({ ...error, login: ApplicationError.handleError(err) });
-    } finally {
-      setLoading(false);
+    } else {
+      setError({ ...error, login: res.message });
     }
+    setLoading(false);
   };
 
   const handleRegister = async (params: LoginRegisterFormSchema) => {
-    try {
-      setLoading(true);
-      await registerAction(params);
+    setLoading(true);
+    const res = await registerAction(params);
+    if (res.success) {
       setError({ ...error, register: null });
       callbacks?.onRegisterSuccess?.(params);
-    } catch (err: unknown) {
-      setError({ ...error, register: ApplicationError.handleError(err) });
-    } finally {
-      setLoading(false);
+    } else {
+      setError({ ...error, register: res.message });
     }
+    setLoading(false);
   };
 
   const handleReset = async (params: LoginResetFormSchema) => {

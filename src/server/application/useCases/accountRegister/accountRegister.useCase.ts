@@ -28,7 +28,7 @@ export class AccountRegisterUseCase {
 
       return ResponseService.Created(newAccount);
     } catch (error: Error | unknown) {
-      return ResponseService.BadRequest((error as Error)?.message);
+      return ResponseService.BadRequest((error as Error)?.message, error);
     }
   }
 }

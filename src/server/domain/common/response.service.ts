@@ -1,47 +1,51 @@
-import { ApplicationError } from '@/shared/ApplicationError/ApplicationError';
-
 export type ResponseStatus = 200 | 201 | 400 | 401 | 403 | 404 | 409 | 412 | 500;
 
-export interface ServiceResponse<T = unknown> {
+export type ServiceResponse<T = unknown> = {
+  success: true;
   status: ResponseStatus;
-  message?: string;
-  data?: T;
-}
+  message: string;
+  data: T;
+} | {
+  success: false;
+  status: ResponseStatus;
+  message: string;
+  error?: Error | unknown;
+};
 
 export class ResponseService {
   static Ok<T>(data: T, message = 'Success'): ServiceResponse<T> {
-    return { status: 200, message, data };
+    return { success: true, message, status: 200, data };
   }
 
   static Created<T>(data: T, message = 'Created'): ServiceResponse<T> {
-    return { status: 201, message, data };
+    return { success: true, message, status: 201, data };
   }
 
-  static BadRequest(message = 'Bad Request', error?: Error) {
-    throw new ApplicationError(message, 400, error);
+  static BadRequest<T = never>(message = 'Bad Request', error?: Error | unknown): ServiceResponse<T> {
+    return { success: false, message, status: 400, error };
   }
 
-  static Unauthorized(message = 'Unauthorized') {
-    throw new ApplicationError(message, 401);
+  static Unauthorized<T = never>(message = 'Unauthorized'): ServiceResponse<T> {
+    return { success: false, message, status: 401 };
   }
 
-  static Forbidden(message = 'Forbidden') {
-    throw new ApplicationError(message, 403);
+  static Forbidden<T = never>(message = 'Forbidden'): ServiceResponse<T> {
+    return { success: false, message, status: 403 };
   }
 
-  static NotFound(message = 'Not Found') {
-    throw new ApplicationError(message, 404);
+  static NotFound<T = never>(message = 'Not Found'): ServiceResponse<T> {
+    return { success: false, message, status: 404 };
   }
 
-  static Conflict(message = 'Conflict') {
-    throw new ApplicationError(message, 409);
+  static Conflict<T = never>(message = 'Conflict'): ServiceResponse<T> {
+    return { success: false, message, status: 409 };
   }
 
-  static PreconditionFailed(message = 'Precondition Failed') {
-    throw new ApplicationError(message, 412);
+  static PreconditionFailed<T = never>(message = 'Precondition Failed'): ServiceResponse<T> {
+    return { success: false, message, status: 412 };
   }
 
-  static InternalError(message = 'Internal Server Error', error?: Error) {
-    throw new ApplicationError(message, 500, error);
+  static InternalError<T = never>(message = 'Internal Server Error', error?: Error | unknown): ServiceResponse<T> {
+    return { success: false, message, status: 500, error };
   }
 }

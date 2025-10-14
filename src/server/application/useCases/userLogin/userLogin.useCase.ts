@@ -42,5 +42,10 @@ export class UserLoginUseCase {
         // expires in 7d
         : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
+
+    return ResponseService.Ok({
+      uuid: user.uuid,
+      jwt
+    });
   }
 };
