@@ -17,7 +17,7 @@
 	"files.watcherExclude": {},
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
-		"next.config.ts": "next-env.d.ts, tsconfig.json, eslint.config.mjs, prisma.config.ts",
+		"next.config.ts": "next-env.d.ts, tsconfig.json, *.config.mjs, *.config.ts",
 		"package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock, README.md, .gitignore",
 	}
 }

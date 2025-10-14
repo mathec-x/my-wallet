@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "bin": {
+    "routes-setup": "routes.config.mjs"
+  },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
