@@ -31,6 +31,7 @@ export class CommanderService {
       .join('');
 
   }
+
   pascalCase(name) {
     return name
       .split(/[^a-zA-Z0-9]/)
@@ -40,7 +41,11 @@ export class CommanderService {
       .join('');
   }
 
-  createFile(fileName, content) {
+  ucfirst(name) {
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  createFile(fileName, ...content) {
     const dirName = dirname(fileName);
     if (!existsSync(dirName)) {
       console.log(styleText('cyan', `Creating directory ${dirName}`));
@@ -51,6 +56,6 @@ export class CommanderService {
       return;
     }
     console.log(styleText('cyan', `Creating file ${fileName}`));
-    writeFileSync(fileName, content);
+    writeFileSync(fileName, content.join('\n'));
   }
 }

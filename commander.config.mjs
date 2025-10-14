@@ -61,7 +61,7 @@ program
     const folder = args.composite ? '/composites' : args.ui ? '/ui' : args.layout ? '/layouts' : args.primitive ? '/primitives' : '/elements';
     const type = args.composite ? 'composite' : args.ui ? 'ui' : args.layout ? 'layout' : args.primitive ? 'primitive' : 'element';
     const path = commands.paths.component + folder;
-    const fnName = commands.pascalCase(name);
+    const fnName = commands.ucfirst(name);
     commands.createFile(`${path}/${fnName}/${name}.module.css`, '');
     commands.createFile(
       `${path}/${fnName}/${name}.${type}.tsx`,
@@ -75,11 +75,12 @@ program
   .argument('<name>', 'Name of the use case to add')
   .action(function (name) {
     const path = commands.paths.useCase;
-    const fnName = commands.pascalCase(name);
+    const fnName = commands.ucfirst(name);
     commands.createFile(`${path}/${name}/${name}.spec.ts`, '');
     commands.createFile(
       `${path}/${name}/${name}.useCase.ts`,
-      `export class ${fnName} {\r\tconstructor() { };\r}`
+      `export interface ${fnName}UseCaseParams {\r\r}`,
+      `export class ${fnName}UseCase {\r\texecute() { };\r}`
     );
   });
 
@@ -89,7 +90,7 @@ program
   .argument('<name>', 'Name of the domain service to add')
   .action(function (name) {
     const path = commands.paths.domainService;
-    const fnName = commands.pascalCase(name);
+    const fnName = commands.ucfirst(name);
     commands.createFile(`${path}/${name}/${name}.spec.ts`, '');
     commands.createFile(
       `${path}/${name}/${name}.service.ts`,
