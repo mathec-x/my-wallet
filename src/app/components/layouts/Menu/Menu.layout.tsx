@@ -6,18 +6,15 @@ import { ListContainer } from '@/app/components/elements/ListContainer';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import AddBusinessIcon from '@mui/icons-material/AddBusinessOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
-import SendIcon from '@mui/icons-material/SendOutlined';
 import { CircularProgress, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import FormControl from '@mui/material/FormControl';
-import InputBase from '@mui/material/InputBase';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import React from 'react';
+import { ListItemInput } from '../../elements/ListItemInput';
 
 interface MenuLayoutProps {
   onClose: (path?: string) => void;
@@ -45,13 +42,8 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
     }
   };
 
-  const handleAddAccount = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { value } = e.currentTarget.elements.namedItem('add-account-name') as HTMLInputElement;
-    if (value.length < 4) return;
-
+  const handleAddAccount = async (value: string) => {
     setUserAccounts([...user.accounts, { name: value, uuid: '', balance: 0 }]);
-    e.currentTarget.reset();
     const res = await registerAccountAction({
       accountName: value,
       userUuid: user!.uuid
@@ -100,27 +92,14 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
             secondary='Saldo Total'
           />
         </ListItem>
-        <ListItem disablePadding secondaryAction={
-          <IconButton type='submit' form='add-account-form' aria-label='add account'>
-            <SendIcon />
-          </IconButton>
-        }>
-          <ListItemButton>
-            <ListItemAvatar>
-              <Avatar variant='default'>
-                <AddBusinessIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <FormControl
-              id='add-account-form'
-              component='form'
-              onSubmit={handleAddAccount}
-              autoComplete='off'
-              fullWidth>
-              <InputBase name='add-account-name' placeholder='Adicionar Conta ex: casa, empresa' />
-            </FormControl>
-          </ListItemButton>
-        </ListItem>
+        <ListItemInput
+          id='add-account'
+          placeholder='Adicionar Conta ex: casa, empresa'
+          fullWidth
+          onError={() => alert('Nome da conta deve ter mais de 3 caracteres')}
+          onSubmit={handleAddAccount}
+          disablePadding
+        />
       </ListContainer>
     </FlexBox>
   );
