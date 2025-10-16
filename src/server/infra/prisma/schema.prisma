@@ -42,11 +42,12 @@ model Account {
 model Entry {
   id          Int       @id @default(autoincrement())
   uuid        String    @unique @default(uuid())
-  description String
-  amount      Float
-  date        DateTime
-  accountId   Int
+  title       String
+  description String?
+  amount      Float     @default(0)
   type        EntryType
+  date        DateTime?
+  accountId   Int
   account     Account   @relation(fields: [accountId], references: [id])
   deletedAt   DateTime?
   updatedAt   DateTime  @updatedAt
