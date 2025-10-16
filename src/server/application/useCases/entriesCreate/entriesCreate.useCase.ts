@@ -1,34 +1,37 @@
 import { ResponseService } from '@/server/domain/common/response.service';
 import { CookieService } from '@/server/domain/services/cookie/cookie.service';
 import { prisma } from '@/server/infra/prisma/client';
+import type { Prisma } from '@/server/infra/prisma/generated';
 import 'server-only';
 
-export interface EntriesDeleteUseCaseParams {
+export interface EntriesCreateUseCaseParams {
 	accountUuid: string;
-	entryUuid: string;
+	data: Omit<Prisma.EntryCreateInput, 'account'>;
 }
 
-export class EntriesDeleteUseCase {
+export class EntriesCreateUseCase {
 	constructor(
 		private readonly cookieService: CookieService
 	) { }
 
-	async execute(params: EntriesDeleteUseCaseParams) {
+	async execute(params: EntriesCreateUseCaseParams) {
 		try {
 			const userUuid = await this.cookieService.getUUidFromCookie();
-			const data = await prisma.entry.delete({
-				where: {
-					uuid: params.entryUuid,
+			const data = await prisma.entry.create({
+				data: {
+					...params.data,
 					account: {
-						uuid: params.accountUuid,
-						user: {
-							uuid: userUuid
+						connect: {
+							uuid: params.accountUuid,
+							user: {
+								uuid: userUuid
+							}
 						}
 					}
 				}
 			});
 
-			return ResponseService.Ok(data);
+			return ResponseService.Created(data);
 		} catch (error) {
 			return ResponseService.unknow(error);
 		}

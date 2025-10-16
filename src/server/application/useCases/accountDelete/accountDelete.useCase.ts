@@ -23,7 +23,7 @@ export class AccountDeleteUseCase {
 
 			return ResponseService.Ok(data);
 		} catch (error: Error | unknown) {
-			return ResponseService.BadRequest((error as Error)?.message, error);
+			return ResponseService.unknow(error);
 		}
 	}
 }
