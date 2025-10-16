@@ -1,8 +1,8 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
-export interface NextAsyncPageProps<P = unknown> {
+export interface NextAsyncPageProps<P = unknown, Q = unknown> {
   params: Promise<P>;
-  searchParams: Promise<ReadonlyURLSearchParams>;
+  searchParams: Promise<ReadonlyURLSearchParams & Q>;
 }
 
 type ResponseServiceData<T> = T extends { data: infer U } ? U : never;
