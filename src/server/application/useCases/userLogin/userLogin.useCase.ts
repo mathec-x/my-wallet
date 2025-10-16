@@ -2,6 +2,7 @@ import { ResponseService } from '@/server/domain/common/response.service';
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
 import { LoginFormSchema } from '@/shared/schemas';
+import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 import 'server-only';
 
@@ -31,7 +32,7 @@ export class UserLoginUseCase {
 
     const cookStore = await cookies();
 
-    cookStore.set('auth', jwt, {
+    const cookieSettings: Partial<ResponseCookie> = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -41,7 +42,10 @@ export class UserLoginUseCase {
         ? new Date(Date.now() + 24 * 60 * 60 * 1000)
         // expires in 7d
         : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    });
+    };
+
+    cookStore.set('uuid', user.uuid, cookieSettings);
+    cookStore.set('auth', jwt, cookieSettings);
 
     return ResponseService.Ok({
       uuid: user.uuid,
