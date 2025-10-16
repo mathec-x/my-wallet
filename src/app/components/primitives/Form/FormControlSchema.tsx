@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Typography } from '@mui/material';
-import { forwardRef, useId, useImperativeHandle } from 'react';
+import { forwardRef, useEffect, useId, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodObject } from 'zod';
-import FormSingleInput from './FormSingleInput';
+import FormInputMeta from './FormInputMeta';
 
 export interface FormControlRef<T> {
   reset: (values?: T) => void;
@@ -14,16 +14,27 @@ interface FormControlSchemaProps {
   children?: React.ReactNode;
   schema: ZodObject;
   errorMessage?: string | null;
+  id?: string;
+  value: Record<string, unknown>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit?: (data: any) => void;
 }
 const FormControlSchema = forwardRef(
-  ({ schema, onSubmit, children, errorMessage }: FormControlSchemaProps, ref) => {
-
+  ({ schema, onSubmit, children, errorMessage, id: propId, value }: FormControlSchemaProps, ref) => {
     const id = useId();
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
       resolver: zodResolver(schema)
     });
+
+    useEffect(() => {
+      if (value) {
+        Object.keys(value).forEach(key => {
+          setValue(key as string, value[key]);
+        });
+      }
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
 
     useImperativeHandle(ref, () => ({
       reset: reset,
@@ -32,6 +43,7 @@ const FormControlSchema = forwardRef(
 
     return (
       <Box
+        id={propId || id}
         component="form"
         onSubmit={onSubmit && handleSubmit(onSubmit)}
         noValidate
@@ -40,14 +52,13 @@ const FormControlSchema = forwardRef(
         {schema.shape && Object.keys(schema.shape).map((key) => {
           const meta = schema.shape[key].meta();
           return (
-            <FormSingleInput
+            <FormInputMeta
               key={`${id}-${key}`}
               fullWidth
-              label={meta?.title || key}
-              type={meta?.type || 'text'}
               error={!!errors[key]}
-              helperText={errors?.[key]?.message || meta?.description || ''}
+              helperText={errors?.[key]?.message}
               form={register(key)}
+              {...meta}
             />);
         })}
         {children}
