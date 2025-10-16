@@ -1,3 +1,9 @@
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientValidationError
+} from '@/server/infra/prisma/generated/runtime/library';
+
 export type ResponseStatus = 200 | 201 | 400 | 401 | 403 | 404 | 409 | 412 | 500;
 
 export type ServiceResponse<T = unknown> = {
@@ -50,8 +56,25 @@ export class ResponseService {
   }
 
   static unknow<T = never>(error?: unknown): ServiceResponse<T> {
+
     if (error instanceof Error) {
+      console.error('Error', error);
       return { success: false, message: error.message, status: 400, error };
+    }
+
+    if (error instanceof PrismaClientUnknownRequestError) {
+      console.log(`PrismaClientUnknownRequestError ${error.message}`, error.name);
+      return { success: false, message: 'PrismaClientUnknownRequestError', status: 400, error };
+    }
+
+    if (error instanceof PrismaClientKnownRequestError) {
+      console.log(`PrismaClientKnownRequestError ${error.message}`, error.code, error.meta);
+      return { success: false, message: 'PrismaClientKnownRequestError', status: 400, error };
+    }
+
+    if (error instanceof PrismaClientValidationError) {
+      console.log(`PrismaClientValidationError ${error.message}`, error.name);
+      return { success: false, message: 'PrismaClientValidationError', status: 400, error };
     }
 
     return { success: false, message: 'unknown', status: 400, error };
