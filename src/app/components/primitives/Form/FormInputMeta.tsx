@@ -3,13 +3,13 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
+import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { Control, Controller, UseFormRegisterReturn } from 'react-hook-form';
 
 
 interface FormInputMetaProps {
@@ -22,12 +22,14 @@ interface FormInputMetaProps {
   helperText?: string;
   description?: string;
   multiline?: boolean;
+  control?: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   options?: { label: string; value: string }[];
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 }
 const FormInputMeta: React.FC<FormInputMetaProps> = ({
-  fullWidth, label, title, type = 'text', error, helperText, form, inputMode, description, multiline, options
+  fullWidth, label, title, type = 'text', error, helperText, form, inputMode, description, multiline, options, control
 }) => {
+
   switch (type) {
     case 'checkbox':
       return (
@@ -55,34 +57,51 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
       return (
         <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin='normal' size='medium'>
           <InputLabel>{title || label}</InputLabel>
-          <Select {...form}>
-            {options?.map(option => (
-              <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-            ))}
-          </Select>
+          <Controller
+            control={control}
+            {...form}
+            defaultValue="" // make sure to set up defaultValue
+            render={({ field: { onChange, value } }) => (
+              <Select
+                value={value}
+                onChange={onChange}
+                label={title || label}
+              >
+                {options?.map(option => (
+                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                ))}
+              </Select>
+            )}
+          />
           <FormHelperText>{helperText || description}</FormHelperText>
         </FormControl>
       );
     default:
       return (
-        <TextField
-          variant="standard"
-          margin="normal"
-          size='medium'
-          label={title || label}
-          type={type || 'text'}
-          fullWidth={fullWidth}
-          error={!!error}
-          helperText={helperText || description}
-          multiline={multiline}
-          slotProps={{
-            inputLabel: type === 'date' ? { shrink: true } : {},
-            htmlInput: {
-              inputMode: inputMode,
-            }
-          }}
-          {...form}
-        />
+        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin='normal' size='medium'>
+          {type === 'date'
+            ? <InputLabel shrink>{title || label}</InputLabel>
+            : <InputLabel>{title || label}</InputLabel>
+          }
+          <Input
+            // variant="standard"
+            // margin="normal"
+            // size='medium'
+            // fullWidth={fullWidth}
+            // error={!!error}
+            // label={title || label}
+            // helperText={helperText || description}
+            type={type || 'text'}
+            multiline={multiline}
+            slotProps={{
+              input: {
+                inputMode: inputMode,
+              }
+            }}
+            {...form}
+          />
+          <FormHelperText>{helperText || description}</FormHelperText>
+        </FormControl>
       );
   }
 };

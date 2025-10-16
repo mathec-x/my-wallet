@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Typography } from '@mui/material';
-import { forwardRef, useEffect, useId, useImperativeHandle } from 'react';
+import { forwardRef, useId, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodObject } from 'zod';
 import FormInputMeta from './FormInputMeta';
@@ -15,26 +15,17 @@ interface FormControlSchemaProps {
   schema: ZodObject;
   errorMessage?: string | null;
   id?: string;
-  value: Record<string, unknown>;
+  value?: Record<string, unknown>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit?: (data: any) => void;
 }
 const FormControlSchema = forwardRef(
   ({ schema, onSubmit, children, errorMessage, id: propId, value }: FormControlSchemaProps, ref) => {
     const id = useId();
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
-      resolver: zodResolver(schema)
+    const { register, handleSubmit, formState: { errors }, reset, setValue, control } = useForm({
+      resolver: zodResolver(schema),
+      defaultValues: value
     });
-
-    useEffect(() => {
-      if (value) {
-        Object.keys(value).forEach(key => {
-          setValue(key as string, value[key]);
-        });
-      }
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value]);
 
     useImperativeHandle(ref, () => ({
       reset: reset,
@@ -58,6 +49,7 @@ const FormControlSchema = forwardRef(
               error={!!errors[key]}
               helperText={errors?.[key]?.message}
               form={register(key)}
+              control={control}
               {...meta}
             />);
         })}
