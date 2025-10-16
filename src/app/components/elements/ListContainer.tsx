@@ -6,7 +6,7 @@ export interface ListContainerProps extends ListProps {
   header?: string
 }
 
-export const ListContainer: React.FC<ListContainerProps> = ({ header, children, sx, ...listProps }) => {
+const ListContainer: React.FC<ListContainerProps> = ({ header, children, sx, ...listProps }) => {
   return (
     <List sx={{ userSelect: 'none', width: '100%', ...sx }}
       subheader={
@@ -18,3 +18,5 @@ export const ListContainer: React.FC<ListContainerProps> = ({ header, children, 
     </List >
   );
 };
+
+export default ListContainer;

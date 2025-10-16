@@ -11,27 +11,27 @@ import ListItemButton from '@mui/material/ListItemButton';
 export interface ListInputProps {
   id: string;
   placeholder: string;
-  onSubmit: (value: string) => Promise<void>;
-  onError?: () => void;
-  fullWidth?: boolean;
   disablePadding?: boolean;
+  onSubmit: (value: string) => Promise<void>;
+  onError?: (value?: string) => Promise<void>;
 }
 
-export const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeholder, fullWidth, disablePadding }) => {
+const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeholder, disablePadding = true }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { value } = e.currentTarget.elements.namedItem(`${id}-name`) as HTMLInputElement;
-    if (value.length > 3) {
-      onSubmit(value);
-    } else {
-      onError?.();
-    }
     e.currentTarget.reset();
+    if (value.length > 2) {
+      await onSubmit(value);
+    } else {
+      await onError?.(value);
+    }
   };
 
   return (
     <ListItem
       disablePadding={disablePadding}
+      component='label'
       secondaryAction={
         <IconButton type='submit' form={`${id}-form`} aria-label='add account'>
           <SendIcon />
@@ -48,10 +48,12 @@ export const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id,
           component='form'
           onSubmit={handleSubmit}
           autoComplete='off'
-          fullWidth={fullWidth}>
+          fullWidth>
           <InputBase name={`${id}-name`} placeholder={placeholder} />
         </FormControl>
       </ListItemButton>
     </ListItem>
   );
 };
+
+export default ListItemInput;

@@ -1,7 +1,7 @@
 'use client';
 
 import Drawer from '@/app/components/elements/Drawer';
-import { ListContainer } from '@/app/components/elements/ListContainer';
+import ListContainer from '@/app/components/elements/ListContainer';
 import MenuLayout from '@/app/components/layouts/Menu/Menu.layout';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
 import { NextAsyncPageProps } from '@/server/interfaces/next';
@@ -12,14 +12,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import { useRouter } from 'next/navigation';
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function MenuDrawer(props: NextAsyncPageProps) {
   const [open, setOpen] = useState(false);
   const { user } = useAuthProvider();
   const router = useRouter();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setOpen(true);
     return () => setOpen(false);
   }, [props.params]);

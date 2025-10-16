@@ -2,7 +2,8 @@
 
 import { deleteAccountAction, registerAccountAction } from '@/app/actions/accounts/account.actions';
 import FlexBox from '@/app/components/elements/FlexBox';
-import { ListContainer } from '@/app/components/elements/ListContainer';
+import ListContainer from '@/app/components/elements/ListContainer';
+import ListItemInput from '@/app/components/elements/ListItemInput';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
@@ -14,7 +15,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import React from 'react';
-import { ListItemInput } from '../../elements/ListItemInput';
 
 interface MenuLayoutProps {
   onClose: (path?: string) => void;
@@ -33,7 +33,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
       ...account,
       uuid: account.uuid === param.uuid ? '' : account.uuid
     })));
-    const res = await deleteAccountAction({ accountUuid: param.uuid, userUuid: user.uuid + 1 });
+    const res = await deleteAccountAction({ accountUuid: param.uuid, userUuid: user.uuid });
     if (res?.success) {
       setUserAccounts(user.accounts.filter(account => account.uuid !== res.data.uuid));
     } else {
@@ -95,10 +95,10 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
         <ListItemInput
           id='add-account'
           placeholder='Adicionar Conta ex: casa, empresa'
-          fullWidth
-          onError={() => alert('Nome da conta deve ter mais de 3 caracteres')}
           onSubmit={handleAddAccount}
-          disablePadding
+          onError={async () => {
+            alert('Nome da conta deve ter mais de 3 caracteres');
+          }}
         />
       </ListContainer>
     </FlexBox>
