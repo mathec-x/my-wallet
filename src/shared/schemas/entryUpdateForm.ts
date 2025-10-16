@@ -9,23 +9,26 @@ export const entryUpdateFormSchema = z.object({
     }),
   description: z
     .string()
+    .nullable()
     .meta({
       label: 'Descrição',
       description: 'Descrição do título',
     }),
   amount: z
     .union([
+      z.coerce.string(),
       z.string().regex(/^\d+(\.\d{3})*,\d{2}$/, 'Valor deve ser no formato $.$$$,$$'),
-      z.string().regex(/^\d+(\.\d{3})*$/, 'Valor deve ser no formato $.$$$')
+      z.string().regex(/^\d+(\.\d{3})*$/, 'Valor deve ser no formato $.$$$'),
     ])
     .meta({
       label: 'Valor',
-      description: 'Valor deve ser no formato $.$$$,$$',
+      description: 'Valor deve ser no formato $.$$$,$$ ou $,$$',
       type: 'text',
       inputMode: 'decimal',
     }),
   date: z
     .string()
+    .nullable()
     .meta({
       label: 'Data',
       description: 'Data de saída ou entrada',
@@ -33,7 +36,8 @@ export const entryUpdateFormSchema = z.object({
       shrink: true,
     }),
   type: z
-    .enum(['INCOME', 'EXPENSE'])
+    .string()
+    .optional()
     .meta({
       label: 'Tipo',
       description: 'Tipo do título',
