@@ -7,7 +7,7 @@ import 'server-only';
 export interface EntriesUpdateUseCaseParams {
 	accountUuid: string;
 	entryUuid: string;
-	data: Prisma.EntryUpdateInput;
+	data: Omit<Prisma.EntryUpdateInput, 'account' | 'id' | 'uuid' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
 }
 
 export class EntriesUpdateUseCase {
