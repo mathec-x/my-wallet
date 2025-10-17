@@ -11,7 +11,7 @@ export class PrismaService {
     if (!PrismaService.instance) {
       console.log(styleText('bgCyan', 'prisma:instance'), 'Creating new instance of PrismaClient');
       PrismaService.instance = new PrismaClient({
-        log: ['query', 'info', 'warn', 'error'],
+        log: ['info', 'warn'],
       });
     }
 
