@@ -1,4 +1,5 @@
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import { Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import CircularProgress from '@mui/material/CircularProgress';
 import ListItem, { type ListItemProps } from '@mui/material/ListItem';
@@ -12,10 +13,11 @@ interface ListItemActionProps extends ListItemProps {
   isLoading?: boolean;
   primary: string;
   secondary?: string;
+  caption?: string | null;
   onClick: () => void;
 }
 
-const ListItemAction: React.FC<ListItemActionProps> = ({ onClick, primary, children, isLoading, secondary, ...listItemProps }) => {
+const ListItemAction: React.FC<ListItemActionProps> = ({ onClick, primary, children, isLoading, secondary, caption, ...listItemProps }) => {
   return (
     <ListItem
       {...listItemProps}
@@ -27,7 +29,10 @@ const ListItemAction: React.FC<ListItemActionProps> = ({ onClick, primary, child
           </Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={primary}
+          primary={<>
+            {caption && <Typography variant='caption' color='textDisabled' display='block'>{caption}</Typography>}
+            {primary}
+          </>}
           secondary={secondary} />
       </ListItemButton>
     </ListItem >
