@@ -14,19 +14,16 @@ import Button from '@mui/material/Button';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 
 const LoginForm = () => {
-  const router = useRouter();
   const [tab, setTab] = useState(0);
   const loginFormRef = useRef<FormControlRef<LoginFormSchema>>(null);
   const registerFormRef = useRef<FormControlRef<LoginRegisterFormSchema>>(null);
   const { error, handleLogin, handleRegister, handleReset, loading } = useAuthHandlers({
     onLoginSuccess: () => {
       console.log('login success, redirecting to home...');
-      router.replace('/', { scroll: false });
-      router.push('/menu', { scroll: false });
+      window.location.href = '/menu';
     },
     onRegisterSuccess: ({ email, password }) => {
       loginFormRef.current?.setValue('email', email);

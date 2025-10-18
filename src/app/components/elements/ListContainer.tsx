@@ -1,9 +1,9 @@
 
-import List, { type ListProps } from '@mui/material/List';
+import List, { type ListOwnProps } from '@mui/material/List';
 import ListSubheader from '@mui/material/ListSubheader';
 
-export interface ListContainerProps extends ListProps {
-  header?: string
+export interface ListContainerProps extends ListOwnProps {
+  header?: string | React.ReactNode;
 }
 
 const ListContainer: React.FC<ListContainerProps> = ({ header, children, sx, ...listProps }) => {

@@ -10,11 +10,7 @@ export function useModalHandler(name: string) {
   const isOpen = useMemo(() => searchParams.has(name), [searchParams, name]);
 
   function setRoute(path: string) {
-    router.push(path);
-  }
-
-  function refresh() {
-    router.refresh();
+    router.replace(path);
   }
 
   function setOpen(value: string) {
@@ -34,11 +30,7 @@ export function useModalHandler(name: string) {
     open: setOpen,
     close: setClose,
     isOpen,
-    name,
-    router: {
-      refresh,
-      push: setRoute
-    }
+    name
   };
 }
 

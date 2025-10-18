@@ -1,5 +1,6 @@
 import { entriesListAction } from '@/app/actions/entries/entries.actions';
 import Dashboard from '@/app/components/layouts/Dashboard/Dashboard.layout';
+import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import { NextAsyncPageProps } from '@/server/interfaces/next';
 
 
@@ -15,11 +16,13 @@ export default async function DashboardPage(props: NextAsyncPageProps<{ uuid: st
   }
 
   return (
-    <Dashboard
-      accountUuid={accountUuid}
-      entries={entries.data}
-      entryUuid={entryUuid}
-      entrySearchParam={entrySearchParam}
-    />
+    <EntriesProvider entries={entries.data}>
+      <Dashboard
+        accountUuid={accountUuid}
+        entries={entries.data}
+        entryUuid={entryUuid}
+        entrySearchParam={entrySearchParam}
+      />
+    </EntriesProvider>
   );
 }

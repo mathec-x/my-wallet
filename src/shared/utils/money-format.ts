@@ -5,6 +5,15 @@ const intl = new Intl.NumberFormat('pt-BR', {
   maximumFractionDigits: 2,
 });
 
-export function floatToMoney(value: number): string {
+export function floatToMoney(value: number = 0): string {
   return intl.format(value);
+}
+
+export function moneyToFloat(value?: string | number) {
+  if (typeof value === 'number') return value;
+
+  value = value?.toString();
+  if (!value) return undefined;
+  const normalized = value.replace(/\./g, '').replace(',', '.');
+  return parseFloat(normalized);
 }

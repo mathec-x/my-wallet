@@ -12,11 +12,12 @@ export interface ListInputProps {
   id: string;
   placeholder: string;
   disablePadding?: boolean;
+  icon?: React.ReactNode;
   onSubmit: (value: string) => Promise<void>;
   onError?: (value?: string) => Promise<void>;
 }
 
-const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeholder, disablePadding = true }) => {
+const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeholder, icon, disablePadding = true }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { value } = e.currentTarget.elements.namedItem(`${id}-name`) as HTMLInputElement;
@@ -40,7 +41,7 @@ const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeh
       <ListItemButton>
         <ListItemAvatar>
           <Avatar variant='default'>
-            <AddBusinessIcon />
+            {icon || <AddBusinessIcon />}
           </Avatar>
         </ListItemAvatar>
         <FormControl

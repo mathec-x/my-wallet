@@ -5,6 +5,7 @@ import FullScreenModal from '@/app/components/elements/Modal';
 import FormControlSchema from '@/app/components/primitives/Form/FormControlSchema';
 import useModalHandler from '@/app/hooks/useModalHandler';
 import { EntryUpdateFormSchema, entryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
+import { floatToMoney } from '@/shared/utils/money-format';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { useState, useTransition } from 'react';
@@ -41,7 +42,10 @@ const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
       {entry ?
         <FormControlSchema
           id='form-entry-update'
-          value={entry}
+          value={{
+            ...entry,
+            amount: floatToMoney(entry.amount)
+          }}
           onSubmit={handleUpdate}
           schema={entryUpdateFormSchema}
           errorMessage={error}
