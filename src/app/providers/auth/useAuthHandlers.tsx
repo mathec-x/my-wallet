@@ -1,3 +1,5 @@
+'use client';
+
 import { loginAction, registerAction } from '@/app/actions/login/login.actions';
 import { LoginFormSchema, LoginRegisterFormSchema, LoginResetFormSchema } from '@/shared/schemas';
 import { useState } from 'react';

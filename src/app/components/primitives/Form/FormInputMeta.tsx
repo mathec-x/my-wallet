@@ -1,3 +1,5 @@
+'use client';
+
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';

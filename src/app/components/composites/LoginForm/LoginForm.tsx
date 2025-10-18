@@ -1,3 +1,5 @@
+'use client';
+
 import FlexBox from '@/app/components/elements/FlexBox';
 import SlidePanel from '@/app/components/elements/SlidePanel';
 import FormControlSchema, { FormControlRef } from '@/app/components/primitives/Form/FormControlSchema';

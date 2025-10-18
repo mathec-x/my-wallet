@@ -3,12 +3,11 @@ import Dashboard from '@/app/components/layouts/Dashboard/Dashboard.layout';
 import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import { NextAsyncPageProps } from '@/server/interfaces/next';
 
-
-const entrySearchParam = 'entry';
+export const revalidate = 0;
 export default async function DashboardPage(props: NextAsyncPageProps<{ uuid: string }, { entry?: string }>) {
   const { uuid: accountUuid } = await props.params;
   const searchParamsProps = await props.searchParams;
-  const entryUuid = searchParamsProps[entrySearchParam];
+  const entryUuid = searchParamsProps.entry;
 
   const entries = await entriesListAction({ accountUuid });
   if (!entries.success) {
@@ -21,7 +20,7 @@ export default async function DashboardPage(props: NextAsyncPageProps<{ uuid: st
         accountUuid={accountUuid}
         entries={entries.data}
         entryUuid={entryUuid}
-        entrySearchParam={entrySearchParam}
+        entrySearchParam='entry'
       />
     </EntriesProvider>
   );

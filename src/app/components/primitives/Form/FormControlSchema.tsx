@@ -1,3 +1,5 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Typography } from '@mui/material';
 import { forwardRef, useId, useImperativeHandle } from 'react';

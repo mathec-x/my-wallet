@@ -1,3 +1,5 @@
+'use client';
+
 import Fade from '@mui/material/Fade';
 import Slide from '@mui/material/Slide';
 import { forwardRef, useLayoutEffect, useState } from 'react';
