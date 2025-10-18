@@ -17,13 +17,27 @@ export const entryUpdateFormSchema = z.object({
     }),
   amount: z
     .union([
+      z.string().optional(),
       z.string().regex(/^\d+(\.\d{3})*,\d{2}$/, 'Valor deve ser no formato $.$$$,$$'),
       z.string().regex(/^\d+(\.\d{3})*$/, 'Valor deve ser no formato $.$$$'),
     ])
-    .optional()
     .meta({
       label: 'Valor',
       description: 'Valor deve ser no formato $.$$$,¢¢ ou $,¢¢',
+      type: 'text',
+      inputMode: 'decimal',
+      autoSelect: true
+    }),
+  expected: z
+    .union([
+      z.string().optional(),
+      z.string().regex(/^\d+(\.\d{3})*,\d{2}$/, 'Valor deve ser no formato $.$$$,$$'),
+      z.string().regex(/^\d+(\.\d{3})*$/, 'Valor deve ser no formato $.$$$'),
+      z.coerce.number()
+    ])
+    .meta({
+      label: 'Valor Esperado',
+      description: 'Valor esperado deve ser no formato $.$$$,¢¢ ou $,¢¢',
       type: 'text',
       inputMode: 'decimal',
       autoSelect: true
@@ -71,13 +85,13 @@ export const entryUpdateFormSchema = z.object({
         { label: '...Outros', value: '' },
       ]
     }),
-  future: z
-    .boolean()
-    .meta({
-      label: 'Entrada/Saída futura',
-      description: 'Marcar como a receber/a pagar',
-      type: 'checkbox',
-    }),
+  // future: z
+  //   .boolean()
+  //   .meta({
+  //     label: 'Entrada/Saída futura',
+  //     description: 'Marcar como a receber/a pagar',
+  //     type: 'checkbox',
+  //   }),
 });
 
 export type EntryUpdateFormSchema = z.infer<typeof entryUpdateFormSchema> & { uuid?: string };

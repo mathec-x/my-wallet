@@ -47,13 +47,14 @@ export function EntriesProvider({ children, entries: values }: React.PropsWithCh
 
   function set(callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) {
     const data: Partial<Entry> = {};
-    if (updatedEntry.title !== undefined) data.title = updatedEntry.title;
-    if (updatedEntry.description !== undefined) data.description = updatedEntry.description;
-    if (updatedEntry.amount !== undefined) data.amount = moneyToFloat(updatedEntry.amount);
-    if (updatedEntry.order !== undefined) data.order = updatedEntry.order;
-    if (updatedEntry.type !== undefined) data.type = updatedEntry.type;
-    if (updatedEntry.future !== undefined) data.future = updatedEntry.future;
-    if (updatedEntry.category !== undefined) data.category = updatedEntry.category;
+    if ('title' in updatedEntry) data.title = updatedEntry.title;
+    if ('description' in updatedEntry) data.description = updatedEntry.description;
+    if ('amount' in updatedEntry) data.amount = moneyToFloat(updatedEntry.amount);
+    if ('expected' in updatedEntry) data.expected = moneyToFloat(updatedEntry.expected);
+    if ('order' in updatedEntry) data.order = updatedEntry.order;
+    if ('type' in updatedEntry) data.type = updatedEntry.type;
+    if ('category' in updatedEntry) data.category = updatedEntry.category;
+    if ('future' in updatedEntry) data.future = updatedEntry.future;
 
     setEntries(() => entries.map(entry => callback(entry) ? { ...entry, ...data } : entry));
   }

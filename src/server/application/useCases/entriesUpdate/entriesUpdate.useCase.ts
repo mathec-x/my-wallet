@@ -17,6 +17,7 @@ export class EntriesUpdateUseCase {
 
 	async execute(params: EntriesUpdateUseCaseParams) {
 		try {
+			console.log('EntriesUpdateUseCase.execute', params);
 			const userUuid = await this.cookieService.getUUidFromCookie();
 			const data = await prisma.entry.update({
 				where: {

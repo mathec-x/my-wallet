@@ -44,7 +44,8 @@ const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
           id='form-entry-update'
           value={{
             ...entry,
-            amount: floatToMoney(entry.amount)
+            amount: floatToMoney(entry.amount),
+            expected: floatToMoney(entry.expected)
           }}
           onSubmit={handleUpdate}
           schema={entryUpdateFormSchema}

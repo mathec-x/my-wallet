@@ -49,12 +49,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
 
   const handleUpdate = async (data: EntryUpdateFormSchema) => {
     context.set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
+    const amount = data.amount ? moneyToFloat(data.amount) : 0;
+    console.log('handleUpdate', data, amount);
     const res = await entriesUpdateAction({
       accountUuid: props!.accountUuid,
       entryUuid: data?.uuid || entry!.uuid,
       data: {
         ...data,
-        amount: data.amount ? moneyToFloat(data.amount) : undefined,
+        amount,
+        expected: data.expected ? moneyToFloat(data.expected) : amount,
       },
     });
     if (res?.success) {
