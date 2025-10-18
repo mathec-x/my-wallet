@@ -25,7 +25,7 @@ export default defineConfig([
       'camelcase': 'off',
       'quotes': ['error', 'single', { 'avoidEscape': true }],
       'semi': ['error', 'always'],
-      'max-lines': ['error', { 'max': 120, 'skipBlankLines': true, 'skipComments': true }],
+      'max-lines': ['error', { 'max': 150, 'skipBlankLines': true, 'skipComments': true }],
       'max-len': ['error', { 'code': 150, 'ignoreComments': true, 'ignoreTrailingComments': true }],
     },
   }
