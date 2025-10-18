@@ -45,6 +45,7 @@ model Entry {
   title       String
   description String?
   amount      Float     @default(0)
+  expected    Float     @default(0)
   type        EntryType
   order       Int?
   future      Boolean   @default(true)
