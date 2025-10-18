@@ -56,24 +56,25 @@ export class ResponseService {
   }
 
   static unknow<T = never>(error?: unknown): ServiceResponse<T> {
+    console.log('unknow error', (error as Error)?.name, (error as Error)?.message);
 
     if (error instanceof Error) {
-      console.error('Error', error);
+      // console.error('Error', error);
       return { success: false, message: error.message, status: 400, error };
     }
 
     if (error instanceof PrismaClientUnknownRequestError) {
-      console.log(`PrismaClientUnknownRequestError ${error.message}`, error.name);
+      // console.log(`PrismaClientUnknownRequestError ${error.message}`, error.name);
       return { success: false, message: 'PrismaClientUnknownRequestError', status: 400, error };
     }
 
     if (error instanceof PrismaClientKnownRequestError) {
-      console.log(`PrismaClientKnownRequestError ${error.message}`, error.code, error.meta);
+      // console.log(`PrismaClientKnownRequestError ${error.message}`, error.code, error.meta);
       return { success: false, message: 'PrismaClientKnownRequestError', status: 400, error };
     }
 
     if (error instanceof PrismaClientValidationError) {
-      console.log(`PrismaClientValidationError ${error.message}`, error.name);
+      // console.log(`PrismaClientValidationError ${error.message}`, error.name);
       return { success: false, message: 'PrismaClientValidationError', status: 400, error };
     }
 
