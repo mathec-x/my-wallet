@@ -25,6 +25,15 @@ export class EntriesDeleteUseCase {
 							uuid: userUuid
 						}
 					}
+				},
+				include: {
+					board: {
+						select: {
+							id: true,
+							uuid: true,
+							name: true,
+						}
+					},
 				}
 			});
 

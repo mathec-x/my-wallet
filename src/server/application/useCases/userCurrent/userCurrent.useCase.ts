@@ -1,3 +1,4 @@
+import { ResponseService } from '@/server/domain/common/response.service';
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
 import { cookies } from 'next/headers';
@@ -42,7 +43,7 @@ export class UserCurrentUseCase {
 
       return user;
     } catch (error) {
-      console.log(error);
+      console.log(ResponseService.unknow(error));
       return null;
     }
   }

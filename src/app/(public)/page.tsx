@@ -1,6 +1,6 @@
-import { Card } from '@mui/material';
+import { redirect } from 'next/navigation';
 
 export const revalidate = 0;
 export default function PublicPage() {
-  return <Card>Public Page</Card>;
+  return redirect('/menu');
 }

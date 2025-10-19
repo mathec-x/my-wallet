@@ -32,6 +32,17 @@ interface EntriesContextType {
   set: (callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) => void;
   add: (data?: Partial<Entry>) => void;
   balance: ReturnType<typeof calculateBalance>;
+  boards: {
+    id: number;
+    uuid: string;
+    name: string;
+  }[];
+  board?: {
+    id: number;
+    uuid: string;
+    name: string;
+  }
+  setBoard: (board?: { id: number; uuid: string; name: string }) => void;
 }
 
 const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
@@ -40,6 +51,22 @@ export function EntriesProvider({ children, entries: values }: React.PropsWithCh
   const [entries, setEntries] = useState(() => values);
 
   const balance = useMemo(() => calculateBalance(entries), [entries]);
+  const boards = useMemo(() => {
+    const boards: EntriesContextType['boards'] = [];
+    entries.forEach(entry => {
+      const boardId = entry.board?.id;
+      if (boardId && !boards.find(b => b.id === boardId)) {
+        boards.push({
+          id: boardId,
+          uuid: entry.board!.uuid,
+          name: entry.board!.name
+        });
+      }
+    });
+    return boards;
+  }, [entries]);
+
+  const [board, setBoard] = useState(() => boards.length > 0 ? boards[boards.length - 1] : undefined);
 
   function remove(param: { uuid: string }) {
     setEntries(entries.filter(entry => entry.uuid !== param.uuid));
@@ -55,6 +82,10 @@ export function EntriesProvider({ children, entries: values }: React.PropsWithCh
     if ('type' in updatedEntry) data.type = updatedEntry.type;
     if ('category' in updatedEntry) data.category = updatedEntry.category;
     if ('future' in updatedEntry) data.future = updatedEntry.future;
+    if ('board' in updatedEntry) {
+      data.boardId = updatedEntry.board?.id;
+      data.board = updatedEntry.board;
+    };
 
     setEntries(() => entries.map(entry => callback(entry) ? { ...entry, ...data } : entry));
   }
@@ -79,7 +110,10 @@ export function EntriesProvider({ children, entries: values }: React.PropsWithCh
       set,
       add,
       restore,
-      balance
+      balance,
+      boards,
+      board,
+      setBoard
     }}>
       {children}
     </EntriesContext.Provider>

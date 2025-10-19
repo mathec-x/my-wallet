@@ -38,7 +38,11 @@ const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
     <FullScreenModal
       name={modal.name}
       title={<>Editar <b>{entry?.title}</b></>}
-      description={`Aqui você pode atualizar as informações da sua ${entry?.type === 'INCOME' ? 'entrada' : 'saída'}.`}>
+      description={
+        entry?.board?.name
+          ? `Quadro "${entry.board.name}".`
+          : `Aqui você pode atualizar as informações da sua ${entry?.type === 'INCOME' ? 'entrada' : 'saída'}.`
+      }>
       {entry ?
         <FormControlSchema
           id='form-entry-update'

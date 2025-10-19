@@ -67,11 +67,10 @@ export const entryUpdateFormSchema = z.object({
     .nullable()
     .transform(e => e || '')
     .meta({
-      label: 'Tag',
+      label: 'Categoria',
       description: 'Atribua uma categoria para essa entrada',
       type: 'select',
       options: [
-        { label: 'Sem Categoria', value: null },
         { label: 'Alimentação', value: 'food' },
         { label: 'Casa', value: 'house' },
         { label: 'Educação', value: 'education' },
@@ -82,7 +81,7 @@ export const entryUpdateFormSchema = z.object({
         { label: 'Saúde', value: 'health' },
         { label: 'Trabalho', value: 'work' },
         { label: 'Transporte', value: 'transport' },
-        { label: '...Outros', value: '' },
+        { label: '...Nenhum', value: null },
       ]
     }),
   // future: z

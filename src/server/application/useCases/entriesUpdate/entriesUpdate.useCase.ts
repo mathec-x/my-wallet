@@ -29,7 +29,16 @@ export class EntriesUpdateUseCase {
 						}
 					},
 				},
-				data: params.data
+				data: params.data,
+				include: {
+					board: {
+						select: {
+							id: true,
+							uuid: true,
+							name: true,
+						}
+					},
+				}
 			});
 
 			return ResponseService.Ok(data);

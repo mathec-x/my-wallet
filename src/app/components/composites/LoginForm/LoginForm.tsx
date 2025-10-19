@@ -25,7 +25,7 @@ const LoginForm = () => {
   const { error, handleLogin, handleRegister, handleReset, loading } = useAuthHandlers({
     onLoginSuccess: () => {
       console.log('login success, redirecting to home...');
-      window.location.href = '/menu';
+      window.location.href = '/';
     },
     onRegisterSuccess: ({ email, password }) => {
       loginFormRef.current?.setValue('email', email);
@@ -36,7 +36,7 @@ const LoginForm = () => {
   });
 
   return (
-    <FlexBox col p={{ md: 4, xs: 1 }} overflow='hidden'>
+    <FlexBox col p={{ md: 4, xs: 2 }} overflow='hidden'>
       <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue' }} variant='circular'>
         <WalletIcon fontSize='large' color='primary' />
       </Avatar>

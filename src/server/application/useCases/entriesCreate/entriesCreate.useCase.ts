@@ -28,6 +28,15 @@ export class EntriesCreateUseCase {
 							}
 						}
 					}
+				},
+				include: {
+					board: {
+						select: {
+							id: true,
+							uuid: true,
+							name: true,
+						}
+					},
 				}
 			});
 

@@ -21,8 +21,10 @@ export const metadata: Metadata = {
   description: 'A simple wallet application to manage your finances.',
 };
 
-export default async function RootLayout(props: { children: React.ReactNode, drawer: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode, drawer: React.ReactNode, params: any }) {
   const { children, drawer } = props;
+  const params = await props;
+  console.log('layoutprops', params);
   const user = await getCurrentUser();
 
   return (

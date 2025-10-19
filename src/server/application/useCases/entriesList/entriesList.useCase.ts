@@ -25,6 +25,15 @@ export class EntriesListUseCase {
 						}
 					}
 				},
+				include: {
+					board: {
+						select: {
+							id: true,
+							uuid: true,
+							name: true,
+						}
+					}
+				},
 				orderBy: {
 					createdAt: 'desc'
 				}

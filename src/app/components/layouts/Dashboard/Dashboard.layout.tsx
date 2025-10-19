@@ -1,17 +1,18 @@
 'use client';
 
-import { entriesCreateAction, entriesDeleteAction, entriesUpdateAction, Entry } from '@/app/actions/entries/entries.actions';
+import {
+  type Entry,
+  entriesCreateAction, entriesDeleteAction, entriesUpdateAction
+} from '@/app/actions/entries/entries.actions';
 import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
 import ListContainer from '@/app/components/elements/ListContainer';
-import ListItemRow from '@/app/components/elements/ListItemRow';
 import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { moneyToFloat } from '@/shared/utils/money-format';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
-import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useMemo } from 'react';
+import EntryBalance from '../../ui/EntryBalance/EntryBalance.ui';
 
 interface DashboardLayoutProps {
   accountUuid: string;
@@ -21,36 +22,38 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
-  const { entries, balance, ...context } = useEntriesContext();
+  const { entries, add, remove, restore, set, board } = useEntriesContext();
 
   const entry = useMemo(() => {
     return entries.find(e => e.uuid === props.entryUuid);
   }, [entries, props.entryUuid]);
 
   const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE') => {
-    context.add({ title: value, type, uuid: '' }); // Optimistic UI update
+    add({ title: value, type, uuid: '' }); // Optimistic UI update
     const entry = await entriesCreateAction({
       accountUuid: props.accountUuid,
       data: {
         title: value,
         type: type,
+        board: !board?.id ? undefined : {
+          connect: { id: board.id }
+        }
       }
     });
-    context.add(entry.success ? entry.data : undefined);
+    add(entry.success ? entry.data : undefined);
   };
 
   const handleDelete = async (param: { uuid: string }) => {
-    context.remove({ uuid: param.uuid }); // Optimistic UI update
+    remove({ uuid: param.uuid }); // Optimistic UI update
     const res = await entriesDeleteAction({ entryUuid: param.uuid, accountUuid: props.accountUuid });
     if (!res.success) {
-      context.restore();
+      restore();
     }
   };
 
   const handleUpdate = async (data: EntryUpdateFormSchema) => {
-    context.set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
+    set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
     const amount = data.amount ? moneyToFloat(data.amount) : 0;
-    console.log('handleUpdate', data, amount);
     const res = await entriesUpdateAction({
       accountUuid: props!.accountUuid,
       entryUuid: data?.uuid || entry!.uuid,
@@ -61,9 +64,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
       },
     });
     if (res?.success) {
-      context.set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);
+      set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);
     } else {
-      context.restore();
+      restore();
     }
     return res;
   };
@@ -71,29 +74,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
   return (
     <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
       <Grid size={{ xs: 12 }}>
-        <ListContainer header={entries.length > 0 && 'resumo'}>
-          <ListItemRow
-            hide={balance.income === '0,00'}
-            primary={<>Saldo R$ <Typography variant='body1' display='inline'>{balance.balance}</Typography></>}
-            caption={<>Devedor R$ <Typography variant='body1' display='inline'>{balance.futureBalance}</Typography></>}
-            avatarIcon={<AccountBalanceIcon />}
-          >
-          </ListItemRow>
-          <ListItemRow
-            hide={balance.income === '0,00'}
-            primary={`Entradas R$ ${balance.income}`}
-            caption={![balance.income, '0,00'].includes(balance.futureIncome) && `Recebido R$ ${balance.futureIncome}`}
-            avatarIcon={<AccountBalanceIcon />}
-          >
-          </ListItemRow>
-          <ListItemRow
-            hide={balance.expense === '0,00'}
-            primary={`Saídas R$ ${balance.expense}`}
-            caption={![balance.expense, '0,00'].includes(balance.futureExpense) && `Pago R$ ${balance.futureExpense}`}
-            avatarIcon={<AccountBalanceIcon />}
-          >
-          </ListItemRow>
-        </ListContainer>
+        <EntryBalance accountUuid={props.accountUuid} />
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <ListContainer header={'entradas'}>
@@ -109,7 +90,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
         </ListContainer>
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
-        <ListContainer header={'entradas'}>
+        <ListContainer header={'saídas'}>
           <EntryList
             editorModalName={props.entrySearchParam}
             accountUuid={props.accountUuid}
