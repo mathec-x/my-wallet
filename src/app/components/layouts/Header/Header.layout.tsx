@@ -17,7 +17,7 @@ const Header = async () => {
             <MenuIcon />
           </IconButton>
         </LinkButton>
-        <LinkButton href='/' variant='h5' sx={{ flexGrow: 1 }} aria-label='home'>
+        <LinkButton href='/menu' variant='h5' sx={{ flexGrow: 1 }} aria-label='home'>
           My Wallet
         </LinkButton>
         {!token &&
