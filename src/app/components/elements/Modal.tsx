@@ -46,6 +46,7 @@ const FullScreenModal = (props: FullScreenModalProps) => {
       keepMounted={false}
       open={!!isOpen}
       onClose={close}
+      scroll='paper'
       slots={fullScreen ? { transition: Transition } : undefined}
       slotProps={{
         paper: !fullScreen && {

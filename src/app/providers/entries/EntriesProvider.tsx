@@ -29,7 +29,7 @@ interface EntriesContextType {
   entries: Entry[];
   restore: () => void;
   remove: (param: { uuid: string }) => void;
-  set: (callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) => void;
+  set: (callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) => Partial<Entry>;
   add: (data?: Partial<Entry>) => void;
   balance: ReturnType<typeof calculateBalance>;
   boards: {
@@ -77,7 +77,7 @@ export function EntriesProvider({ children, entries: values }: React.PropsWithCh
     if ('title' in updatedEntry) data.title = updatedEntry.title;
     if ('description' in updatedEntry) data.description = updatedEntry.description;
     if ('amount' in updatedEntry) data.amount = moneyToFloat(updatedEntry.amount);
-    if ('expected' in updatedEntry) data.expected = moneyToFloat(updatedEntry.expected);
+    if ('expected' in updatedEntry) data.expected = moneyToFloat(updatedEntry?.expected || data.amount);
     if ('order' in updatedEntry) data.order = updatedEntry.order;
     if ('type' in updatedEntry) data.type = updatedEntry.type;
     if ('category' in updatedEntry) data.category = updatedEntry.category;
@@ -88,6 +88,7 @@ export function EntriesProvider({ children, entries: values }: React.PropsWithCh
     };
 
     setEntries(() => entries.map(entry => callback(entry) ? { ...entry, ...data } : entry));
+    return data;
   }
 
   function restore() {

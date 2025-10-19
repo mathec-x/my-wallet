@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 interface ListItemRowProps extends ListItemOwnProps {
 	avatarIcon?: React.ReactNode;
 	avatarVariant?: AvatarProps['variant']
-	primary: ListItemTextProps['primary'];
+	primary?: ListItemTextProps['primary'];
 	secondary?: ListItemTextProps['secondary'];
 	caption?: string | React.ReactNode;
 	hide?: boolean;

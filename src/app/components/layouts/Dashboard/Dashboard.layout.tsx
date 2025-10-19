@@ -9,7 +9,6 @@ import ListContainer from '@/app/components/elements/ListContainer';
 import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
-import { moneyToFloat } from '@/shared/utils/money-format';
 import Grid from '@mui/material/Grid';
 import { useMemo } from 'react';
 import EntryBalance from '../../ui/EntryBalance/EntryBalance.ui';
@@ -52,16 +51,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
   };
 
   const handleUpdate = async (data: EntryUpdateFormSchema) => {
-    set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
-    const amount = data.amount ? moneyToFloat(data.amount) : 0;
+    const parsed = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
     const res = await entriesUpdateAction({
       accountUuid: props!.accountUuid,
       entryUuid: data?.uuid || entry!.uuid,
-      data: {
-        ...data,
-        amount,
-        expected: data.expected ? moneyToFloat(data.expected) : amount,
-      },
+      data: parsed as never,
     });
     if (res?.success) {
       set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);

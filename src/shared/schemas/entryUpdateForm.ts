@@ -30,10 +30,10 @@ export const entryUpdateFormSchema = z.object({
     }),
   expected: z
     .union([
-      z.string().optional(),
+      z.string().optional().nullable(),
       z.string().regex(/^\d+(\.\d{3})*,\d{2}$/, 'Valor deve ser no formato $.$$$,$$'),
       z.string().regex(/^\d+(\.\d{3})*$/, 'Valor deve ser no formato $.$$$'),
-      z.coerce.number()
+      // z.coerce.number()
     ])
     .meta({
       label: 'Valor Esperado',

@@ -44,13 +44,9 @@ const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeh
   return (
     <ListItem
       disablePadding={disablePadding}
-      component='label'
+      // component='label'
       onSelect={e => e.preventDefault()}
-      secondaryAction={
-        <IconButton type='submit' form={`${id}-form`} aria-label='add account' disabled={pending}>
-          <SendIcon />
-        </IconButton>
-      }>
+    >
       <ListItemButton>
         <ListItemAvatar>
           <Avatar variant='default'>
@@ -66,6 +62,9 @@ const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeh
           fullWidth>
           <InputBase name={`${id}-name`} placeholder={placeholder} value={value} onChange={e => setValue(e.target.value)} />
         </FormControl>
+        <IconButton type='submit' form={`${id}-form`} aria-label='add account' disabled={pending}>
+          <SendIcon />
+        </IconButton>
       </ListItemButton>
     </ListItem>
   );

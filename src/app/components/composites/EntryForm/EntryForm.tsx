@@ -7,9 +7,8 @@ import useModalHandler from '@/app/hooks/useModalHandler';
 import { EntryUpdateFormSchema, entryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { floatToMoney } from '@/shared/utils/money-format';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
 import { useState, useTransition } from 'react';
-import FlexBox from '../../elements/FlexBox';
 
 interface EntryFormProps {
   editorModalName: string;
@@ -38,6 +37,11 @@ const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
     <FullScreenModal
       name={modal.name}
       title={<>Editar <b>{entry?.title}</b></>}
+      actions={<>
+        <Button loading={isPending} type='submit' form='form-entry-update' variant='contained' fullWidth>
+          Salvar
+        </Button>
+      </>}
       description={
         entry?.board?.name
           ? `Quadro "${entry.board.name}".`
@@ -55,15 +59,15 @@ const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
           schema={entryUpdateFormSchema}
           errorMessage={error}
         >
-          <Divider variant='fullWidth' sx={{ mt: 8 }} />
-          <Button loading={isPending} type='submit' form='form-entry-update' variant='contained' fullWidth>
-            Atualizar
-          </Button>
+          {/* <Divider variant='fullWidth' sx={{ mt: 8 }} /> */}
+          {/* <Button loading={isPending} type='submit' form='form-entry-update' variant='contained' fullWidth>
+            Salvar
+          </Button> */}
         </FormControlSchema>
         : (
-          <FlexBox minHeight={570} bgcolor='background.main'>
+          <Stack minHeight={570} bgcolor='background.main'>
             Procurando ...
-          </FlexBox>
+          </Stack>
         )
       }
     </FullScreenModal >

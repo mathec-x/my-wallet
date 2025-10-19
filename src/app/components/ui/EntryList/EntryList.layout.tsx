@@ -3,6 +3,7 @@
 import { entriesUpdateAction, type Entry } from '@/app/actions/entries/entries.actions';
 import ListItemAction from '@/app/components/elements/ListItemAction';
 import ListItemInput from '@/app/components/elements/ListItemInput';
+import ListItemRow from '@/app/components/elements/ListItemRow';
 import useModalHandler from '@/app/hooks/useModalHandler';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { floatToMoney } from '@/shared/utils/money-format';
@@ -11,6 +12,7 @@ import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchangeOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import DoneAllIcon from '@mui/icons-material/DoneAllOutlined';
 import DoneIcon from '@mui/icons-material/DoneOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutline';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
@@ -43,7 +45,6 @@ export default function EntryList({ entries, ...props }: EntryListProps) {
 				.map((entry) =>
 					<ListItemAction
 						key={entry.title + entry.uuid}
-						dense
 						divider
 						disablePadding
 						SwipRightLabel={entry.future ? <DoneAllIcon color='success' /> : <DoneIcon color='info' />}
@@ -66,6 +67,11 @@ export default function EntryList({ entries, ...props }: EntryListProps) {
 						</IconButton> */}
 					</ListItemAction>
 				)}
+			<ListItemRow
+				hide={entries.length !== 1}
+				avatarIcon={<InfoIcon color='disabled' />}
+				caption='Deslize para a esquerda para deletar ou para a direita para marcar como resolvido.'
+			/>
 		</>
 	);
 }
