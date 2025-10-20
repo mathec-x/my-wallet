@@ -5,9 +5,11 @@ import FlexBox from '@/app/components/elements/FlexBox';
 import ListContainer from '@/app/components/elements/ListContainer';
 import ListItemInput from '@/app/components/elements/ListItemInput';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
+import { usePwa } from '@/app/providers/pwa/PwaProvider';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import InstallMobileIcon from '@mui/icons-material/InstallMobileOutlined';
 import { CircularProgress, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import ListItem from '@mui/material/ListItem';
@@ -22,6 +24,7 @@ interface MenuLayoutProps {
 
 const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
   const { user, setUserAccounts } = useAuthProvider();
+  const { install, supports, isInstalled } = usePwa();
   const handleSelect = (value: string) => {
     props.onClose('/dashboard/' + value);
   };
@@ -81,6 +84,16 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
         ))}
       </ListContainer>
       <ListContainer header='Opções' disablePadding>
+        {supports && isInstalled === 'none' && install && (
+          <ListItemButton onClick={() => install()}>
+            <ListItemAvatar>
+              <Avatar variant='default'>
+                <InstallMobileIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary='Instalar app' />
+          </ListItemButton>
+        )}
         <ListItem>
           <ListItemAvatar>
             <Avatar variant='default'>

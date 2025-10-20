@@ -45,4 +45,5 @@ export interface ReactPwaProps {
    */
   suspense?: React.ReactNode;
   config: ConfigProps;
+  children?: React.ReactNode;
 }
