@@ -4,6 +4,7 @@ import {
   PrismaClientUnknownRequestError,
   PrismaClientValidationError
 } from '@/server/infra/prisma/generated/runtime/library';
+import { styleText } from 'util';
 
 export type ResponseStatus = 200 | 201 | 400 | 401 | 403 | 404 | 409 | 412 | 500;
 
@@ -57,7 +58,6 @@ export class ResponseService {
   }
 
   static unknow<T = never>(error?: unknown): ServiceResponse<T> {
-    console.error('unknow error', (error as Error)?.name, (error as Error)?.message);
 
     if (error instanceof PrismaClientInitializationError) {
       return { success: false, message: 'Falha ao conectar no banco de dados', status: 500 };
@@ -66,6 +66,8 @@ export class ResponseService {
     if (error instanceof Error) {
       return { success: false, message: error.message, status: 400, error };
     }
+
+    console.log(styleText('redBright', `unknow error name: ${(error as Error)?.name}`), (error as Error)?.message);
 
     if (error instanceof PrismaClientUnknownRequestError) {
       return { success: false, message: 'PrismaClientUnknownRequestError', status: 400, error };

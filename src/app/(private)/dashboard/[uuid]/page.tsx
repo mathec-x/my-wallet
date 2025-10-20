@@ -1,27 +1,10 @@
-import { entriesListAction } from '@/app/actions/entries/entries.actions';
 import Dashboard from '@/app/components/layouts/Dashboard/Dashboard.layout';
-import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import { NextAsyncPageProps } from '@/server/interfaces/next';
 
-export const revalidate = 0;
-export default async function DashboardPage(props: NextAsyncPageProps<{ uuid: string }, { entry?: string }>) {
-  const { uuid: accountUuid } = await props.params;
+export default async function DashboardPage(props: NextAsyncPageProps<{ uuid: string }, { entry: string }>) {
   const searchParamsProps = await props.searchParams;
-  const entryUuid = searchParamsProps.entry;
-
-  const entries = await entriesListAction({ accountUuid });
-  if (!entries.success) {
-    return <div>Failed to load entries</div>;
-  }
 
   return (
-    <EntriesProvider entries={entries.data}>
-      <Dashboard
-        accountUuid={accountUuid}
-        entries={entries.data}
-        entryUuid={entryUuid}
-        entrySearchParam='entry'
-      />
-    </EntriesProvider>
+    <Dashboard entrySearchParam='entry' entryUuid={searchParamsProps?.entry} />
   );
 }

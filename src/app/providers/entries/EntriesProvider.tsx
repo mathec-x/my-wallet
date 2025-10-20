@@ -31,6 +31,7 @@ interface EntriesContextType {
   remove: (param: { uuid: string }) => void;
   set: (callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) => Partial<Entry>;
   add: (data?: Partial<Entry>) => void;
+  accountUuid: string;
   balance: ReturnType<typeof calculateBalance>;
   boards: {
     id: number;
@@ -47,7 +48,12 @@ interface EntriesContextType {
 
 const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
 
-export function EntriesProvider({ children, entries: values }: React.PropsWithChildren<{ entries: Entry[] }>) {
+interface EntriesProviderProps {
+  entries: Entry[];
+  accountUuid: string;
+}
+
+export function EntriesProvider({ children, entries: values, ...props }: React.PropsWithChildren<EntriesProviderProps>) {
   const [entries, setEntries] = useState(() => values);
 
   const balance = useMemo(() => calculateBalance(entries), [entries]);
@@ -114,7 +120,8 @@ export function EntriesProvider({ children, entries: values }: React.PropsWithCh
       balance,
       boards,
       board,
-      setBoard
+      setBoard,
+      ...props
     }}>
       {children}
     </EntriesContext.Provider>

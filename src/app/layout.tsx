@@ -17,6 +17,8 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
+export const dynamic = 'force-dynamic'; // all routes needs ssr cookies
+
 export const metadata: Metadata = {
   title: 'My Wallet',
   description: 'A simple wallet application to manage your finances.',

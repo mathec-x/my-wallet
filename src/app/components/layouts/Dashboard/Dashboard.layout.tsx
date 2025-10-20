@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  type Entry,
   entriesCreateAction, entriesDeleteAction, entriesUpdateAction
 } from '@/app/actions/entries/entries.actions';
 import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
@@ -14,14 +13,12 @@ import { useMemo } from 'react';
 import EntryBalance from '../../ui/EntryBalance/EntryBalance.ui';
 
 interface DashboardLayoutProps {
-  accountUuid: string;
-  entries: Entry[];
   entryUuid?: string;
   entrySearchParam: string;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
-  const { entries, add, remove, restore, set, board } = useEntriesContext();
+  const { entries, add, remove, restore, set, board, accountUuid } = useEntriesContext();
 
   const entry = useMemo(() => {
     return entries.find(e => e.uuid === props.entryUuid);
@@ -30,7 +27,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
   const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE') => {
     add({ title: value, type, uuid: '' }); // Optimistic UI update
     const entry = await entriesCreateAction({
-      accountUuid: props.accountUuid,
+      accountUuid: accountUuid,
       data: {
         title: value,
         type: type,
@@ -44,7 +41,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
 
   const handleDelete = async (param: { uuid: string }) => {
     remove({ uuid: param.uuid }); // Optimistic UI update
-    const res = await entriesDeleteAction({ entryUuid: param.uuid, accountUuid: props.accountUuid });
+    const res = await entriesDeleteAction({ entryUuid: param.uuid, accountUuid: accountUuid });
     if (!res.success) {
       restore();
     }
@@ -53,7 +50,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
   const handleUpdate = async (data: EntryUpdateFormSchema) => {
     const parsed = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
     const res = await entriesUpdateAction({
-      accountUuid: props!.accountUuid,
+      accountUuid: accountUuid,
       entryUuid: data?.uuid || entry!.uuid,
       data: parsed as never,
     });
@@ -68,13 +65,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
   return (
     <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
       <Grid size={{ xs: 12 }}>
-        <EntryBalance accountUuid={props.accountUuid} />
+        <EntryBalance accountUuid={accountUuid} />
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <ListContainer header={'entradas'}>
           <EntryList
             editorModalName={props.entrySearchParam}
-            accountUuid={props.accountUuid}
+            accountUuid={accountUuid}
             entries={entries.filter(entry => entry.type === 'INCOME')}
             type='INCOME'
             onSumbit={handleSubmit}
@@ -87,7 +84,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
         <ListContainer header={'saídas'}>
           <EntryList
             editorModalName={props.entrySearchParam}
-            accountUuid={props.accountUuid}
+            accountUuid={accountUuid}
             entries={entries.filter(entry => entry.type === 'EXPENSE')}
             type='EXPENSE'
             onSumbit={handleSubmit}

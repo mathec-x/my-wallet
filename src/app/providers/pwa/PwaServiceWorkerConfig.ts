@@ -100,7 +100,7 @@ const checkValidServiceWorker = async (config: ConfigProps) => {
       // Service worker found. Proceed as normal.
       return registerValidSW(config);
     }
-  } catch (e) {
+  } catch {
     // Page is offline.
     if (config && config.onOffline) config.onOffline();
   }

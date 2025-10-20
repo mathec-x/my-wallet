@@ -1,3 +1,4 @@
+'use client';
 
 import useSweep from '@/app/hooks/useSwip';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';

@@ -1,3 +1,5 @@
+'use client';
+
 import useModalHandler from '@/app/hooks/useModalHandler';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';

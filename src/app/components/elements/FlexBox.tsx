@@ -1,3 +1,4 @@
+'use client';
 import Box, { type BoxProps } from '@mui/material/Box';
 
 interface FlexBoxProps extends BoxProps {

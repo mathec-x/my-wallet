@@ -3,6 +3,7 @@ import { ReadonlyURLSearchParams } from 'next/navigation';
 export interface NextAsyncPageProps<P = unknown, Q = unknown> {
   params: Promise<P>;
   searchParams: Promise<ReadonlyURLSearchParams & Q>;
+  children?: React.ReactNode;
 }
 
 type ResponseServiceData<T> = T extends { data: infer U } ? U : never;

@@ -1,3 +1,5 @@
+'use client';
+
 import AddBusinessIcon from '@mui/icons-material/AddBusinessOutlined';
 import SendIcon from '@mui/icons-material/SendOutlined';
 import Avatar from '@mui/material/Avatar';
