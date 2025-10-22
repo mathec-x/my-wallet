@@ -18,18 +18,23 @@ function useSweep({
   const startX = useRef<number>(0);
   const isDragging = useRef(false);
 
+  // #region Mouse events for desktop
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!onSwipeLeft && !onSwipeRight) return;
     startX.current = e.clientX;
     setIsSwiping(true);
     isDragging.current = true;
     e.preventDefault();
   }, []);
 
-  // #region Mouse events for desktop
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isSwiping || !isDragging.current) return;
     const currentX = e.clientX;
     const offset = currentX - startX.current;
+    if (!onSwipeLeft && offset < 0) { setDragOffset(0);; return; };
+    if (!onSwipeRight && offset > 0) { setDragOffset(0); return; };
+
+    // console.log({ offset });
 
     if (threshould < Math.abs(offset)) {
       setDragOffset(offset > 0 ? threshould : -threshould);
@@ -52,6 +57,8 @@ function useSweep({
 
   // region Touch events for mobile
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!onSwipeLeft && !onSwipeRight) return;
+
     startX.current = e.touches[0].clientX;
     setIsSwiping(true);
     isDragging.current = true;
@@ -61,6 +68,9 @@ function useSweep({
     if (!isSwiping || !isDragging.current) return;
     const currentX = e.touches[0].clientX;
     const offset = currentX - startX.current;
+    if (!onSwipeLeft && offset < 0) { setDragOffset(0);; return; };
+    if (!onSwipeRight && offset > 0) { setDragOffset(0); return; };
+
     if (threshould < Math.abs(offset)) {
       setDragOffset(offset > 0 ? threshould : -threshould);
     } else {
