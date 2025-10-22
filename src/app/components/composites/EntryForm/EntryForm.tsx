@@ -8,7 +8,7 @@ import { EntryUpdateFormSchema, entryUpdateFormSchema } from '@/shared/schemas/e
 import { floatToMoney } from '@/shared/utils/money-format';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { useState, useTransition } from 'react';
+import { useTransition } from 'react';
 
 interface EntryFormProps {
   editorModalName: string;
@@ -18,17 +18,15 @@ interface EntryFormProps {
 
 const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
   const modal = useModalHandler(editorModalName);
-  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleUpdate = (data: EntryUpdateFormSchema) => {
     startTransition(async () => {
       const res = await onUpdate(data);
       if (res.success) {
-        setError(null);
         modal.close();
       } else {
-        setError(res.message || 'Erro ao atualizar a entrada. Tente novamente mais tarde.');
+        alert(res.message || 'Erro ao atualizar a entrada. Tente novamente mais tarde.');
       }
     });
   };
@@ -57,7 +55,6 @@ const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
           }}
           onSubmit={handleUpdate}
           schema={entryUpdateFormSchema}
-          errorMessage={error}
         >
           {/* <Divider variant='fullWidth' sx={{ mt: 8 }} /> */}
           {/* <Button loading={isPending} type='submit' form='form-entry-update' variant='contained' fullWidth>
