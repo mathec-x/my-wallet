@@ -9,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/menu',
     background_color: '#fff',
     theme_color: '#9c27b0',
-    display_override: ['standalone', 'window-controls-overlay'],
     display: 'standalone',
+    display_override: ['standalone', 'window-controls-overlay'],
     icons: [
       {
         src: '/pwa/icon-192x192.png',
