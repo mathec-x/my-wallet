@@ -27,33 +27,39 @@ interface FormInputMetaProps {
   autoSelect?: boolean;
   control?: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   options?: { label: string; value: string }[];
+  align?: 'left' | 'right' | 'center';
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 }
 const FormInputMeta: React.FC<FormInputMetaProps> = ({
-  fullWidth, label, title, type = 'text', error, helperText, form, inputMode, description, multiline, options, control, autoSelect
+  fullWidth, label, title, error, helperText, form, inputMode, description, multiline, options, control, autoSelect,
+  type = 'text', align = 'left'
 }) => {
 
   switch (type) {
     case 'checkbox':
       return (
-        <FormControlLabel
-          sx={{
-            my: 2,
-            userSelect: 'none',
-            display: 'flex',
-            flexDirection: 'row-reverse',
-            lineHeight: 0,
-            textAlign: 'right'
-          }}
-          disableTypography
-          label={
-            <Box mx={1}>
-              <Typography variant='body2'>{title || label}</Typography>
-              <Typography variant='caption' color='textDisabled'>{helperText || description}</Typography>
-            </Box>
-          }
-          control={<Checkbox defaultChecked />}
+        <Controller
+          control={control}
           {...form}
+          render={({ field: { onChange, value } }) => (
+            <FormControlLabel
+              disableTypography
+              sx={{
+                my: 2,
+                userSelect: 'none',
+                display: 'flex',
+                flexDirection: align === 'right' ? 'row-reverse' : align === 'left' ? 'row' : 'column',
+                lineHeight: 0,
+                textAlign: align
+              }}
+              label={
+                <Box mx={1}>
+                  <Typography variant='body2'>{title || label}</Typography>
+                  <Typography variant='caption' color='textDisabled'>{helperText || description}</Typography>
+                </Box>
+              }
+              control={<Checkbox defaultChecked={!!value} checked={!!value} onChange={onChange} />}
+            />)}
         />
       );
     case 'select':
@@ -63,10 +69,10 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
           <Controller
             control={control}
             {...form}
-            defaultValue="" // make sure to set up defaultValue
+            defaultValue=""
             render={({ field: { onChange, value } }) => (
               <Select
-                value={value}
+                value={value || ''}
                 onChange={onChange}
                 label={title || label}
               >
