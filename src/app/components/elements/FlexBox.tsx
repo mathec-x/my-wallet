@@ -5,7 +5,6 @@ interface FlexBoxProps extends BoxProps {
   col?: boolean
 }
 /**
- * @deprecated
  * @use mui Stack
  */
 const FlexBox: React.FC<FlexBoxProps> = ({ col, ...boxProps }) => {
