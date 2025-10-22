@@ -1,6 +1,6 @@
 'use client';
 
-import { createTheme } from '@mui/material/styles';
+import { createTheme, type Theme } from '@mui/material/styles';
 
 declare module '@mui/material/Avatar' {
   interface AvatarPropsVariantOverrides {
@@ -8,57 +8,58 @@ declare module '@mui/material/Avatar' {
   }
 }
 
-let theme = createTheme({
+const globalTheme = createTheme({
+  colorSchemes: {
+    dark: true,
+    light: true,
+  },
   palette: {
-    // mode: 'dark',
     primary: {
       light: '#ba68c8',
       main: '#9c27b0',
       dark: '#7b1fa2',
     },
     secondary: {
-      light: '#42a5f5',
-      main: '#1976d2',
-      dark: '#1565c0',
+      light: '#1CAFE9',
+      main: '#105edbff',
+      dark: '#0026ffff'
     },
   },
-});
-
-theme = createTheme(theme, {
+  typography: {
+    fontFamily: 'var(--font-roboto)',
+  },
   components: {
     MuiAvatar: {
       defaultProps: {
         variant: 'rounded',
       },
       styleOverrides: {
-        root: {
+        root: ({ theme }: { theme: Theme }) => ({
           backgroundColor: theme.palette.primary.main,
-        }
+        })
       },
       variants: [
         {
           props: { variant: 'default' },
-          style: {
+          style: ({ theme }: { theme: Theme }) => ({
             backgroundColor: 'transparent',
-            color: theme.palette.text.primary,
-          },
+            color: theme.palette.getContrastText(theme.palette.primary.contrastText)
+          }),
         },
       ],
-    }
-  },
-  MuiInputBase: {
-    styleOverrides: {
-      input: {
-        '&:-webkit-autofill': {
-          boxShadow: '0 0 0 1000px #121212 inset',
-          WebkitTextFillColor: '#fff',
-        },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        input: ({ theme }: { theme: Theme }) => ({
+          // remove yellow bg when autofill inputs
+          '&:-webkit-autofill': {
+            boxShadow: `0 0 0 50px ${theme.palette.primary.contrastText} inset`,
+            WebkitTextFillColor: theme.palette.getContrastText(theme.palette.primary.contrastText)
+          },
+        }),
       },
     },
   },
-  typography: {
-    fontFamily: 'var(--font-roboto)',
-  },
 });
 
-export default theme;
+export default globalTheme;

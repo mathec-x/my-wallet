@@ -79,7 +79,7 @@ export default async function RootLayout(props: { children: React.ReactNode, dra
 
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={theme} defaultMode='system'>
             <CssBaseline />
             <AuthProvider user={user}>
               <PwaProvider>
