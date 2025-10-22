@@ -3,9 +3,9 @@
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit",
-		"source.organizeImports": "explicit",
 		"source.removeUnusedImports": "explicit",
-		"source.addMissingImports.ts": "explicit"
+		"source.organizeImports": "explicit",
+		// "source.addMissingImports.ts": "explicit"
 	},
 	"scm.compactFolders": true,
 	"files.exclude": {
