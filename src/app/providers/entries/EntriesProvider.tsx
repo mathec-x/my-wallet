@@ -112,7 +112,7 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   return (
     <EntriesContext.Provider value={{
-      entries,
+      entries: entries.sort((a, b) => (a?.order || 0) - (b?.order || 0)),
       remove,
       set,
       add,

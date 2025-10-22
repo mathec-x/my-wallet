@@ -5,12 +5,12 @@ import {
 } from '@/app/actions/entries/entries.actions';
 import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
 import ListContainer from '@/app/components/elements/ListContainer';
+import EntryBalance from '@/app/components/ui/EntryBalance/EntryBalance.ui';
 import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import Grid from '@mui/material/Grid';
 import { useMemo } from 'react';
-import EntryBalance from '../../ui/EntryBalance/EntryBalance.ui';
 
 interface DashboardLayoutProps {
   entryUuid?: string;
@@ -86,6 +86,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
             editorModalName={props.entrySearchParam}
             accountUuid={accountUuid}
             entries={entries.filter(entry => entry.type === 'EXPENSE')}
+            groupBy='category'
             type='EXPENSE'
             onSumbit={handleSubmit}
             onDelete={handleDelete}
