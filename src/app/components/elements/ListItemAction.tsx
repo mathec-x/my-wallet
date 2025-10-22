@@ -3,7 +3,7 @@
 import useSweep from '@/app/hooks/useSwip';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { Box, styled, Typography } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
+import Avatar, { type AvatarProps } from '@mui/material/Avatar';
 import CircularProgress from '@mui/material/CircularProgress';
 import ListItem, { type ListItemOwnProps } from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -38,11 +38,13 @@ interface ListItemActionProps extends Omit<ListItemOwnProps, 'onTouchStart' | 'o
   secondary?: React.ReactNode | string;
   caption?: string | null;
   icon?: React.ReactNode | string;
+  component?: React.ElementType;
   onClick: () => void;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
   SwipRightLabel?: string | React.ReactNode;
   SwipLeftLabel?: string | React.ReactNode;
+  avatarVariant?: AvatarProps['variant'];
 }
 
 const ListItemAction: React.FC<ListItemActionProps> = ({
@@ -57,6 +59,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
   onSwipeRight,
   SwipRightLabel,
   SwipLeftLabel,
+  avatarVariant = 'rounded',
   ...listItemProps
 }) => {
   const { dragOffset, isSwiping, handleMouseDown, handleTouchStart } = useSweep({
@@ -90,8 +93,8 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
       )}
 
       <ListItemBox
-        onMouseDown={(onSwipeRight || onSwipeLeft) && handleMouseDown}
-        onTouchStart={(onSwipeRight || onSwipeLeft) && handleTouchStart}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         sx={{
           transform: `translateX(${dragOffset}px)`,
           transition: 'transform 0.1s cubic-bezier(0.65, 0.1, 0.46, 1.07)',
@@ -99,7 +102,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
       >
         <ListItemButton onClick={handleClick} disabled={isLoading}>
           <ListItemAvatar>
-            <Avatar>
+            <Avatar variant={avatarVariant}>
               {icon || <WalletIcon />}
             </Avatar>
           </ListItemAvatar>
@@ -111,7 +114,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
             secondary={secondary}
           />
           {isLoading ? (
-            <Avatar sx={{ backgroundColor: 'transparent' }}>
+            <Avatar variant={avatarVariant} sx={{ backgroundColor: 'transparent' }}>
               <CircularProgress size={20} />
             </Avatar>
           ) : children}
