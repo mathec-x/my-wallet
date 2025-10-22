@@ -1,6 +1,7 @@
 'use client';
 
 import LoginForm from '@/app/components/composites/LoginForm/LoginForm';
+import { FlexBox } from '@/app/components/elements';
 import Drawer from '@mui/material/Drawer';
 import { useLayoutEffect, useState } from 'react';
 
@@ -30,7 +31,9 @@ export default function LoginDrawer() {
         }
       }}
     >
-      <LoginForm />
+      <FlexBox col p={{ md: 4, xs: 2 }} overflow='hidden'>
+        <LoginForm />
+      </FlexBox>
     </Drawer >
   );
 }
