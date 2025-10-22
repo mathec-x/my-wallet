@@ -1,4 +1,5 @@
 import z from 'zod';
+import { categoriesOptions } from './categoriesList';
 
 export const entryUpdateFormSchema = z.object({
   title: z
@@ -48,7 +49,8 @@ export const entryUpdateFormSchema = z.object({
     .meta({
       label: 'Pagamento/Ordem',
       description: 'Dia do pagamento',
-      type: 'number'
+      type: 'text',
+      inputMode: 'decimal',
     }),
   type: z
     .enum(['INCOME', 'EXPENSE'])
@@ -70,27 +72,16 @@ export const entryUpdateFormSchema = z.object({
       label: 'Categoria',
       description: 'Atribua uma categoria para essa entrada',
       type: 'select',
-      options: [
-        { label: 'Alimentação', value: 'food' },
-        { label: 'Casa', value: 'house' },
-        { label: 'Educação', value: 'education' },
-        { label: 'Imposto', value: 'tax' },
-        { label: 'Investimento', value: 'investment' },
-        { label: 'Lazer', value: 'fun' },
-        { label: 'Presente', value: 'gift' },
-        { label: 'Saúde', value: 'health' },
-        { label: 'Trabalho', value: 'work' },
-        { label: 'Transporte', value: 'transport' },
-        { label: '...Nenhum', value: null },
-      ]
+      options: categoriesOptions
     }),
-  // future: z
-  //   .boolean()
-  //   .meta({
-  //     label: 'Entrada/Saída futura',
-  //     description: 'Marcar como a receber/a pagar',
-  //     type: 'checkbox',
-  //   }),
+  future: z
+    .boolean()
+    .meta({
+      label: 'Entrada/Saída futura',
+      description: 'Marcar como a receber/a pagar',
+      type: 'checkbox',
+      align: 'right'
+    }),
 });
 
 export type EntryUpdateFormSchema = z.infer<typeof entryUpdateFormSchema> & { uuid?: string };

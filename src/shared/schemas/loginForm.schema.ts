@@ -23,7 +23,8 @@ export const loginFormSchema = z.object({
     .meta({
       title: 'Lembrar-me',
       description: 'Mantenha-me conectado neste dispositivo',
-      type: 'checkbox'
+      type: 'checkbox',
+      align: 'right'
     }),
 });
 
