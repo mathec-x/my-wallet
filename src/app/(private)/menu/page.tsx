@@ -7,7 +7,7 @@ export default function MenuPage() {
   const router = useRouter();
 
   const handleClose = (path?: string) => {
-    router.push(path || '/dashboard');
+    router.replace(path || '/dashboard');
   };
 
   return <MenuLayout onClose={handleClose} />;
