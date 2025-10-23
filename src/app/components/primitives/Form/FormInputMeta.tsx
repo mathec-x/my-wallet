@@ -58,8 +58,9 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
                   <Typography variant='caption' color='textDisabled'>{helperText || description}</Typography>
                 </Box>
               }
-              control={<Checkbox defaultChecked={!!value} checked={!!value} onChange={onChange} />}
-            />)}
+              control={<Checkbox checked={Boolean(value)} onChange={onChange} />}
+            />
+          )}
         />
       );
     case 'select':
