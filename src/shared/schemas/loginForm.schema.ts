@@ -20,6 +20,7 @@ export const loginFormSchema = z.object({
     }),
   remeberMe: z
     .boolean()
+    .optional()
     .meta({
       title: 'Lembrar-me',
       description: 'Mantenha-me conectado neste dispositivo',

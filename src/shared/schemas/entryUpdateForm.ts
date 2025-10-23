@@ -76,6 +76,7 @@ export const entryUpdateFormSchema = z.object({
     }),
   future: z
     .boolean()
+    .optional()
     .meta({
       label: 'Entrada/Saída futura',
       description: 'Marcar como a receber/a pagar',
