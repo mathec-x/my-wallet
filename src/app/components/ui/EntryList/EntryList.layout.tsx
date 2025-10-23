@@ -106,7 +106,7 @@ export default function EntryList(props: EntryListProps) {
 					);
 				})}
 			<ListItemRow
-				hide={group[0].data.length !== 1}
+				hide={group[0]?.data?.length !== 1}
 				avatarIcon={<InfoIcon color='disabled' />}
 				caption='Deslize para a esquerda para deletar ou para a direita para marcar como resolvido.'
 			/>
