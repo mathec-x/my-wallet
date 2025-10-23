@@ -44,7 +44,6 @@ export class UserLoginUseCase {
         : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     };
 
-    cookStore.set('uuid', user.uuid, cookieSettings);
     cookStore.set('auth', jwt, cookieSettings);
 
     return ResponseService.Ok({

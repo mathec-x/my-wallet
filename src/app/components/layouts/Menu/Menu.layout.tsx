@@ -9,6 +9,7 @@ import { usePwa } from '@/app/providers/pwa/PwaProvider';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import InstallMobileIcon from '@mui/icons-material/InstallMobileOutlined';
 import { CircularProgress, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -16,6 +17,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import { useRouter } from 'next/navigation';
+import { ListItemAction } from '../../elements';
 
 
 interface MenuLayoutProps {
@@ -25,6 +28,8 @@ interface MenuLayoutProps {
 const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
   const { user, setUserAccounts } = useAuthProvider();
   const { install, supports, isInstalled } = usePwa();
+  const router = useRouter();
+
   const handleSelect = (value: string) => {
     props.onClose('/dashboard/' + value);
   };
@@ -84,16 +89,6 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
         ))}
       </ListContainer>
       <ListContainer header='Opções' disablePadding>
-        {supports && isInstalled === 'none' && install && (
-          <ListItemButton onClick={() => install()}>
-            <ListItemAvatar>
-              <Avatar variant='default'>
-                <InstallMobileIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary='Instalar app' />
-          </ListItemButton>
-        )}
         <ListItem>
           <ListItemAvatar>
             <Avatar variant='default'>
@@ -105,6 +100,24 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
             secondary='Saldo Total'
           />
         </ListItem>
+        {supports && isInstalled === 'none' && install && (
+          <ListItemAction
+            primary='Instalar app'
+            icon={<InstallMobileIcon />}
+            onClick={() => install()}
+            avatarVariant='default'
+            disablePadding
+          />
+        )}
+        <ListItemAction
+          primary='Logout'
+          icon={<ExitToAppIcon />}
+          onClick={() => {
+            router.push('/login?logout=true');
+          }}
+          avatarVariant='default'
+          disablePadding
+        />
         <ListItemInput
           id='add-account'
           placeholder='Adicionar Conta ex: casa, empresa'
