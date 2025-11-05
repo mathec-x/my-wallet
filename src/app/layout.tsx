@@ -10,6 +10,11 @@ import { getCurrentUser } from './actions/user/user.actions';
 import { AuthProvider } from './providers/auth/AuthProvider';
 import PwaProvider from './providers/pwa/PwaProvider';
 
+interface RootLayoutProps extends LayoutProps<'/dashboard/[uuid]'> {
+  children: React.ReactNode,
+  drawer: React.ReactNode
+}
+
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
   subsets: ['latin'],
@@ -24,7 +29,7 @@ export const metadata: Metadata = {
   description: 'A simple wallet application to manage your finances.',
 };
 
-export default async function RootLayout(props: { children: React.ReactNode, drawer: React.ReactNode }) {
+export default async function RootLayout(props: RootLayoutProps) {
   const { children, drawer } = props;
   const user = await getCurrentUser();
 
@@ -43,9 +48,11 @@ export default async function RootLayout(props: { children: React.ReactNode, dra
       <meta name="msapplication-tap-highlight" content="no" />
 
       {/* <link rel="apple-touch-icon" href="/icons/touch-icon-iphone.png" /> */}
-      {/* <link rel="apple-touch-icon" sizes="152x152" href="/icons/touch-icon-ipad.png" />
-      <link rel="apple-touch-icon" sizes="180x180" href="/icons/touch-icon-iphone-retina.png" />
-      <link rel="apple-touch-icon" sizes="167x167" href="/icons/touch-icon-ipad-retina.png" /> */}
+
+      <link rel="apple-touch-icon" sizes="152x152" href="/pwa/ios-152.png" />
+      <link rel="apple-touch-icon" sizes="167x167" href="/pwa/ios-167.png" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/pwa/ios-180.png" />
+
 
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -83,7 +90,7 @@ export default async function RootLayout(props: { children: React.ReactNode, dra
             <CssBaseline />
             <AuthProvider user={user}>
               <PwaProvider>
-                <Header />
+                <Header user={user} />
                 <Container
                   maxWidth="xl"
                   sx={{

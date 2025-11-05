@@ -1,4 +1,10 @@
 import Grid from '@mui/material/Grid';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Menu',
+  description: 'Your wallet menu page',
+};
 
 export default function MenuPageLayout(props: { children: React.ReactNode }) {
   return (

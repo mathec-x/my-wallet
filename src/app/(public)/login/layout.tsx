@@ -5,6 +5,12 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Login',
+  description: 'Login to access your wallet',
+};
 
 export default function LoginPageLayout(props: { children: React.ReactNode }) {
   return (
