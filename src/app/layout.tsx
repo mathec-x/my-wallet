@@ -10,7 +10,7 @@ import { getCurrentUser } from './actions/user/user.actions';
 import { AuthProvider } from './providers/auth/AuthProvider';
 import PwaProvider from './providers/pwa/PwaProvider';
 
-interface RootLayoutProps extends LayoutProps<'/dashboard/[uuid]'> {
+interface RootLayoutProps {
   children: React.ReactNode,
   drawer: React.ReactNode
 }

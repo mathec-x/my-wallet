@@ -25,6 +25,8 @@ function useSweep({
     setIsSwiping(true);
     isDragging.current = true;
     e.preventDefault();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -41,6 +43,8 @@ function useSweep({
     } else {
       setDragOffset(offset);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwiping, threshould]);
 
   const handleMouseUp = useCallback(() => {
@@ -62,6 +66,8 @@ function useSweep({
     startX.current = e.touches[0].clientX;
     setIsSwiping(true);
     isDragging.current = true;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
@@ -77,6 +83,8 @@ function useSweep({
       setDragOffset(offset);
     }
     e.preventDefault();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwiping, threshould]);
 
   const handleTouchEnd = useCallback(() => {
