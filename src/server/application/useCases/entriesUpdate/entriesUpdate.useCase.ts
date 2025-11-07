@@ -1,3 +1,4 @@
+import { LoggerService } from '@/server/application/services/logger/logger.service';
 import { ResponseService } from '@/server/domain/common/response.service';
 import { CookieService } from '@/server/domain/services/cookie/cookie.service';
 import { prisma } from '@/server/infra/prisma/client';
@@ -11,13 +12,15 @@ export interface EntriesUpdateUseCaseParams {
 }
 
 export class EntriesUpdateUseCase {
+	private readonly logger = new LoggerService(EntriesUpdateUseCase.name);
+
 	constructor(
 		private readonly cookieService: CookieService
 	) { }
 
 	async execute(params: EntriesUpdateUseCaseParams) {
 		try {
-			console.log('EntriesUpdateUseCase.execute', params);
+			this.logger.debug('Atualizando Entry', params);
 			const userUuid = await this.cookieService.getUUidFromCookie();
 			const data = await prisma.entry.update({
 				where: {
