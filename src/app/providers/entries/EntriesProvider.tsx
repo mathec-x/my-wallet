@@ -30,7 +30,7 @@ interface EntriesContextType {
   restore: () => void;
   remove: (param: { uuid: string }) => void;
   set: (callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) => Partial<Entry>;
-  add: (data?: Partial<Entry>) => void;
+  addEntries: (data?: Partial<Entry>[]) => void;
   accountUuid: string;
   balance: ReturnType<typeof calculateBalance>;
   boards: {
@@ -44,6 +44,11 @@ interface EntriesContextType {
     name: string;
   }
   setBoard: (board?: { id: number; uuid: string; name: string }) => void;
+  setEntriesBoard: (entriesIds: number[], board?: {
+    id: number;
+    uuid: string;
+    name: string;
+  } | undefined) => void
 }
 
 const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
@@ -56,26 +61,56 @@ interface EntriesProviderProps {
 export function EntriesProvider({ children, entries: values, ...props }: React.PropsWithChildren<EntriesProviderProps>) {
   const [entries, setEntries] = useState(() => values);
 
-  const balance = useMemo(() => calculateBalance(entries), [entries]);
   const boards = useMemo(() => {
     const boards: EntriesContextType['boards'] = [];
-    entries.forEach(entry => {
-      const boardId = entry.board?.id;
-      if (boardId && !boards.find(b => b.id === boardId)) {
-        boards.push({
-          id: boardId,
-          uuid: entry.board!.uuid,
-          name: entry.board!.name
-        });
-      }
-    });
+    entries
+      .sort((a, b) => (a.board?.id || 0) - (b.board?.id || 0))
+      .forEach(entry => {
+        const boardId = entry.board?.id;
+        if (boardId && !boards.find(b => b.id === boardId)) {
+          boards.push({
+            id: boardId,
+            uuid: entry.board!.uuid,
+            name: entry.board!.name
+          });
+        }
+      });
     return boards;
   }, [entries]);
 
   const [board, setBoard] = useState(() => boards.length > 0 ? boards[boards.length - 1] : undefined);
 
+  const filteredEntries = useMemo(() => {
+    return entries
+      .sort((a, b) => (a?.order || 0) - (b?.order || 0))
+      .filter(entry => !board?.id || entry.boardId === board?.id);
+  }, [entries, board]);
+
+  const balance = useMemo(() => calculateBalance(filteredEntries), [filteredEntries]);
+
   function remove(param: { uuid: string }) {
     setEntries(entries.filter(entry => entry.uuid !== param.uuid));
+  }
+
+  function setEntriesBoard(entriesIds: number[], board?: { id: number; uuid: string; name: string }) {
+    const newList = entries
+      .map(entry => !entriesIds.includes(entry.id)
+        ? entry
+        : {
+          ...entry,
+          boardId: board?.id || null,
+          board: board ? { id: board.id, uuid: board.uuid, name: board.name } : null
+        }
+      )
+      .filter(e => e.boardId !== null);
+
+    setEntries(newList);
+
+    if (!board && newList.length === 0) {
+      setBoard(undefined);
+    } else {
+      setBoard(board ? board : newList[newList.length - 1].board!);
+    }
   }
 
   function set(callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) {
@@ -101,9 +136,9 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
     setEntries([...entries]);
   }
 
-  function add(data?: Partial<Entry>) {
+  function addEntries(data?: Partial<Entry>[]) {
     if (data) {
-      setEntries([...entries, data as Entry]);
+      setEntries([...entries, ...data as Entry[]]);
     } else {
       restore();
     }
@@ -112,15 +147,16 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   return (
     <EntriesContext.Provider value={{
-      entries: entries.sort((a, b) => (a?.order || 0) - (b?.order || 0)),
+      entries: filteredEntries,
       remove,
       set,
-      add,
+      addEntries,
       restore,
       balance,
       boards,
       board,
       setBoard,
+      setEntriesBoard,
       ...props
     }}>
       {children}

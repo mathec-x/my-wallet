@@ -93,7 +93,7 @@ export default function EntryList(props: EntryListProps) {
 									onClick={() => modal.open(entry.uuid)}
 									primary={entry.title}
 									secondary={`R$ ${floatToMoney(entry.amount)}`}
-									caption={entry.description}
+									caption={entry.description || entry.board?.name || ''}
 									isLoading={!entry.uuid}
 								>
 									<Stack direction='row' spacing={1}>

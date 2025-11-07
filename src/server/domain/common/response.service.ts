@@ -1,10 +1,10 @@
+import { LoggerService } from '@/server/application/services/logger/logger.service';
 import {
   PrismaClientInitializationError,
   PrismaClientKnownRequestError,
   PrismaClientUnknownRequestError,
   PrismaClientValidationError
 } from '@/server/infra/prisma/generated/runtime/library';
-import { styleText } from 'util';
 
 export type ResponseStatus = 200 | 201 | 400 | 401 | 403 | 404 | 409 | 412 | 500;
 
@@ -21,6 +21,8 @@ export type ServiceResponse<T = unknown> = {
 };
 
 export class ResponseService {
+  static readonly logger = new LoggerService(ResponseService.name);
+
   static Ok<T>(data: T, message = 'Success'): ServiceResponse<T> {
     return { success: true, message, status: 200, data };
   }
@@ -30,34 +32,42 @@ export class ResponseService {
   }
 
   static BadRequest<T = never>(message = 'Bad Request', error?: Error | unknown): ServiceResponse<T> {
+    this.logger.warn(`BadRequest: ${message}`, error);
     return { success: false, message, status: 400, error };
   }
 
   static Unauthorized<T = never>(message = 'Unauthorized'): ServiceResponse<T> {
+    this.logger.warn(`Unauthorized: ${message}`);
     return { success: false, message, status: 401 };
   }
 
   static Forbidden<T = never>(message = 'Forbidden'): ServiceResponse<T> {
+    this.logger.warn(`Forbidden: ${message}`);
     return { success: false, message, status: 403 };
   }
 
   static NotFound<T = never>(message = 'Not Found'): ServiceResponse<T> {
+    this.logger.warn(`NotFound: ${message}`);
     return { success: false, message, status: 404 };
   }
 
   static Conflict<T = never>(message = 'Conflict'): ServiceResponse<T> {
+    this.logger.warn(`Conflict: ${message}`);
     return { success: false, message, status: 409 };
   }
 
   static PreconditionFailed<T = never>(message = 'Precondition Failed'): ServiceResponse<T> {
+    this.logger.warn(`PreconditionFailed: ${message}`);
     return { success: false, message, status: 412 };
   }
 
   static InternalError<T = never>(message = 'Internal Server Error', error?: Error | unknown): ServiceResponse<T> {
+    this.logger.warn(`InternalError: ${message}`);
     return { success: false, message, status: 500, error };
   }
 
   static unknow<T = never>(error?: unknown): ServiceResponse<T> {
+    this.logger.error(`unknow error name: ${(error as Error)?.name}`, error);
 
     if (error instanceof PrismaClientInitializationError) {
       return { success: false, message: 'Falha ao conectar no banco de dados', status: 500 };
@@ -67,7 +77,6 @@ export class ResponseService {
       return { success: false, message: error.message, status: 400, error };
     }
 
-    console.log(styleText('redBright', `unknow error name: ${(error as Error)?.name}`), (error as Error)?.message);
 
     if (error instanceof PrismaClientUnknownRequestError) {
       return { success: false, message: 'PrismaClientUnknownRequestError', status: 400, error };

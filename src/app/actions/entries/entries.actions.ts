@@ -1,5 +1,6 @@
 'use server';
 
+import { BoardCopyUseCase, type BoardCopyUseCaseParams } from '@/server/application/useCases/boardCopy/boardCopy.useCase';
 import { BoardCreateUseCase, type BoardCreateUseCaseParams } from '@/server/application/useCases/boardCreate/boardCreate.useCase';
 import { BoardDeleteUseCase, type BoardDeleteUseCaseParams } from '@/server/application/useCases/boardDelete/boardDelete.useCase';
 import { EntriesCreateUseCase, type EntriesCreateUseCaseParams } from '@/server/application/useCases/entriesCreate/entriesCreate.useCase';
@@ -15,6 +16,7 @@ const entriesDeleteUseCase = new EntriesDeleteUseCase(cookieService);
 const entriesUpdateUseCase = new EntriesUpdateUseCase(cookieService);
 const entriesCreateUseCase = new EntriesCreateUseCase(cookieService);
 const boardCreateUseCase = new BoardCreateUseCase(cookieService);
+const boardCopyUseCase = new BoardCopyUseCase(cookieService);
 const boardDeleteUseCase = new BoardDeleteUseCase();
 
 export type Entry = ResponseServiceAsync<typeof entriesCreateAction>
@@ -37,6 +39,10 @@ export async function entriesUpdateAction(params: EntriesUpdateUseCaseParams) {
 
 export async function boardCreateAction(params: BoardCreateUseCaseParams) {
 	return boardCreateUseCase.execute(params);
+};
+
+export async function boardCopyAction(params: BoardCopyUseCaseParams) {
+	return boardCopyUseCase.execute(params);
 };
 
 export async function boardDeleteAction(params: BoardDeleteUseCaseParams) {

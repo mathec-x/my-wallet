@@ -18,15 +18,14 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
-  const { entries, add, remove, restore, set, board, accountUuid } = useEntriesContext();
+  const { entries, addEntries, remove, restore, set, board, accountUuid } = useEntriesContext();
 
   const entry = useMemo(() => {
     return entries.find(e => e.uuid === props.entryUuid);
   }, [entries, props.entryUuid]);
 
   const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE') => {
-    add({ title: value, type, uuid: '' }); // Optimistic UI update
-    const entry = await entriesCreateAction({
+    const newEntry = await entriesCreateAction({
       accountUuid: accountUuid,
       data: {
         title: value,
@@ -36,7 +35,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
         }
       }
     });
-    add(entry.success ? entry.data : undefined);
+    addEntries(newEntry.success ? [newEntry.data] : undefined);
   };
 
   const handleDelete = async (param: { uuid: string }) => {

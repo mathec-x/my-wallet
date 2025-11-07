@@ -1,22 +1,20 @@
+import { LoggerService } from '@/server/application/services/logger/logger.service';
 import { ResponseService } from '@/server/domain/common/response.service';
 import { prisma } from '@/server/infra/prisma/client';
 import 'server-only';
-import { styleText } from 'util';
 
 export interface BoardDeleteUseCaseParams {
 	uuid: string
 }
 
 export class BoardDeleteUseCase {
+	private readonly logger = new LoggerService(BoardDeleteUseCase.name);
 	async execute(params: BoardDeleteUseCaseParams) {
 		try {
-			console.log(styleText('red', `deletando board ${params.uuid}`));
-			const res = await prisma.board.delete({
-				where: {
-					uuid: params.uuid
-				}
-			});
-			console.log(styleText('red', `board ${res.name} deletado`));
+			this.logger.info(`deletando board ${params.uuid}`);
+			const { count } = await prisma.entry.deleteMany({ where: { board: { uuid: params.uuid } } });
+			const res = await prisma.board.delete({ where: { uuid: params.uuid } });
+			this.logger.info(`board ${res.name} deletado junto com ${count} entries`);
 			return ResponseService.Created(res);
 		} catch (error) {
 			return ResponseService.unknow(error);

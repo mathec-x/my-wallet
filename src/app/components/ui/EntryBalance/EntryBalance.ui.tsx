@@ -1,15 +1,22 @@
 'use client';
 
-import { type Entry, boardCreateAction, boardDeleteAction } from '@/app/actions/entries/entries.actions';
+import { boardCopyAction, boardCreateAction, boardDeleteAction } from '@/app/actions/entries/entries.actions';
 import { ListContainer, ListItemInput, ListItemRow } from '@/app/components/elements';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
+import AddIcon from '@mui/icons-material/AddOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import { IconButton } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useId, useState } from 'react';
+
 
 export default function EntryBalance(props: { accountUuid: string }) {
-	const { entries, balance, boards, set, board, setBoard } = useEntriesContext();
+	const { entries, balance, boards, board, setBoard, setEntriesBoard, addEntries } = useEntriesContext();
+	const [loading, setLoading] = useState(false);
+	const id = useId();
 
 	const handleBoardNameSubmit = async (value: string) => {
 		const res = await boardCreateAction({
@@ -19,47 +26,77 @@ export default function EntryBalance(props: { accountUuid: string }) {
 			entriesIds: entries.map(e => e.id),
 		});
 		if (res.success) {
-			res.data.entries.forEach(entry => {
-				const board: Entry['board'] = { uuid: res.data.uuid, id: res.data.id, name: res.data.name };
-				set((e) => e.id === entry.id, { board } as unknown as Entry);
-			});
-			setBoard({
+			const entriesIds = entries.map(e => e.id);
+			setEntriesBoard(entriesIds, {
 				id: res.data.id,
 				uuid: res.data.uuid,
 				name: res.data.name,
 			});
-
-			return value;
+		} else {
+			alert(res.message || 'Erro ao nomear o painel');
 		}
-
-		alert('Erro ao criar o painel');
 	};
 
 	const handleDeleteBoard = async (boardUUid: string) => {
-		entries.filter(e => e.board?.uuid === boardUUid).forEach(entry => {
-			set((e) => e.id === entry.id, { board: undefined } as unknown as Entry);
-		});
-		setBoard(undefined);
-		const res = await boardDeleteAction({ uuid: boardUUid });
-
-		if (!res.success) {
-			alert('Erro ao deletar o painel');
+		setLoading(true);
+		const entriesIds = entries.filter(e => e.board?.uuid === boardUUid).map(e => e.id);
+		console.log(entriesIds);
+		if (window.confirm([
+			'Atenção! Esta ação não pode ser desfeita.',
+			'Tem certeza que deseja deletar este painel?',
+			`${entriesIds.length} entradas vinculadas a este painel serão deletadas.`
+		].join('\n'))) {
+			const res = await boardDeleteAction({ uuid: boardUUid });
+			if (res.success) {
+				setEntriesBoard(entriesIds);
+			} else {
+				alert(res.message || 'Erro ao deletar o painel');
+			}
 		}
+		setLoading(false);
 	};
 
+	const cloneEmptyBoard = async () => {
+		setLoading(true);
+		const res = await boardCopyAction({
+			accountUuid: props!.accountUuid,
+			boardId: board!.id,
+		});
+		if (res.success) {
+			addEntries(res.data);
+			setBoard(res.data[0].board!);
+		} else {
+			alert(res.message || 'Erro ao clonar o painel');
+		}
+		setLoading(false);
+	};
 	return (
 		<>
 			{boards.length > 0 &&
-				<Stack direction='row' spacing={1} alignItems='center' mb={1}>
-					<Chip label={'add'} onClick={() => setBoard(board)} />
-					{boards.map((b) => (
-						<Chip key={b.name} label={b.name} onDelete={() => handleDeleteBoard(b.uuid)} onClick={() => setBoard(b)} />
+				<Stack direction='row' spacing={1} alignItems='center' mb={1} overflow='auto' py={1}>
+					<IconButton onClick={() => cloneEmptyBoard()} color='primary' disabled={!board?.id} loading={loading}>
+						<AddIcon />
+					</IconButton>
+					{boards.map((b, i) => (
+						<Chip
+							key={id + b.name + i}
+							label={<Typography variant='subtitle2'>{b.name || '_______'}</Typography>}
+							disabled={loading}
+							deleteIcon={<DeleteIcon sx={{ ml: 1 }} />}
+							onDelete={() => handleDeleteBoard(b.uuid)}
+							onClick={() => setBoard(b)}
+							color='primary'
+							variant={board?.uuid === b.uuid ? 'filled' : 'outlined'}
+						/>
 					))}
 				</Stack>
 			}
 			<ListItemInput
-				hide={entries.length === 0}
 				id='name-board'
+				hide={entries.length === 0 || !!board?.name}
+				autoSelect
+				sx={{ my: 2 }}
+				component='div'
 				value={board?.name || ''}
 				onSubmit={handleBoardNameSubmit}
 				placeholder='Nomear este Painel'

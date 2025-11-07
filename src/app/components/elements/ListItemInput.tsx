@@ -7,7 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import ListItem from '@mui/material/ListItem';
+import ListItem, { type ListItemProps } from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import { useState } from 'react';
@@ -19,11 +19,26 @@ export interface ListInputProps {
   icon?: React.ReactNode;
   value?: string;
   hide?: boolean;
+  autoSelect?: boolean;
+  component?: ListItemProps['component'];
+  sx?: ListItemProps['sx'];
   onSubmit: (value: string) => Promise<string | void>;
   onError?: (value?: string) => Promise<void>;
 }
 
-const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeholder, icon, value: defaultValue, hide, disablePadding = true }) => {
+const ListItemInput: React.FC<ListInputProps> = ({
+  onSubmit,
+  onError,
+  id,
+  placeholder,
+  icon,
+  value: defaultValue,
+  hide,
+  autoSelect,
+  sx,
+  component = 'li',
+  disablePadding = true
+}) => {
   const [pending, setPending] = useState(false);
   const [value, setValue] = useState(defaultValue || '');
 
@@ -46,8 +61,9 @@ const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeh
   return (
     <ListItem
       disablePadding={disablePadding}
-      // component='label'
-      onSelect={e => e.preventDefault()}
+      component={component}
+      sx={sx}
+    // onSelect={(e) => e?.preventDefault()}
     >
       <ListItemButton>
         <ListItemAvatar>
@@ -62,7 +78,13 @@ const ListItemInput: React.FC<ListInputProps> = ({ onSubmit, onError, id, placeh
           onSubmit={handleSubmit}
           autoComplete='off'
           fullWidth>
-          <InputBase name={`${id}-name`} placeholder={placeholder} value={value} onChange={e => setValue(e.target.value)} />
+          <InputBase
+            onFocus={e => autoSelect && e.target.select()}
+            name={`${id}-name`}
+            placeholder={placeholder}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+          />
         </FormControl>
         <IconButton type='submit' form={`${id}-form`} aria-label='add account' disabled={pending}>
           <SendIcon />
