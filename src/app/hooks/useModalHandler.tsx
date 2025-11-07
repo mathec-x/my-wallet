@@ -12,7 +12,7 @@ export function useModalHandler(name: string) {
   const isOpen = useMemo(() => searchParams.has(name), [searchParams, name]);
 
   function setRoute(path: string) {
-    router.replace(path, { scroll: false });
+    router.push(path, { scroll: false });
   }
 
   function setOpen(value: string) {
