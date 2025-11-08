@@ -2,22 +2,19 @@
 
 import { entriesUpdateAction, type Entry } from '@/app/actions/entries/entries.actions';
 import ListItemAction from '@/app/components/elements/ListItemAction';
-import ListItemInput from '@/app/components/elements/ListItemInput';
+import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
 import ListItemRow from '@/app/components/elements/ListItemRow';
 import useModalHandler from '@/app/hooks/useModalHandler';
 import { categoriesList } from '@/shared/schemas/categoriesList';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { arrayGroupBy } from '@/shared/utils/array-manipulation/group-by';
 import { floatToMoney } from '@/shared/utils/money-format';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoneyOutlined';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchangeOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import DoneAllIcon from '@mui/icons-material/DoneAllOutlined';
 import DoneIcon from '@mui/icons-material/DoneOutlined';
 import InfoIcon from '@mui/icons-material/InfoOutline';
 import Stack from '@mui/material/Stack';
 import { useId, useMemo } from 'react';
-import ListItemCollapse from '../../elements/ListItemCollapse';
 
 interface EntryListProps {
 	accountUuid: string;
@@ -33,7 +30,6 @@ interface EntryListProps {
 export default function EntryList(props: EntryListProps) {
 	const id = useId();
 	const modal = useModalHandler(props.editorModalName);
-	const title = props.type === 'INCOME' ? 'Entradas' : 'Saídas';
 	const group = useMemo(() => {
 		if (!props.groupBy) {
 			return [{
@@ -56,15 +52,6 @@ export default function EntryList(props: EntryListProps) {
 
 	return (
 		<>
-			<ListItemInput
-				id={`input-add-entry-${props.type.toLowerCase()}`}
-				icon={props.type === 'INCOME' ? <AttachMoneyIcon /> : <CurrencyExchangeIcon />}
-				onSubmit={(value) => props.onSumbit(value, props.type)}
-				placeholder={`Adicionar título de ${title.substring(0, title.length - 1).toLowerCase()}`}
-				onError={async () => {
-					alert('Minimo 3 caracteres');
-				}}
-			/>
 			{group
 				.sort((a, b) => (a.category || '').localeCompare(b.category || ''))
 				.map(({ category, data, amount }, i) => {
@@ -72,13 +59,14 @@ export default function EntryList(props: EntryListProps) {
 
 					return (
 						<ListItemCollapse
+							component='div'
 							key={id + '-' + category + '-' + i}
 							openValue={category || null}
 							isOpenOn={(e) => e === category}
 							icon={icon}
 							primary={label ? `${label} (${data.length})` : null}
 							secondary={`R$ ${floatToMoney(amount)}`}
-							markAsDone={data.every(e => !e.future)}
+							actionLabel={data.every(e => !e.future) && <DoneIcon color='disabled' />}
 							disablePadding
 						>
 							{data.map((entry, i) => (
@@ -107,6 +95,7 @@ export default function EntryList(props: EntryListProps) {
 					);
 				})}
 			<ListItemRow
+				component='div'
 				hide={group[0]?.data?.length !== 1}
 				avatarIcon={<InfoIcon color='disabled' />}
 				caption='Deslize para a esquerda para deletar ou para a direita para marcar como resolvido.'

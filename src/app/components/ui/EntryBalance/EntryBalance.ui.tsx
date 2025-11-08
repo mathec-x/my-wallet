@@ -3,11 +3,11 @@
 import { boardCopyAction, boardCreateAction, boardDeleteAction } from '@/app/actions/entries/entries.actions';
 import { ListContainer, ListItemInput, ListItemRow } from '@/app/components/elements';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AddIcon from '@mui/icons-material/AddOutlined';
+import BalanceIcon from '@mui/icons-material/Balance';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
-import { IconButton } from '@mui/material';
 import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useId, useState } from 'react';
@@ -100,15 +100,16 @@ export default function EntryBalance(props: { accountUuid: string }) {
 				onSubmit={handleBoardNameSubmit}
 				placeholder='Nomear este Painel'
 			/>
-			<ListContainer header={entries.length > 0 && balance.income !== '0,00' && 'resumo'}>
+			<ListContainer header={entries.length > 0 && balance.income !== '0,00' && 'Balance'} disablePadding>
 				<ListItemRow
 					hide={balance.income === '0,00'}
-					primary={<>Saldo R$ <Typography variant='body1' display='inline'>{balance.balance}</Typography></>}
+					primary={<>R$ <Typography variant='body1' display='inline'>{balance.balance}</Typography></>}
+					secondary={'Saldo total considerando entradas e saídas'}
 					caption={<>Devedor R$ <Typography variant='body1' display='inline'>{balance.futureBalance}</Typography></>}
-					avatarIcon={<AccountBalanceIcon />}
+					avatarIcon={<BalanceIcon />}
 				>
 				</ListItemRow>
-				<ListItemRow
+				{/* <ListItemRow
 					hide={balance.income === '0,00'}
 					primary={`Entradas R$ ${balance.income}`}
 					caption={![balance.income, '0,00'].includes(balance.futureIncome) && `Recebido R$ ${balance.futureIncome}`}
@@ -121,7 +122,7 @@ export default function EntryBalance(props: { accountUuid: string }) {
 					caption={![balance.expense, '0,00'].includes(balance.futureExpense) && `Pago R$ ${balance.futureExpense}`}
 					avatarIcon={<AccountBalanceIcon />}
 				>
-				</ListItemRow>
+				</ListItemRow> */}
 			</ListContainer>
 		</>
 	);

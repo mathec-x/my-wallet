@@ -5,10 +5,13 @@ import {
 } from '@/app/actions/entries/entries.actions';
 import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
 import ListContainer from '@/app/components/elements/ListContainer';
+import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
+import ListItemInput from '@/app/components/elements/ListItemInput';
 import EntryBalance from '@/app/components/ui/EntryBalance/EntryBalance.ui';
 import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
+import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Grid from '@mui/material/Grid';
 import { useMemo } from 'react';
 
@@ -17,12 +20,21 @@ interface DashboardLayoutProps {
   entrySearchParam: string;
 }
 
+
 const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
-  const { entries, addEntries, remove, restore, set, board, accountUuid } = useEntriesContext();
+  const { entries, addEntries, remove, restore, set, board, accountUuid, balance } = useEntriesContext();
 
   const entry = useMemo(() => {
     return entries.find(e => e.uuid === props.entryUuid);
   }, [entries, props.entryUuid]);
+
+  const incomes = useMemo(() => {
+    return entries.filter(entry => entry.type === 'INCOME');
+  }, [entries]);
+
+  const expenses = useMemo(() => {
+    return entries.filter(entry => entry.type === 'EXPENSE');
+  }, [entries]);
 
   const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE') => {
     const newEntry = await entriesCreateAction({
@@ -67,30 +79,72 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
         <EntryBalance accountUuid={accountUuid} />
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
-        <ListContainer header={'entradas'}>
-          <EntryList
-            editorModalName={props.entrySearchParam}
-            accountUuid={accountUuid}
-            entries={entries.filter(entry => entry.type === 'INCOME')}
-            type='INCOME'
-            onSumbit={handleSubmit}
-            onDelete={handleDelete}
-            onUpdate={handleUpdate}
-          />
+        <ListContainer component='div'>
+          <ListItemCollapse component='div'
+            id="list-item-collapse-incomes"
+            disablePadding defaultOpen
+            divider={false}
+            openValue='incomes'
+            isOpenOn={(e) => e === 'incomes'}
+            icon={<AssuredWorkloadIcon />}
+            avatarVariant='circular'
+            caption={'Entradas'}
+            primary={`R$ ${balance.income}`}
+            secondary={'Valor total'}
+            hideExpandIcon={incomes.length === 0}
+            actionLabel={![balance.income, '0,00'].includes(balance.futureIncome) && `R$ ${balance.futureIncome}`}
+          >
+            <EntryList
+              editorModalName={props.entrySearchParam}
+              accountUuid={accountUuid}
+              entries={incomes}
+              type='INCOME'
+              onSumbit={handleSubmit}
+              onDelete={handleDelete}
+              onUpdate={handleUpdate}
+            />
+          </ListItemCollapse>
+          <ListItemInput component='label'
+            id={'input-add-entry-income'}
+            icon={<></>}
+            onSubmit={(value) => handleSubmit(value, 'INCOME')}
+            placeholder={'Adicionar Entrada (título)'}
+            onError={async () => { alert('Minimo 3 caracteres'); }} />
         </ListContainer>
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
-        <ListContainer header={'saídas'}>
-          <EntryList
-            editorModalName={props.entrySearchParam}
-            accountUuid={accountUuid}
-            entries={entries.filter(entry => entry.type === 'EXPENSE')}
-            groupBy='category'
-            type='EXPENSE'
-            onSumbit={handleSubmit}
-            onDelete={handleDelete}
-            onUpdate={handleUpdate}
-          />
+        <ListContainer component='div'>
+          <ListItemCollapse component='div'
+            id="list-item-collapse-expenses"
+            defaultOpen disablePadding
+            divider={false}
+            openValue='expenses'
+            isOpenOn={(e) => e === 'expenses'}
+            icon={<AssuredWorkloadIcon />}
+            avatarVariant='circular'
+            caption={'Saídas'}
+            primary={`R$ ${balance.expense}`}
+            secondary={'Valor total'}
+            hideExpandIcon={expenses.length === 0}
+            actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
+          >
+            <EntryList
+              editorModalName={props.entrySearchParam}
+              accountUuid={accountUuid}
+              entries={expenses}
+              groupBy='category'
+              type='EXPENSE'
+              onSumbit={handleSubmit}
+              onDelete={handleDelete}
+              onUpdate={handleUpdate}
+            />
+          </ListItemCollapse>
+          <ListItemInput component='label'
+            id={'input-add-entry-expense'}
+            icon={<></>}
+            onSubmit={(value) => handleSubmit(value, 'EXPENSE')}
+            placeholder={'Adicionar Saída (título)'}
+            onError={async () => { alert('Minimo 3 caracteres'); }} />
         </ListContainer>
       </Grid>
       <EntryForm

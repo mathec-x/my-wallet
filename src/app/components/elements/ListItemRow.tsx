@@ -9,6 +9,7 @@ interface ListItemRowProps extends ListItemOwnProps {
 	avatarVariant?: AvatarProps['variant']
 	primary?: ListItemTextProps['primary'];
 	secondary?: ListItemTextProps['secondary'];
+	component?: React.ElementType;
 	caption?: string | React.ReactNode;
 	hide?: boolean;
 }

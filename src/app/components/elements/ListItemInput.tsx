@@ -10,7 +10,7 @@ import InputBase from '@mui/material/InputBase';
 import ListItem, { type ListItemProps } from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export interface ListInputProps {
   id: string;
@@ -41,6 +41,26 @@ const ListItemInput: React.FC<ListInputProps> = ({
 }) => {
   const [pending, setPending] = useState(false);
   const [value, setValue] = useState(defaultValue || '');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+
+    if (autoSelect) {
+      e.target.select();
+    }
+    // await keyboard to be shown;
+    setTimeout(() => {
+      if (inputRef.current) {
+        const offset = inputRef.current.offsetHeight;
+        const targetScrollPosition = inputRef.current.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: targetScrollPosition, behavior: 'smooth' });
+        console.log({
+          offset,
+          targetScrollPosition
+        });
+      }
+    }, 500);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -79,7 +99,8 @@ const ListItemInput: React.FC<ListInputProps> = ({
           autoComplete='off'
           fullWidth>
           <InputBase
-            onFocus={e => autoSelect && e.target.select()}
+            inputRef={inputRef}
+            onFocus={handleInputFocus}
             name={`${id}-name`}
             placeholder={placeholder}
             value={value}

@@ -4,6 +4,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 
 export interface ListContainerProps extends ListOwnProps {
   header?: string | React.ReactNode;
+  component?: React.ElementType;
 }
 
 const ListContainer: React.FC<ListContainerProps> = ({ header, children, sx, ...listProps }) => {

@@ -8,10 +8,9 @@ export const PwaContext = createContext<UsePwaInterface>({});
 
 const ReactPwa: React.FC<{ children: React.ReactNode }> = (props) => {
   const { done, ...registration } = useRegistration({
-    test: false,
     config: {
       swUrl: '/service-worker.js',
-      onError: (err) => { console.error('Service Worker registration failed:', err); },
+      onError: (err) => { console.log('Service Worker registration failed:', err); },
       onPrompt: () => { console.log('PWA install prompt triggered'); },
       onSuccess: () => { console.log('Service Worker registered successfully'); },
       onUpdate: () => { console.log('Service Worker update found'); },
