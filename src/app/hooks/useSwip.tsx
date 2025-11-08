@@ -36,7 +36,6 @@ function useSweep({
     if (!onSwipeLeft && offset < 0) { setDragOffset(0);; return; };
     if (!onSwipeRight && offset > 0) { setDragOffset(0); return; };
 
-    // console.log({ offset });
 
     if (threshould < Math.abs(offset)) {
       setDragOffset(offset > 0 ? threshould : -threshould);
@@ -47,19 +46,7 @@ function useSweep({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwiping, threshould]);
 
-  const handleMouseUp = useCallback(() => {
-    if (!isSwiping || !isDragging.current) return;
-    if (dragOffset < -(threshould / 2) && onSwipeLeft) {
-      onSwipeLeft();
-    } else if (dragOffset > (threshould / 2) && onSwipeRight) {
-      onSwipeRight();
-    }
-    setDragOffset(0);
-    setIsSwiping(false);
-    isDragging.current = false;
-  }, [isSwiping, dragOffset, onSwipeLeft, onSwipeRight, threshould]);
-
-  // region Touch events for mobile
+  // #region Touch events for mobile
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (!onSwipeLeft && !onSwipeRight) return;
 
@@ -87,38 +74,42 @@ function useSweep({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwiping, threshould]);
 
-  const handleTouchEnd = useCallback(() => {
+  const handleSwipEnd = useCallback(() => {
     if (!isSwiping || !isDragging.current) return;
 
-    if (dragOffset < -(threshould / 2) && onSwipeLeft) {
+    const percentArea = threshould * 0.1; // 10% of the threshould
+    if (dragOffset < -(threshould - percentArea) && onSwipeLeft) {
       onSwipeLeft();
-    } else if (dragOffset > (threshould / 2) && onSwipeRight) {
+      // console.log('swipe to the left');
+    } else if (dragOffset > (threshould - percentArea) && onSwipeRight) {
       onSwipeRight();
+      // console.log('swipe to the right');
     }
 
     setDragOffset(0);
     setIsSwiping(false);
     isDragging.current = false;
-  }, [isSwiping, dragOffset, onSwipeLeft, onSwipeRight, threshould]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSwiping, dragOffset, threshould]);
 
   useEffect(() => {
     if (isSwiping) {
       // Mouse events
       window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('mouseup', handleSwipEnd);
 
       // Touch events
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
-      window.addEventListener('touchend', handleTouchEnd);
+      window.addEventListener('touchend', handleSwipEnd);
     }
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', handleSwipEnd);
       window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchend', handleSwipEnd);
     };
-  }, [isSwiping, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
+  }, [isSwiping, handleMouseMove, handleSwipEnd, handleTouchMove]);
 
   return {
     dragOffset,
