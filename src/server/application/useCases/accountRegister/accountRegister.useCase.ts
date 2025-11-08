@@ -20,7 +20,7 @@ export class AccountRegisterUseCase {
           name: params.accountName,
           user: {
             connect: {
-              uuid: params.userUuid
+              uuid: params.userUuid!
             }
           }
         }

@@ -14,7 +14,7 @@ import { useId, useState } from 'react';
 
 
 export default function EntryBalance(props: { accountUuid: string }) {
-	const { entries, balance, boards, board, setBoard, setEntriesBoard, addEntries } = useEntriesContext();
+	const { entries, balance, boards, board, setBoard, setEntriesBoard, addEntries, findEntries } = useEntriesContext();
 	const [loading, setLoading] = useState(false);
 	const id = useId();
 
@@ -39,8 +39,7 @@ export default function EntryBalance(props: { accountUuid: string }) {
 
 	const handleDeleteBoard = async (boardUUid: string) => {
 		setLoading(true);
-		const entriesIds = entries.filter(e => e.board?.uuid === boardUUid).map(e => e.id);
-		console.log(entriesIds);
+		const entriesIds = findEntries(e => e.board?.uuid === boardUUid).map(e => e.id);
 		if (window.confirm([
 			'Atenção! Esta ação não pode ser desfeita.',
 			'Tem certeza que deseja deletar este painel?',

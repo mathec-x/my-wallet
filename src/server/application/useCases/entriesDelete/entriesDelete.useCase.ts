@@ -20,9 +20,9 @@ export class EntriesDeleteUseCase {
 			const userUuid = await this.cookieService.getUUidFromCookie();
 			const data = await prisma.entry.delete({
 				where: {
-					uuid: params.entryUuid,
+					uuid: params.entryUuid!,
 					account: {
-						uuid: params.accountUuid,
+						uuid: params.accountUuid!,
 						user: {
 							uuid: userUuid
 						}

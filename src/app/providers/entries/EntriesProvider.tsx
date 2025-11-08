@@ -25,7 +25,7 @@ function calculateBalance(entries: Entry[]) {
   };
 };
 
-interface EntriesContextType {
+interface IEntriesContextType {
   entries: Entry[];
   restore: () => void;
   remove: (param: { uuid: string }) => void;
@@ -49,9 +49,10 @@ interface EntriesContextType {
     uuid: string;
     name: string;
   } | undefined) => void
+  findEntries: (callback: (entry: Entry) => boolean) => Entry[];
 }
 
-const EntriesContext = createContext<EntriesContextType | undefined>(undefined);
+const EntriesContext = createContext<IEntriesContextType | undefined>(undefined);
 
 interface EntriesProviderProps {
   entries: Entry[];
@@ -62,20 +63,18 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
   const [entries, setEntries] = useState(() => values);
 
   const boards = useMemo(() => {
-    const boards: EntriesContextType['boards'] = [];
-    entries
-      .sort((a, b) => (a.board?.id || 0) - (b.board?.id || 0))
-      .forEach(entry => {
-        const boardId = entry.board?.id;
-        if (boardId && !boards.find(b => b.id === boardId)) {
-          boards.push({
-            id: boardId,
-            uuid: entry.board!.uuid,
-            name: entry.board!.name
-          });
-        }
-      });
-    return boards;
+    const boards: IEntriesContextType['boards'] = [];
+    entries.forEach(entry => {
+      const boardId = entry.board?.id;
+      if (boardId && !boards.find(b => b.id === boardId)) {
+        boards.push({
+          id: boardId,
+          uuid: entry.board!.uuid,
+          name: entry.board!.name
+        });
+      }
+    });
+    return boards.sort((a, b) => (a.id || 0) - (b.id || 0));
   }, [entries]);
 
   const [board, setBoard] = useState(() => boards.length > 0 ? boards[boards.length - 1] : undefined);
@@ -89,11 +88,16 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
   const balance = useMemo(() => calculateBalance(filteredEntries), [filteredEntries]);
 
   function remove(param: { uuid: string }) {
-    setEntries(entries.filter(entry => entry.uuid !== param.uuid));
+    const list = entries.filter(entry => entry.uuid !== param.uuid);
+    setEntries(list);
+    if (list.filter(e => e.boardId === board?.id).length === 0) {
+      setBoard(list[list.length - 1]?.board || undefined);
+    }
   }
 
   function setEntriesBoard(entriesIds: number[], board?: { id: number; uuid: string; name: string }) {
     const newList = entries
+      // sets boards to entries
       .map(entry => !entriesIds.includes(entry.id)
         ? entry
         : {
@@ -102,10 +106,10 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
           board: board ? { id: board.id, uuid: board.uuid, name: board.name } : null
         }
       )
+      // or remove entries without board
       .filter(e => e.boardId !== null);
 
     setEntries(newList);
-
     if (!board && newList.length === 0) {
       setBoard(undefined);
     } else {
@@ -137,13 +141,8 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
   }
 
   function addEntries(data?: Partial<Entry>[]) {
-    if (data) {
-      setEntries([...entries, ...data as Entry[]]);
-    } else {
-      restore();
-    }
+    return (data) ? setEntries([...entries, ...data as Entry[]]) : restore();
   }
-
 
   return (
     <EntriesContext.Provider value={{
@@ -157,6 +156,7 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
       board,
       setBoard,
       setEntriesBoard,
+      findEntries: (callback: (entry: Entry) => boolean) => entries.filter(callback),
       ...props
     }}>
       {children}

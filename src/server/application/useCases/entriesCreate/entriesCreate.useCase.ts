@@ -22,7 +22,7 @@ export class EntriesCreateUseCase {
 					...params.data,
 					account: {
 						connect: {
-							uuid: params.accountUuid,
+							uuid: params.accountUuid!,
 							user: {
 								uuid: userUuid
 							}

@@ -21,7 +21,7 @@ export class BoardCopyUseCase {
 
       const currentBoardEntries = await prisma.entry.findMany({
         where: {
-          boardId: params.boardId
+          boardId: params.boardId!
         }
       });
 
@@ -44,10 +44,10 @@ export class BoardCopyUseCase {
           expected: entry.expected,
           type: entry.type,
           order: entry.order,
-          future: entry.future,
           accountId: entry.accountId,
           category: entry.category,
-          boardId: board.id
+          boardId: board.id,
+          future: true
         })),
         include: {
           board: {

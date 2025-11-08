@@ -17,7 +17,7 @@ const entriesUpdateUseCase = new EntriesUpdateUseCase(cookieService);
 const entriesCreateUseCase = new EntriesCreateUseCase(cookieService);
 const boardCreateUseCase = new BoardCreateUseCase(cookieService);
 const boardCopyUseCase = new BoardCopyUseCase(cookieService);
-const boardDeleteUseCase = new BoardDeleteUseCase();
+const boardDeleteUseCase = new BoardDeleteUseCase(cookieService);
 
 export type Entry = ResponseServiceAsync<typeof entriesCreateAction>
 
