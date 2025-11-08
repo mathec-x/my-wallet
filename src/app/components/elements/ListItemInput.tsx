@@ -54,12 +54,8 @@ const ListItemInput: React.FC<ListInputProps> = ({
         const offset = inputRef.current.offsetHeight;
         const targetScrollPosition = inputRef.current.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetScrollPosition, behavior: 'smooth' });
-        console.log({
-          offset,
-          targetScrollPosition
-        });
       }
-    }, 500);
+    }, 555);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
