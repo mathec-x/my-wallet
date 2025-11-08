@@ -1,3 +1,4 @@
+import DoneIcon from '@mui/icons-material/DoneAllOutlined';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Avatar from '@mui/material/Avatar';
@@ -17,6 +18,7 @@ interface ListItemCollapseProps {
   secondary?: string | null;
   icon?: React.ReactNode;
   disablePadding?: boolean;
+  markAsDone?: boolean;
 }
 
 const ListItemCollapse: React.FC<ListItemCollapseProps> = (props) => {
@@ -39,6 +41,7 @@ const ListItemCollapse: React.FC<ListItemCollapseProps> = (props) => {
           </Avatar>
         </ListItemAvatar>
         <ListItemText primary={props.primary} secondary={props.secondary} />
+        {props.markAsDone && <DoneIcon sx={{ mr: 3 }} color='disabled' />}
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>

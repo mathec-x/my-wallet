@@ -39,7 +39,7 @@ export default function EntryList(props: EntryListProps) {
 			return [{
 				category: null,
 				data: props.entries,
-				amount: props.entries.reduce((acc, cur) => acc + cur.amount, 0),
+				amount: props.entries.reduce((acc, cur) => acc + cur.amount, 0)
 			}];
 		}
 
@@ -49,7 +49,7 @@ export default function EntryList(props: EntryListProps) {
 			(acc, cur) => ({
 				category: acc.category || null,
 				amount: cur.Sum(acc.amount, cur.amount),
-				data: cur.ConcatArray(acc, cur.data),
+				data: cur.ConcatArray(acc, cur.data)
 			}));;
 
 	}, [props.entries, props.groupBy]);
@@ -78,6 +78,7 @@ export default function EntryList(props: EntryListProps) {
 							icon={icon}
 							primary={label ? `${label} (${data.length})` : null}
 							secondary={`R$ ${floatToMoney(amount)}`}
+							markAsDone={data.every(e => !e.future)}
 							disablePadding
 						>
 							{data.map((entry, i) => (
