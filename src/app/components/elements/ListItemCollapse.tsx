@@ -1,6 +1,6 @@
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import Avatar from '@mui/material/Avatar';
+import Avatar, { type AvatarOwnProps } from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
@@ -16,7 +16,7 @@ interface ListItemCollapseProps {
   children: React.ReactNode;
   defaultOpen?: boolean;
   openValue?: string | null;
-  avatarVariant?: 'circular' | 'rounded' | 'square' | 'default';
+  avatarVariant?: AvatarOwnProps['variant'];
   primary?: string | null;
   secondary?: string | null;
   caption?: string | null | false;

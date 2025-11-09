@@ -6,6 +6,7 @@ import ListContainer from '@/app/components/elements/ListContainer';
 import ListItemInput from '@/app/components/elements/ListItemInput';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
 import { usePwa } from '@/app/providers/pwa/PwaProvider';
+import { floatToMoney } from '@/shared/utils/money-format';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalanceOutlined';
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
@@ -51,7 +52,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
   };
 
   const handleAddAccount = async (value: string) => {
-    setUserAccounts([...user.accounts, { name: value, uuid: '', balance: 0 }]);
+    setUserAccounts([...user.accounts, { name: value, uuid: '', balance: 0, id: 0 }]);
     const res = await registerAccountAction({
       accountName: value,
       userUuid: user!.uuid
@@ -83,7 +84,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
                   <WalletIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={account.name} secondary={`R$ ${account.balance.toFixed(2)}`} />
+              <ListItemText primary={account.name} secondary={`R$ ${floatToMoney(account.balance)}`} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -96,7 +97,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={`R$ ${user.accounts.reduce((acc, account) => acc + account.balance, 0).toFixed(2)}`}
+            primary={`R$ ${floatToMoney(user.accounts.reduce((acc, account) => acc + account.balance, 0))}`}
             secondary='Saldo Total'
           />
         </ListItem>

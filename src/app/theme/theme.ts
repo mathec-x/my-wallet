@@ -5,6 +5,7 @@ import { createTheme, type Theme } from '@mui/material/styles';
 declare module '@mui/material/Avatar' {
   interface AvatarPropsVariantOverrides {
     default: true;
+    primary: true;
   }
 }
 
@@ -44,6 +45,13 @@ const globalTheme = createTheme({
           style: ({ theme }: { theme: Theme }) => ({
             backgroundColor: 'transparent',
             color: theme.palette.getContrastText(theme.palette.primary.contrastText)
+          }),
+        },
+        {
+          props: { variant: 'primary' },
+          style: ({ theme }: { theme: Theme }) => ({
+            backgroundColor: 'transparent',
+            color: theme.palette.primary.main
           }),
         },
       ],

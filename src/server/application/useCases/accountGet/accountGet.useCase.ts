@@ -6,6 +6,13 @@ import 'server-only';
 
 export type AccountGetUseCaseParams = Prisma.AccountFindFirstArgs
 
+export const accountSelect = {
+	id: true,
+	uuid: true,
+	name: true,
+	balance: true
+};
+
 export class AccountGetUseCase {
 	private readonly logger = new LoggerService(AccountGetUseCase.name);
 	async execute(params: AccountGetUseCaseParams) {

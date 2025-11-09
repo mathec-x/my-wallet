@@ -68,6 +68,7 @@ export default function EntryList(props: EntryListProps) {
 							secondary={`R$ ${floatToMoney(amount)}`}
 							actionLabel={data.every(e => !e.future) && <DoneIcon color='disabled' />}
 							disablePadding
+							avatarVariant='default'
 						>
 							{data.map((entry, i) => (
 								<ListItemAction
@@ -81,7 +82,7 @@ export default function EntryList(props: EntryListProps) {
 									icon={entry.order}
 									onClick={() => modal.open(entry.uuid)}
 									primary={entry.title}
-									avatarVariant='default'
+									avatarVariant='primary'
 									secondary={`R$ ${floatToMoney(entry.amount)}`}
 									caption={entry.description || entry.board?.name || ''}
 									isLoading={!entry.uuid}

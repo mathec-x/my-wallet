@@ -1,3 +1,4 @@
+import { accountSelect } from '@/server/application/useCases/accountGet/accountGet.useCase';
 import { ResponseService } from '@/server/domain/common/response.service';
 import { prisma } from '@/server/infra/prisma/client';
 import 'server-only';
@@ -11,11 +12,7 @@ export class AccountRegisterUseCase {
   async execute(params: AccountRegisterUseCaseParams) {
     try {
       const newAccount = await prisma.account.create({
-        select: {
-          uuid: true,
-          name: true,
-          balance: true
-        },
+        select: accountSelect,
         data: {
           name: params.accountName,
           user: {
