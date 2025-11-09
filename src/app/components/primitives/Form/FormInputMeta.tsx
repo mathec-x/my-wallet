@@ -27,12 +27,13 @@ interface FormInputMetaProps {
   autoSelect?: boolean;
   control?: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   options?: { label: string; value: string }[];
+  autoComplete?: string;
   align?: 'left' | 'right' | 'center';
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 }
 const FormInputMeta: React.FC<FormInputMetaProps> = ({
   fullWidth, label, title, error, helperText, form, inputMode, description, multiline, options, control, autoSelect,
-  type = 'text', align = 'left'
+  type = 'text', align = 'left', autoComplete
 }) => {
 
   switch (type) {
@@ -101,6 +102,7 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
             // error={!!error}
             // label={title || label}
             // helperText={helperText || description}
+            autoComplete={autoComplete}
             onFocus={(e) => autoSelect && e.target.select()}
             type={type || 'text'}
             multiline={multiline}

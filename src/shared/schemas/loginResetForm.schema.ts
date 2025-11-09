@@ -7,6 +7,7 @@ export const loginResetFormSchema = z.object({
       title: 'Email',
       description: 'Seu email cadastrado',
       type: 'email',
+      autoComplete: 'email',
     }),
 });
 

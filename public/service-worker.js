@@ -1,5 +1,5 @@
 
-const CACHE_NAME = '1.0.0';
+const CACHE_NAME = '1.1.0';
 const urlsToCache = [];
 // const appIcon = 'default_icon_link';
 

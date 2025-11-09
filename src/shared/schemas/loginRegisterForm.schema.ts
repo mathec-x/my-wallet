@@ -10,6 +10,7 @@ export const loginRegisterFormSchema = z.object({
       title: 'Nome',
       description: 'Seu nome completo',
       type: 'text',
+      autoComplete: 'username',
     }),
   email: z
     .email('Email inválido')
@@ -17,6 +18,7 @@ export const loginRegisterFormSchema = z.object({
       title: 'Email',
       description: 'Seu email cadastrado',
       type: 'email',
+      autoComplete: 'email',
     }),
   password: z
     .string()
@@ -25,7 +27,8 @@ export const loginRegisterFormSchema = z.object({
     .meta({
       title: 'Senha',
       description: 'Sua senha de acesso',
-      type: 'password'
+      type: 'password',
+      autoComplete: 'new-password',
     }),
   confirmPassword: z
     .string()
@@ -34,7 +37,8 @@ export const loginRegisterFormSchema = z.object({
     .meta({
       title: 'Confirmar Senha',
       description: 'Redigite sua senha',
-      type: 'password'
+      type: 'password',
+      autoComplete: 'new-password',
     })
 }).refine((data) => data.password === data.confirmPassword, {
   path: ['confirmPassword'],

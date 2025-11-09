@@ -8,6 +8,7 @@ export const loginFormSchema = z.object({
       title: 'Email',
       description: 'Seu email cadastrado',
       type: 'email',
+      autoComplete: 'email',
     }),
   password: z
     .string()
@@ -16,7 +17,8 @@ export const loginFormSchema = z.object({
     .meta({
       title: 'Senha',
       description: 'Sua senha de acesso',
-      type: 'password'
+      type: 'password',
+      autoComplete: 'current-password',
     }),
   remeberMe: z
     .boolean()
