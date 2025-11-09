@@ -25,7 +25,7 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/pwa/screenshot-1.png',
         sizes: '1290x2796',
         type: 'image/png',
-        form_factor: 'wide'
+        form_factor: 'narrow'
       },
       {
         src: '/pwa/screenshot-2.png',
