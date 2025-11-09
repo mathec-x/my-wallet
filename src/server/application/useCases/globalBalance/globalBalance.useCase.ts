@@ -1,4 +1,5 @@
 import { prisma } from '@/server/infra/prisma/client';
+import 'server-only';
 
 export class GlobalBalanceUseCase {
   constructor() { }
