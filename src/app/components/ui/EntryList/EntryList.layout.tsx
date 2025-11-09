@@ -81,6 +81,7 @@ export default function EntryList(props: EntryListProps) {
 									icon={entry.order}
 									onClick={() => modal.open(entry.uuid)}
 									primary={entry.title}
+									avatarVariant='default'
 									secondary={`R$ ${floatToMoney(entry.amount)}`}
 									caption={entry.description || entry.board?.name || ''}
 									isLoading={!entry.uuid}

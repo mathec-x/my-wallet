@@ -79,11 +79,9 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   const [board, setBoard] = useState(() => boards.length > 0 ? boards[boards.length - 1] : undefined);
 
-  const filteredEntries = useMemo(() => {
-    return entries
-      .sort((a, b) => (a?.order || 0) - (b?.order || 0))
-      .filter(entry => !board?.id || entry.boardId === board?.id);
-  }, [entries, board]);
+  const filteredEntries = useMemo(() => entries
+    .sort((a, b) => (a?.order || 0) - (b?.order || 0))
+    .filter(entry => !board?.id || entry.boardId === board?.id), [entries, board]);
 
   const balance = useMemo(() => calculateBalance(filteredEntries), [filteredEntries]);
 
@@ -133,6 +131,9 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
     };
 
     setEntries(() => entries.map(entry => callback(entry) ? { ...entry, ...data } : entry));
+    if (data.board) {
+      setBoard(data.board);
+    };
     return data;
   }
 
@@ -158,9 +159,7 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
       setEntriesBoard,
       findEntries: (callback: (entry: Entry) => boolean) => entries.filter(callback),
       ...props
-    }}>
-      {children}
-    </EntriesContext.Provider>
+    }}>{children}</EntriesContext.Provider>
   );
 }
 

@@ -106,6 +106,7 @@ export default function EntryBalance(props: { accountUuid: string }) {
 					primary={<>R$ <Typography variant='body1' display='inline'>{balance.balance}</Typography></>}
 					secondary={'Saldo total considerando entradas e saídas'}
 					caption={<>Devedor R$ <Typography variant='body1' display='inline'>{balance.futureBalance}</Typography></>}
+					avatarVariant='rounded'
 					avatarIcon={<BalanceIcon />}
 				>
 				</ListItemRow>
