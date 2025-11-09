@@ -1,5 +1,6 @@
 import { LoggerService } from '@/server/application/services/logger/logger.service';
 import { accountSelect } from '@/server/application/useCases/accountGet/accountGet.useCase';
+import { GlobalBalanceUseCase } from '@/server/application/useCases/globalBalance/globalBalance.useCase';
 import { ResponseService } from '@/server/domain/common/response.service';
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
@@ -10,7 +11,8 @@ export class UserCurrentUseCase {
   private readonly logger = new LoggerService(UserCurrentUseCase.name);
 
   constructor(
-    private readonly hashService: HashService
+    private readonly hashService: HashService,
+    private readonly globalBalanceUseCase: GlobalBalanceUseCase
   ) { }
 
   async execute() {
@@ -47,21 +49,9 @@ export class UserCurrentUseCase {
       }
 
       if (user.accounts.length > 0) {
-        const balances = await prisma.entry.groupBy({
-          by: 'accountId',
-          where: {
-            future: false,
-            accountId: {
-              in: user.accounts.map(a => a.id)
-            }
-          },
-          _sum: {
-            amount: true
-          }
-        });
-        this.logger.debug('balances', balances);
+        const balances = await this.globalBalanceUseCase.execute(user.accounts.map(a => a.id));
         for (const account of user.accounts) {
-          account.balance = balances.find(e => e.accountId === account.id)?._sum.amount || 0;
+          account.balance = balances[account.id];
         }
       }
 
