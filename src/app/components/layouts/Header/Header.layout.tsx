@@ -29,9 +29,9 @@ const Header: React.FC<HeaderProps> = (props) => (
         </LinkButton>
       ) : (
         <Stack justifyContent='center'>
-          <Typography variant='body1' component='h1'>
+          {/* <Typography variant='body1' component='h1'>
             {props.user.name}
-          </Typography>
+          </Typography> */}
           <Typography variant='caption' color='textDisabled'>
             {props.user.email}
           </Typography>

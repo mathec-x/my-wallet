@@ -23,9 +23,9 @@ const DocumentTitle: React.FC = () => {
       <Typography variant='body1' component='h1'>
         {title}
       </Typography>
-      <Typography variant='caption' color='textDisabled'>
+      {/* <Typography variant='caption' color='textDisabled'>
         {subTitle}
-      </Typography>
+      </Typography> */}
     </Stack>
   );
 };
