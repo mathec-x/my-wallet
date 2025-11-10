@@ -1,0 +1,41 @@
+{
+  "src": {
+    "app": {
+      "(private)": "Private Pages",
+      "(public)": "Public Pages",
+      "@drawer": "Parallel Drawer Routes",
+      "actions": "Client Factory Server Actions (e.g., for Forms)",
+      "components": {
+        "composites": "combine primitives to create more complex components like forms, cards, etc.",
+        "elements": "basic building block components like text, box, list, etc.",
+        "layouts": "arrange other components on the screen like headers, footers, etc.",
+        "primitives": "fundamental components with minimal styling and functionality like buttons, inputs, etc.",
+        "ui": "reusable UI components like modals, toasts, etc."
+      },
+      "hooks": "custom React hooks",
+      "providers": "React context providers",
+      "theme": "theme configuration",
+      "manifest.ts": "manifest.ts",
+      "layout.tsx": "layout.tsx"
+    },
+    "server": {
+      "application": {
+        "services": "application services (orchestrate domain logic)",
+        "useCases": "application use cases (orchestrate specific business operations)"
+      },
+      "domain": {
+        "common": "common domain models and utilities",
+        "services": "domain services (business logic not tied to a specific entity)",
+        "models": "domain models and entities (definitions of core business objects)",
+        "repositories": "domain repositories (interfaces for data access)"
+      },
+      "infra": "infrastructure layer (eg. database, external APIs)",
+      "interfaces": "interfaces layer (eg. controllers, routes)"
+    },
+    "shared": {
+      "schemas": "shared Zod schemas for validation and type definitions across client and server",
+      "utils": "shared utility functions and helpers used in both client and server"
+    },
+    "middleware.ts": "middleware.ts"
+  }
+}
