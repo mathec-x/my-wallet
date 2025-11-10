@@ -4,7 +4,7 @@ import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
-import { Metadata, Viewport } from 'next';
+import { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import { getCurrentUser } from './actions/user/user.actions';
 import { AuthProvider } from './providers/auth/AuthProvider';
@@ -24,17 +24,18 @@ const roboto = Roboto({
 
 export const dynamic = 'force-dynamic'; // all routes needs ssr cookies
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  minimumScale: 1,
-  userScalable: false,
-  viewportFit: 'cover',
-  themeColor: '#9c27b0',
-  colorScheme: 'light dark',
-  interactiveWidget: 'overlays-content',
-};
+// export const viewport: Viewport = {
+// height: 'device-height',
+// width: 'device-width',
+// initialScale: 1,
+// maximumScale: 1,
+// minimumScale: 1,
+// userScalable: false,
+// viewportFit: 'cover',
+// themeColor: '#9c27b0',
+// colorScheme: 'light dark',
+// interactiveWidget: 'overlays-content',
+// };
 
 export const metadata: Metadata = {
   title: 'My Wallet',
@@ -47,6 +48,10 @@ export default async function RootLayout(props: RootLayoutProps) {
 
   return (
     <html lang='pt-BR' className={roboto.variable}>
+      <meta
+        name='viewport'
+        content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
+      />
       <meta name="application-name" content="Wallet" />
       <meta name="description" content="My wallet" />
       <meta name="format-detection" content="telephone=no" />
