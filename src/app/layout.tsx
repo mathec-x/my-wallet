@@ -25,7 +25,6 @@ const roboto = Roboto({
 export const dynamic = 'force-dynamic'; // all routes needs ssr cookies
 
 export const viewport: Viewport = {
-  height: 'device-height',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
