@@ -13,7 +13,7 @@ import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Grid from '@mui/material/Grid';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 interface DashboardLayoutProps {
   entryUuid?: string;
@@ -22,11 +22,11 @@ interface DashboardLayoutProps {
 
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
-  const { entries, addEntries, remove, restore, set, board, accountUuid, balance } = useEntriesContext();
+  const { entries, addEntries, remove, restore, set, board, accountUuid, balance, findEntries } = useEntriesContext();
 
-  const entry = useMemo(() => {
-    return entries.find(e => e.uuid === props.entryUuid);
-  }, [entries, props.entryUuid]);
+  const [entry] = useMemo(() => (!props.entryUuid) ? [] : findEntries(e => e.uuid === props.entryUuid),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [props.entryUuid]);
 
   const incomes = useMemo(() => {
     return entries.filter(entry => entry.type === 'INCOME');
@@ -58,20 +58,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
     }
   };
 
-  const handleUpdate = async (data: EntryUpdateFormSchema) => {
-    const parsed = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
-    const res = await entriesUpdateAction({
-      accountUuid: accountUuid,
-      entryUuid: data?.uuid || entry!.uuid,
-      data: parsed as never,
-    });
-    if (res?.success) {
-      set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);
-    } else {
-      restore();
-    }
-    return res;
-  };
+  const handleUpdate = useCallback(
+    async (data: EntryUpdateFormSchema) => {
+      const parsed = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
+      const res = await entriesUpdateAction({
+        accountUuid: accountUuid,
+        entryUuid: data?.uuid || entry!.uuid,
+        data: parsed as never,
+      });
+      if (res?.success) {
+        set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);
+      } else {
+        restore();
+      }
+      return res;
+    }, [accountUuid, entry, restore, set]);
 
   return (
     <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
