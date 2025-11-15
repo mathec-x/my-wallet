@@ -1,10 +1,42 @@
-import Dashboard from '@/app/components/layouts/Dashboard/Dashboard.layout';
-import { NextAsyncPageProps } from '@/server/interfaces/next';
+import { accountGetAction } from '@/app/actions/accounts/account.actions';
+import GridDashboardLayout from '@/app/components/layouts/Dashboard/Dashboard.layout';
+import EntryBalance from '@/app/components/ui/EntryBalance/EntryBalance.ui';
+import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
+import MoneyIcon from '@mui/icons-material/AttachMoney';
+import Grid from '@mui/material/Grid';
 
-export default async function DashboardPage(props: NextAsyncPageProps<{ uuid: string }, { entry: string }>) {
-  const searchParamsProps = await props.searchParams;
+export default async function DashboardPageLayout(props: PageProps<'/dashboard/[uuid]'>) {
+  const { uuid: accountUuid } = await props.params;
+  const { entry: entryUuid } = await props.searchParams;
+  const account = await accountGetAction({
+    entries: {
+      some: {
+        account: { uuid: accountUuid }
+      }
+    }
+  });
+
+  if (!account.success) {
+    return <div>Failed to load entries</div>;
+  }
 
   return (
-    <Dashboard entrySearchParam='entry' entryUuid={searchParamsProps?.entry} />
+    <EntriesProvider entries={account.data.entries} accountUuid={account.data.uuid}>
+      <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
+        <Grid size={{ xs: 12 }}>
+          <EntryBalance accountUuid={accountUuid} />
+        </Grid>
+        <GridDashboardLayout
+          entryUuid={entryUuid?.toString()}
+          listItemCollapseProps={{
+            disablePadding: true,
+            defaultOpen: true,
+            divider: false,
+            icon: <MoneyIcon />,
+            avatarVariant: 'circular'
+          }}
+        />
+      </Grid>
+    </EntriesProvider>
   );
 }

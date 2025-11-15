@@ -4,7 +4,7 @@ import { prisma } from '@/server/infra/prisma/client';
 import type { Prisma } from '@/server/infra/prisma/generated';
 import 'server-only';
 
-export type AccountGetUseCaseParams = Prisma.AccountFindFirstArgs
+export type AccountGetUseCaseParams = Prisma.AccountFindFirstArgs['where']
 
 export const accountSelect = {
 	id: true,
@@ -18,7 +18,25 @@ export class AccountGetUseCase {
 	async execute(params: AccountGetUseCaseParams) {
 		try {
 			this.logger.debug('Obtendo conta', params);
-			const data = await prisma.account.findFirst(params);
+			const data = await prisma.account.findFirst({
+				where: params,
+				select: {
+					uuid: true,
+					name: true,
+					balance: true,
+					entries: {
+						include: {
+							board: {
+								select: {
+									id: true,
+									uuid: true,
+									name: true,
+								}
+							}
+						}
+					}
+				}
+			});
 			if (data) {
 				this.logger.info('Conta encontrada');
 				return ResponseService.Ok(data);

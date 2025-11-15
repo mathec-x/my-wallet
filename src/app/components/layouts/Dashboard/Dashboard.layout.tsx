@@ -7,26 +7,24 @@ import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
 import ListContainer from '@/app/components/elements/ListContainer';
 import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
 import ListItemInput from '@/app/components/elements/ListItemInput';
-import EntryBalance from '@/app/components/ui/EntryBalance/EntryBalance.ui';
+
 import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
-import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Grid from '@mui/material/Grid';
 import { useCallback, useMemo } from 'react';
 
-interface DashboardLayoutProps {
+interface GridDashboardLayoutProps {
   entryUuid?: string;
-  entrySearchParam: string;
+  listItemCollapseProps?: Partial<React.ComponentProps<typeof ListItemCollapse>>;
 }
 
-
-const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
+const entrySearchParamDefault = 'entry';
+const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
   const { entries, addEntries, remove, restore, set, board, accountUuid, balance, findEntries } = useEntriesContext();
 
-  const [entry] = useMemo(() => (!props.entryUuid) ? [] : findEntries(e => e.uuid === props.entryUuid),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [props.entryUuid]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const [entry] = useMemo(() => !props.entryUuid ? [] : findEntries(e => e.uuid === props.entryUuid), [props.entryUuid]);
 
   const incomes = useMemo(() => {
     return entries.filter(entry => entry.type === 'INCOME');
@@ -75,28 +73,23 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
     }, [accountUuid, entry, restore, set]);
 
   return (
-    <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
-      <Grid size={{ xs: 12 }}>
-        <EntryBalance accountUuid={accountUuid} />
-      </Grid>
+    <>
       <Grid size={{ xs: 12, sm: 6 }}>
         <ListContainer component='div'>
-          <ListItemCollapse component='div'
+          <ListItemCollapse
             id="list-item-collapse-incomes"
-            disablePadding defaultOpen
-            divider={false}
+            component='div'
             openValue='incomes'
             isOpenOn={(e) => e === 'incomes'}
-            icon={<AssuredWorkloadIcon />}
-            avatarVariant='circular'
             caption={'Entradas'}
             primary={`R$ ${balance.income}`}
             secondary={'Valor total'}
             hideExpandIcon={incomes.length === 0}
             actionLabel={![balance.income, '0,00'].includes(balance.futureIncome) && `R$ ${balance.futureIncome}`}
+            {...props.listItemCollapseProps}
           >
             <EntryList
-              editorModalName={props.entrySearchParam}
+              editorModalName={entrySearchParamDefault}
               accountUuid={accountUuid}
               entries={incomes}
               type='INCOME'
@@ -115,22 +108,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <ListContainer component='div'>
-          <ListItemCollapse component='div'
+          <ListItemCollapse
             id="list-item-collapse-expenses"
-            defaultOpen disablePadding
-            divider={false}
+            component='div'
             openValue='expenses'
             isOpenOn={(e) => e === 'expenses'}
-            icon={<AssuredWorkloadIcon />}
-            avatarVariant='circular'
             caption={'Saídas'}
             primary={`R$ ${balance.expense}`}
             secondary={'Valor total'}
             hideExpandIcon={expenses.length === 0}
             actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
+            {...props.listItemCollapseProps}
           >
             <EntryList
-              editorModalName={props.entrySearchParam}
+              editorModalName={entrySearchParamDefault}
               accountUuid={accountUuid}
               entries={expenses}
               groupBy='category'
@@ -149,12 +140,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = (props) => {
         </ListContainer>
       </Grid>
       <EntryForm
-        editorModalName={props.entrySearchParam}
+        editorModalName={entrySearchParamDefault}
         entry={entry}
         onUpdate={handleUpdate}
       />
-    </Grid >
+    </>
   );
 };
 
-export default DashboardLayout;
+export default GridDashboardLayout;

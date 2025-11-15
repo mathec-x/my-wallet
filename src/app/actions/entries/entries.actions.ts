@@ -25,6 +25,9 @@ export async function entriesCreateAction(params: EntriesCreateUseCaseParams) {
 	return entriesCreateUseCase.execute(params);
 }
 
+/**
+ * unused for now
+ */
 export async function entriesListAction(params: EntriesListUseCaseParams) {
 	return entriesListUseCase.execute(params);
 };

@@ -74,6 +74,7 @@ export default function EntryList(props: EntryListProps) {
 								<ListItemAction
 									key={id + entry.title + entry.uuid + i}
 									component="div"
+									dense
 									disablePadding={(props.groupBy && entry.category) ? false : true}
 									SwipRightLabel={entry.future ? <DoneAllIcon color='success' /> : <DoneIcon color='info' />}
 									onSwipeRight={() => props.onUpdate({ future: !entry.future, uuid: entry.uuid } as EntryUpdateFormSchema)}
