@@ -32,8 +32,10 @@ prismaClient.$on('query', event => {
     return;
   }
 
-  const table = tableMatch?.[1] || '';
-  logger.verbose(`${method} ${styleText('green', `[${table}]`)} => (${event.duration}ms)`);
+  const [, table] = tableMatch || [];
+  if (table) {
+    logger.verbose(`${method} ${styleText('green', `[${table}]`)} => (${event.duration}ms)`);
+  }
 });
 
 prismaClient.$on('info', event => {
