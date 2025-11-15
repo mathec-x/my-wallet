@@ -1,11 +1,10 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
 export function useModalHandler(name: string) {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const router = useRouter();
 
   const value = useMemo(() => searchParams.get(name), [searchParams, name]);
@@ -18,13 +17,13 @@ export function useModalHandler(name: string) {
   function setOpen(value: string) {
     const params = new URLSearchParams(searchParams.toString());
     params.set(name, value);
-    setRoute(pathname + '?' + params.toString());
+    setRoute('?' + params.toString());
   };
 
   function setClose() {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(name);
-    setRoute(pathname + '?' + params.toString());
+    setRoute('?' + params.toString());
   };
 
   return {
