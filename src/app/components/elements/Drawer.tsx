@@ -22,7 +22,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
       slotProps={{
         paper: {
           sx: {
-            height: '100vh',
+            height: '100%',
             width: {
               md: '450px',
               lg: '550px',
