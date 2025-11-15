@@ -12,10 +12,10 @@ import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import Grid from '@mui/material/Grid';
+import { useSearchParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
 interface GridDashboardLayoutProps {
-  entryUuid?: string;
   listItemCollapseProps?: Partial<React.ComponentProps<typeof ListItemCollapse>>;
 }
 
@@ -23,8 +23,10 @@ const entrySearchParamDefault = 'entry';
 const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
   const { entries, addEntries, remove, restore, set, board, accountUuid, balance, findEntries } = useEntriesContext();
 
+  const params = useSearchParams();
+  const entryUuid = params.get(entrySearchParamDefault);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const [entry] = useMemo(() => !props.entryUuid ? [] : findEntries(e => e.uuid === props.entryUuid), [props.entryUuid]);
+  const [entry] = useMemo(() => !entryUuid ? [] : findEntries(e => e.uuid === entryUuid), [entryUuid]);
 
   const incomes = useMemo(() => {
     return entries.filter(entry => entry.type === 'INCOME');

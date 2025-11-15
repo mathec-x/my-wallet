@@ -7,7 +7,6 @@ import Grid from '@mui/material/Grid';
 
 export default async function DashboardPageLayout(props: PageProps<'/dashboard/[uuid]'>) {
   const { uuid: accountUuid } = await props.params;
-  const { entry: entryUuid } = await props.searchParams;
   const account = await accountGetAction({
     entries: {
       some: {
@@ -27,7 +26,6 @@ export default async function DashboardPageLayout(props: PageProps<'/dashboard/[
           <EntryBalance accountUuid={accountUuid} />
         </Grid>
         <GridDashboardLayout
-          entryUuid={entryUuid?.toString()}
           listItemCollapseProps={{
             disablePadding: true,
             defaultOpen: true,
