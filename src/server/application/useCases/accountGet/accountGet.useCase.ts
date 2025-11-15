@@ -18,25 +18,7 @@ export class AccountGetUseCase {
 	async execute(params: AccountGetUseCaseParams) {
 		try {
 			this.logger.debug('Obtendo conta', params);
-			const data = await prisma.account.findFirst({
-				where: params,
-				select: {
-					uuid: true,
-					name: true,
-					balance: true,
-					entries: {
-						include: {
-							board: {
-								select: {
-									id: true,
-									uuid: true,
-									name: true,
-								}
-							}
-						}
-					}
-				}
-			});
+			const data = await prisma.account.findFirst({ where: params });
 			if (data) {
 				this.logger.info('Conta encontrada');
 				return ResponseService.Ok(data);
