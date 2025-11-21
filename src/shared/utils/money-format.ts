@@ -6,7 +6,7 @@ const intl = new Intl.NumberFormat('pt-BR', {
 });
 
 export function floatToMoney(value: number = 0): string {
-  return intl.format(value);
+  return intl.format(value || 0);
 }
 
 export function moneyToFloat(value?: string | number) {
