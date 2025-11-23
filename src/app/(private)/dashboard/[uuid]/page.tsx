@@ -5,18 +5,14 @@ import EntryBalance from '@/app/components/ui/EntryBalance/EntryBalance.ui';
 import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import MoneyIcon from '@mui/icons-material/AttachMoney';
 import Grid from '@mui/material/Grid';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata(props: PageProps<'/dashboard/[uuid]'>) {
   const { uuid } = await props.params;
-  const response = await accountGetAction({
-    entries: { some: { account: { uuid } } }
-  });
+  const response = await accountGetAction({ uuid });
 
   if (!response.success) {
-    return {
-      title: 'Dashboard',
-      description: 'Accounts'
-    };
+    notFound();
   }
 
   return {
