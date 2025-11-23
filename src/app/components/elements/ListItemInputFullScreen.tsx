@@ -75,6 +75,7 @@ const ListItemInputFullScreen: React.FC<ListInputProps> = ({
     if (value.length > 2 && value !== defaultValue) {
       const newvalue = await onSubmit(value);
       setValue(newvalue || '');
+      setFocus(false);
     } else {
       await onError?.(value);
     }
