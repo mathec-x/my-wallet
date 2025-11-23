@@ -34,11 +34,18 @@ const FormControlSchema = forwardRef(
       setValue: setValue
     }));
 
+    const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (onSubmit) {
+        return handleSubmit(onSubmit)(e);
+      }
+    };
+
     return (
       <Box
         id={propId || id}
         component="form"
-        onSubmit={onSubmit && handleSubmit(onSubmit)}
+        onSubmit={handleSubmitForm}
         noValidate
         sx={{ mt: 2 }}
       >
