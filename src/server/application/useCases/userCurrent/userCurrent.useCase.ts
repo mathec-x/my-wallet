@@ -25,7 +25,10 @@ export class UserCurrentUseCase {
         return null;
       }
 
+      this.logger.verbose('Fetching current user');
       const payload = this.hashService.verifyAccessToken(token);
+
+      this.logger.verbose('Fetching user from database');
       const user = await prisma.user.findFirst({
         select: {
           uuid: true,
@@ -48,7 +51,9 @@ export class UserCurrentUseCase {
         return null;
       }
 
+      this.logger.verbose('User Found');
       if (user.accounts.length > 0) {
+        this.logger.info(`Calculating global balances (${user.accounts.length}) for user accounts`);
         const balances = await this.globalBalanceUseCase.execute(user.accounts.map(a => a.id));
         for (const account of user.accounts) {
           account.balance = balances[account.id];

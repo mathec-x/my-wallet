@@ -3,7 +3,7 @@
 import { deleteAccountAction, registerAccountAction } from '@/app/actions/accounts/account.actions';
 import FlexBox from '@/app/components/elements/FlexBox';
 import ListContainer from '@/app/components/elements/ListContainer';
-import ListItemInput from '@/app/components/elements/ListItemInput';
+import ListItemInputFullScreen from '@/app/components/elements/ListItemInputFullScreen';
 import { useAuthProvider } from '@/app/providers/auth/AuthProvider';
 import { usePwa } from '@/app/providers/pwa/PwaProvider';
 import { floatToMoney } from '@/shared/utils/money-format';
@@ -119,7 +119,7 @@ const MenuLayout: React.FC<MenuLayoutProps> = (props) => {
           avatarVariant='default'
           disablePadding
         />
-        <ListItemInput
+        <ListItemInputFullScreen
           id='add-account'
           placeholder='Adicionar Conta ex: casa, empresa'
           onSubmit={handleAddAccount}

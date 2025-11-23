@@ -1,7 +1,7 @@
 'use client';
 
 import { boardCopyAction, boardCreateAction, boardDeleteAction } from '@/app/actions/entries/entries.actions';
-import { ListContainer, ListItemInput, ListItemRow } from '@/app/components/elements';
+import { ListContainer, ListItemInputFullScreen, ListItemRow } from '@/app/components/elements';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import AddIcon from '@mui/icons-material/AddOutlined';
 import BalanceIcon from '@mui/icons-material/Balance';
@@ -90,11 +90,11 @@ export default function EntryBalance(props: { accountUuid: string }) {
 					))}
 				</Stack>
 			}
-			<ListItemInput
+			<ListItemInputFullScreen
 				id='name-board'
 				hide={entries.length === 0 || !!board?.name}
 				autoSelect
-				sx={{ my: 2 }}
+				sx={{ py: 2 }}
 				component='div'
 				value={board?.name || ''}
 				onSubmit={handleBoardNameSubmit}

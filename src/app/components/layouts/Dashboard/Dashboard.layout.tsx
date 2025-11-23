@@ -6,7 +6,7 @@ import {
 import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
 import ListContainer from '@/app/components/elements/ListContainer';
 import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
-import ListItemInput from '@/app/components/elements/ListItemInput';
+import ListItemInputFullScreen from '@/app/components/elements/ListItemInputFullScreen';
 
 import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
@@ -100,7 +100,7 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
               onUpdate={handleUpdate}
             />
           </ListItemCollapse>
-          <ListItemInput component='label'
+          <ListItemInputFullScreen component='label'
             id={'input-add-entry-income'}
             icon={<></>}
             onSubmit={(value) => handleSubmit(value, 'INCOME')}
@@ -133,7 +133,7 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
               onUpdate={handleUpdate}
             />
           </ListItemCollapse>
-          <ListItemInput component='label'
+          <ListItemInputFullScreen component='label'
             id={'input-add-entry-expense'}
             icon={<></>}
             onSubmit={(value) => handleSubmit(value, 'EXPENSE')}
