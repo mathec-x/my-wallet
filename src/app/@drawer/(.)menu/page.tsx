@@ -34,6 +34,7 @@ export default function MenuDrawer(props: NextAsyncPageProps) {
       open={open}
       onClose={() => handleClose()}
       onOpen={() => {
+        setOpen(true);
         router.push('/menu');
       }}>
       <ListContainer>
