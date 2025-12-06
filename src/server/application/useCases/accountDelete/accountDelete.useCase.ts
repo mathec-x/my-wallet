@@ -13,7 +13,9 @@ export class AccountDeleteUseCase {
 				where: {
 					uuid: params.accountUuid,
 					user: {
-						uuid: params.userUuid
+						some: {
+							uuid: params.userUuid
+						}
 					}
 				},
 				data: {

@@ -28,7 +28,9 @@ export class EntriesUpdateUseCase {
 					account: {
 						uuid: params.accountUuid!,
 						user: {
-							uuid: userUuid
+							some: {
+								uuid: userUuid
+							}
 						}
 					},
 				},

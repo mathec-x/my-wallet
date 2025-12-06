@@ -47,7 +47,9 @@ export class BoardCreateUseCase {
 						account: {
 							uuid: params.accountUuid,
 							user: {
-								uuid: userUuid
+								some: {
+									uuid: userUuid
+								}
 							}
 						},
 						id: {

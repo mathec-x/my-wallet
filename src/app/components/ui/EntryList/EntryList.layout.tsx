@@ -89,7 +89,6 @@ export default function EntryList(props: EntryListProps) {
 									isLoading={!entry.uuid}
 								>
 									<Stack direction='row' spacing={1}>
-										{/* {entry.category && <Chip label={entry.category} size='small' />} */}
 										{entry.future ? null : <DoneAllIcon color='success' />}
 									</Stack>
 								</ListItemAction>

@@ -23,7 +23,13 @@ export class BoardDeleteUseCase {
 			const { count } = await prisma.entry.deleteMany({
 				where: {
 					board: { uuid: params.uuid! },
-					account: { user: { uuid: userUuid } }
+					account: {
+						user: {
+							some: {
+								uuid: userUuid
+							}
+						}
+					}
 				}
 			});
 

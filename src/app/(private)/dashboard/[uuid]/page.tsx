@@ -9,7 +9,9 @@ import { notFound } from 'next/navigation';
 
 export async function generateMetadata(props: PageProps<'/dashboard/[uuid]'>) {
   const { uuid } = await props.params;
-  const response = await accountGetAction({ uuid });
+  const response = await accountGetAction({
+    accountUuid: uuid
+  });
 
   if (!response.success) {
     notFound();

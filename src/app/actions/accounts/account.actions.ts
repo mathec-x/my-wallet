@@ -3,10 +3,12 @@
 import { AccountDeleteUseCase, type AccountDeleteUseCaseParams } from '@/server/application/useCases/accountDelete/accountDelete.useCase';
 import { AccountGetUseCase, type AccountGetUseCaseParams } from '@/server/application/useCases/accountGet/accountGet.useCase';
 import { AccountRegisterUseCase, type AccountRegisterUseCaseParams } from '@/server/application/useCases/accountRegister/accountRegister.useCase';
+import { CookieService } from '@/server/domain/services/cookie/cookie.service';
 
+const cookieService = new CookieService();
 const accountRegisterUseCase = new AccountRegisterUseCase();
 const accountDeleteUseCase = new AccountDeleteUseCase();
-const accountGetUseCase = new AccountGetUseCase();
+const accountGetUseCase = new AccountGetUseCase(cookieService);
 
 export async function registerAccountAction(params: AccountRegisterUseCaseParams) {
   return accountRegisterUseCase.execute(params);

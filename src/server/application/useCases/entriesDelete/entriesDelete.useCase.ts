@@ -24,7 +24,9 @@ export class EntriesDeleteUseCase {
 					account: {
 						uuid: params.accountUuid!,
 						user: {
-							uuid: userUuid
+							some: {
+								uuid: userUuid
+							}
 						}
 					}
 				},
