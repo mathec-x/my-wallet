@@ -19,11 +19,11 @@ export function proxy(request: Request) {
   }
 
   if (!isAuthenticated && privateRoutes.some(prefix => pathname.startsWith(prefix))) {
-    return NextResponse.redirect('/login');
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   if (isAuthenticated && pathname === '/login') {
-    return NextResponse.redirect('/dashboard');
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();
@@ -31,6 +31,6 @@ export function proxy(request: Request) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon|manifest.webmanifest|pwa|service-worker).*)',
   ],
 };
