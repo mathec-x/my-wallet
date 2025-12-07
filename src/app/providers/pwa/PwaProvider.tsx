@@ -7,7 +7,7 @@ import useRegistration from './useRegistration';
 export const PwaContext = createContext<UsePwaInterface>({});
 
 const ReactPwa: React.FC<{ children: React.ReactNode }> = (props) => {
-  const { done, ...registration } = useRegistration({
+  const registration = useRegistration({
     config: {
       swUrl: '/service-worker.js',
       onError: (err) => { console.log('Service Worker registration failed:', err); },
