@@ -1,14 +1,11 @@
-import Header from '@/app/components/layouts/Header/Header.layout';
 import theme from '@/app/theme/theme';
 import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
 import { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import { getCurrentUser } from './actions/user/user.actions';
-import { AuthProvider } from './providers/auth/AuthProvider';
-import PwaProvider from './providers/pwa/PwaProvider';
+import MainLayout from './components/layouts/Main/Main.layout';
 
 interface RootLayoutProps {
   children: React.ReactNode,
@@ -90,20 +87,9 @@ export default async function RootLayout(props: RootLayoutProps) {
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme} defaultMode='system'>
             <CssBaseline />
-            <AuthProvider user={user}>
-              <PwaProvider>
-                <Header user={user} />
-                <Container
-                  maxWidth="xl"
-                  sx={{
-                    p: 1,
-                    minHeight: 'calc(100vh - 64px)',
-                  }}>
-                  {children}
-                </Container>
-                {drawer}
-              </PwaProvider>
-            </AuthProvider>
+            <MainLayout user={user} drawer={drawer}>
+              {children}
+            </MainLayout>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
