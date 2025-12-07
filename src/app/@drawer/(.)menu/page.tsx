@@ -22,7 +22,7 @@ export default function MenuDrawer(props: NextAsyncPageProps) {
   useEffect(() => {
     setOpen(true);
     return () => setOpen(false);
-  }, [props.params]);
+  }, [props]);
 
   const handleClose = useCallback((path?: string) => {
     setOpen(false);
