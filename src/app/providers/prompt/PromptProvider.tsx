@@ -1,6 +1,6 @@
 'use client';
 
-import { useHash } from '@/app/hooks/useHash';
+import { useBackListener } from '@/app/hooks/useBackListener';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
@@ -25,7 +25,7 @@ const Transition = forwardRef(function Transition(
 interface IPromptContext {
 	confirm: (msg: string, caption: string) => Promise<boolean>;
 	alert: (msg: string) => Promise<boolean>;
-	loading: (state: boolean, msg?: string) => Promise<unknown>;
+	loading: (state: boolean, msg?: string) => void;
 }
 
 const PromptContext = createContext<IPromptContext | null>(null);
@@ -44,15 +44,25 @@ interface IAction {
 }
 
 export function PromptProvider(props: { children: React.ReactNode }) {
-	// const [open, setOpen] = useState(false);
-	const [open, setOpen] = useHash('window-prompt-open');
+	const [open, setOpen] = useState(false);
+	// const [open, setOpen] = useHash('window-prompt-open');
 	const [title, setTitle] = useState<string | undefined>(undefined);
 	const [caption, setCaption] = useState<string | undefined>(undefined);
 	const [type, setType] = useState<`${PromptType}`>();
 	const [actions, setActions] = useState<IAction[]>([]);
 	const resolveCallbackRef = useRef<(value: boolean) => void>(() => new Promise((res) => res));
+	useBackListener(open, () => handlePrompt(false));
 
-	const prompt = (promptType: PromptType, title?: string, caption?: string, state?: boolean) => {
+	const loading = (state: boolean, msg?: string) => {
+		setOpen(true);
+		setType(PromptType.LOADING);
+		setTitle(msg || 'Carregando...');
+		if (!state) {
+			resetPrompt();
+		}
+	};
+
+	const prompt = (promptType: PromptType, title?: string, caption?: string) => {
 		setOpen(true);
 		setType(promptType);
 		setTitle(title);
@@ -66,12 +76,6 @@ export function PromptProvider(props: { children: React.ReactNode }) {
 				break;
 			case PromptType.ALERT:
 				setActions([{ label: 'OK', action: () => handlePrompt(true), color: 'primary' }]);
-				break;
-			case PromptType.LOADING:
-				setActions([]);
-				if (state === false) {
-					handlePrompt(false);
-				}
 				break;
 		}
 		return new Promise((res) => resolveCallbackRef.current = res) as Promise<boolean>;
@@ -98,12 +102,15 @@ export function PromptProvider(props: { children: React.ReactNode }) {
 		<PromptContext.Provider value={{
 			confirm: (msg: string, caption: string) => prompt(PromptType.CONFIRM, msg, caption),
 			alert: (caption: string) => prompt(PromptType.ALERT, undefined, caption),
-			loading: (state: boolean, msg?: string) => prompt(PromptType.LOADING, msg || 'Carregando...', undefined, state),
+			loading
 		}}>
 			{props.children}
 			<Dialog
 				open={open}
-				onClose={() => handlePrompt(false)} maxWidth="sm" fullWidth tabIndex={-1}
+				onClose={() => handlePrompt(false)}
+				maxWidth="sm"
+				fullWidth
+				tabIndex={-1}
 				slots={{
 					transition: Transition,
 				}}
