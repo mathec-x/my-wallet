@@ -1,9 +1,19 @@
-import { boardCopyAction, boardCreateAction, boardDeleteAction } from '@/app/actions/entries/entries.actions';
+import {
+  boardCopyAction,
+  boardCreateAction,
+  boardDeleteAction,
+  entriesCreateAction,
+  entriesDeleteAction,
+  entriesUpdateAction
+} from '@/app/actions/entries/entries.actions';
+import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
+import { useCallback } from 'react';
 import { usePromptWindow } from '../prompt/PromptProvider';
 import { useEntriesContext } from './EntriesProvider';
+import { Entry } from './EntriesType';
 
-export const useEntriesActions = (accountUuid: string) => {
-  const { entries, board, setBoard, setEntriesBoard, addEntries, findEntries } = useEntriesContext();
+export const useEntriesActions = (accountUuid: string, entry?: Entry) => {
+  const { entries, board, setBoard, setEntriesBoard, addEntries, findEntries, remove, restore, set } = useEntriesContext();
   const { confirm, alert, loading } = usePromptWindow();
 
   const handleBoardNameSubmit = async (value: string) => {
@@ -70,10 +80,52 @@ export const useEntriesActions = (accountUuid: string) => {
     alert('Em breve você poderá compartilhar seus painéis com outras pessoas!');
   };
 
+
+  const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE') => {
+    const newEntry = await entriesCreateAction({
+      accountUuid: accountUuid,
+      data: {
+        title: value,
+        type: type,
+        board: !board?.id ? undefined : {
+          connect: { id: board.id }
+        }
+      }
+    });
+    addEntries(newEntry.success ? [newEntry.data] : undefined);
+  };
+
+  const handleDelete = async (param: { uuid: string }) => {
+    remove({ uuid: param.uuid }); // Optimistic UI update
+    const res = await entriesDeleteAction({ entryUuid: param.uuid, accountUuid: accountUuid });
+    if (!res.success) {
+      restore();
+    }
+  };
+
+  const handleUpdate = useCallback(
+    async (data: EntryUpdateFormSchema) => {
+      const parsed = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
+      const res = await entriesUpdateAction({
+        accountUuid: accountUuid,
+        entryUuid: data?.uuid || entry!.uuid,
+        data: parsed as never,
+      });
+      if (res?.success) {
+        set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);
+      } else {
+        restore();
+      }
+      return res;
+    }, [accountUuid, entry, restore, set]);
+
   return {
     handleBoardNameSubmit,
     handleDeleteBoard,
     handleShareBoard,
-    handleCloneBoard
+    handleCloneBoard,
+    handleSubmit,
+    handleDelete,
+    handleUpdate
   };
 };

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export enum STORAGE {
   LOCK_BOARD = 'lock-boards',
-  VIEW_CATEGORY = 'view-category'
+  GROUP_CATEGORY = 'group-category'
 }
 
 function useLocalStorage<T>(key: `${STORAGE}`, initialValue: T): [T, (value: T | ((val: T) => T)) => void, boolean] {

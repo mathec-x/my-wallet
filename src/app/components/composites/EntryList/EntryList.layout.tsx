@@ -13,6 +13,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import DoneAllIcon from '@mui/icons-material/DoneAllOutlined';
 import DoneIcon from '@mui/icons-material/DoneOutlined';
 import InfoIcon from '@mui/icons-material/InfoOutline';
+import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { useId, useMemo } from 'react';
 
@@ -88,6 +89,11 @@ export default function EntryList(props: EntryListProps) {
 									isLoading={!entry.uuid}
 								>
 									<Stack direction='row' spacing={1}>
+										{!props.groupBy &&
+											<Typography variant='caption' color='textDisabled'>
+												{categoriesList[entry.category as keyof typeof categoriesList]?.label}
+											</Typography>
+										}
 										{entry.future ? null : <DoneAllIcon color='success' />}
 									</Stack>
 								</ListItemAction>

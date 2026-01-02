@@ -1,32 +1,34 @@
 'use client';
 
-import {
-  entriesCreateAction, entriesDeleteAction, entriesUpdateAction
-} from '@/app/actions/entries/entries.actions';
 import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
+import EntryList from '@/app/components/composites/EntryList/EntryList.layout';
 import ListContainer from '@/app/components/elements/ListContainer';
 import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
 import ListItemInput from '@/app/components/elements/ListItemInput';
-
-import EntryList from '@/app/components/composites/EntryList/EntryList.layout';
+import useLocalStorage, { STORAGE } from '@/app/hooks/useLocalStorage.hook';
 import { MODALS } from '@/app/hooks/useModalHandler';
+import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
-import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
+import ListOpenedIcon from '@mui/icons-material/Ballot';
+import ListClosedIcon from '@mui/icons-material/BallotOutlined';
 import Grid from '@mui/material/Grid';
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
+import { ListItemAction } from '../../elements';
 
 interface GridDashboardLayoutProps {
   listItemCollapseProps?: Partial<React.ComponentProps<typeof ListItemCollapse>>;
 }
 
 const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
-  const { entries, addEntries, remove, restore, set, board, accountUuid, balance, findEntries } = useEntriesContext();
+  const { entries, accountUuid, balance, findEntries } = useEntriesContext();
+  const [group, setGroup] = useLocalStorage(STORAGE.GROUP_CATEGORY, true);
 
   const params = useSearchParams();
   const entryUuid = params.get(MODALS.ENTRY_EDITOR);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [entry] = useMemo(() => !entryUuid ? [] : findEntries(e => e.uuid === entryUuid), [entryUuid]);
+  const { handleSubmit, handleDelete, handleUpdate } = useEntriesActions(accountUuid, entry);
 
   const incomes = useMemo(() => {
     return entries.filter(entry => entry.type === 'INCOME');
@@ -35,44 +37,6 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
   const expenses = useMemo(() => {
     return entries.filter(entry => entry.type === 'EXPENSE');
   }, [entries]);
-
-  const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE') => {
-    const newEntry = await entriesCreateAction({
-      accountUuid: accountUuid,
-      data: {
-        title: value,
-        type: type,
-        board: !board?.id ? undefined : {
-          connect: { id: board.id }
-        }
-      }
-    });
-    addEntries(newEntry.success ? [newEntry.data] : undefined);
-  };
-
-  const handleDelete = async (param: { uuid: string }) => {
-    remove({ uuid: param.uuid }); // Optimistic UI update
-    const res = await entriesDeleteAction({ entryUuid: param.uuid, accountUuid: accountUuid });
-    if (!res.success) {
-      restore();
-    }
-  };
-
-  const handleUpdate = useCallback(
-    async (data: EntryUpdateFormSchema) => {
-      const parsed = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
-      const res = await entriesUpdateAction({
-        accountUuid: accountUuid,
-        entryUuid: data?.uuid || entry!.uuid,
-        data: parsed as never,
-      });
-      if (res?.success) {
-        set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);
-      } else {
-        restore();
-      }
-      return res;
-    }, [accountUuid, entry, restore, set]);
 
   return (
     <>
@@ -121,10 +85,17 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
             actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
             {...props.listItemCollapseProps}
           >
+            <ListItemAction
+              disablePadding
+              avatarVariant='default'
+              icon={group ? <ListOpenedIcon /> : <ListClosedIcon />}
+              primary={group ? 'Desagrupar' : 'Agrupar'}
+              onClick={() => setGroup(!group)}
+            />
             <EntryList
               accountUuid={accountUuid}
               entries={expenses}
-              groupBy='category'
+              groupBy={group ? 'category' : undefined}
               type='EXPENSE'
               onSumbit={handleSubmit}
               onDelete={handleDelete}
