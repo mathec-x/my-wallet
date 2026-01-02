@@ -1,6 +1,6 @@
 'use client';
 
-import useLocalStorage from '@/app/hooks/useLocalStorage.hook';
+import useLocalStorage, { STORAGE } from '@/app/hooks/useLocalStorage.hook';
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import { Entry } from '../entries/EntriesType';
 
@@ -23,7 +23,7 @@ export interface IBoardsContextType {
 }
 
 export function BoardsProvider({ children, entries }: React.PropsWithChildren<BoardsProviderProps>) {
-  const [board, setBoard] = useLocalStorage<IBoard | undefined>('selected-board', undefined);
+  const [board, setBoard] = useLocalStorage<IBoard | undefined>(STORAGE.SELECTED_BOARD, undefined);
 
   const boards = useMemo(() => {
     const boards: IBoardsContextType['boards'] = [];
