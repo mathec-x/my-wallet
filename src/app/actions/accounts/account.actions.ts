@@ -4,6 +4,7 @@ import { AccountDeleteUseCase, type AccountDeleteUseCaseParams } from '@/server/
 import { AccountGetUseCase, type AccountGetUseCaseParams } from '@/server/application/useCases/accountGet/accountGet.useCase';
 import { AccountRegisterUseCase, type AccountRegisterUseCaseParams } from '@/server/application/useCases/accountRegister/accountRegister.useCase';
 import { CookieService } from '@/server/domain/services/cookie/cookie.service';
+import { cache } from 'react';
 
 const cookieService = new CookieService();
 const accountRegisterUseCase = new AccountRegisterUseCase();
@@ -18,6 +19,6 @@ export async function deleteAccountAction(params: AccountDeleteUseCaseParams) {
   return accountDeleteUseCase.execute(params);
 }
 
-export async function accountGetAction(params: AccountGetUseCaseParams) {
+export const accountGetAction = cache(async (params: AccountGetUseCaseParams) => {
   return accountGetUseCase.execute(params);
-}
+});

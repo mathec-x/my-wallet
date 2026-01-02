@@ -9,6 +9,7 @@ import { EntriesListUseCase, type EntriesListUseCaseParams } from '@/server/appl
 import { EntriesUpdateUseCase, type EntriesUpdateUseCaseParams } from '@/server/application/useCases/entriesUpdate/entriesUpdate.useCase';
 import { CookieService } from '@/server/domain/services/cookie/cookie.service';
 import { ResponseServiceAsync } from '@/server/interfaces/next';
+import { cache } from 'react';
 
 const cookieService = new CookieService();
 const entriesListUseCase = new EntriesListUseCase(cookieService);
@@ -25,9 +26,9 @@ export async function entriesCreateAction(params: EntriesCreateUseCaseParams) {
 	return entriesCreateUseCase.execute(params);
 }
 
-export async function entriesListAction(params: EntriesListUseCaseParams) {
+export const entriesListAction = cache(async (params: EntriesListUseCaseParams) => {
 	return entriesListUseCase.execute(params);
-};
+});
 
 export async function entriesDeleteAction(params: EntriesDeleteUseCaseParams) {
 	return entriesDeleteUseCase.execute(params);
