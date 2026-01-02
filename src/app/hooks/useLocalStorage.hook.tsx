@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 
-function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void, boolean] {
+export enum STORAGE {
+  LOCK_BOARD = 'lock-boards',
+  VIEW_CATEGORY = 'view-category'
+}
+
+function useLocalStorage<T>(key: `${STORAGE}`, initialValue: T): [T, (value: T | ((val: T) => T)) => void, boolean] {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
   const [initialized, setInitialized] = useState(false);
 
