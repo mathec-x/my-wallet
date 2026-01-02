@@ -1,5 +1,8 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTimeout } from './useTimeout';
 
 /**
  * Hook para escutar mudanças no hash da URL.
@@ -14,34 +17,35 @@ export function useHash(initialState: string) {
     return '';
   });
 
-  useEffect(() => {
-    // Função que atualiza o estado quando o hash muda
-    const onHashChange = () => {
-      setHash(window.location.hash.replace('#', ''));
-    };
-
-    // Adiciona listener
-    window.addEventListener('hashchange', onHashChange);
-
-    // Atualiza caso o hash mude sem disparar evento (ex: navegação inicial)
-    onHashChange();
-
-    // Remove listener ao desmontar
-    return () => {
-      window.removeEventListener('hashchange', onHashChange);
-    };
-  }, []);
-
-  const isOpen = useMemo(() => hash === initialState, [hash, initialState]);
-
-  const setOpen = useCallback((value: boolean) => {
+  const handleChangeHash = useCallback((value: string) => {
     if (value) {
-      router.push(`#${initialState}`, { scroll: false });
+      router.push(`#${value}`, { scroll: false });
     } else {
       router.replace('#', { scroll: false });
     }
-  }, [router, initialState]);
+  }, [router]);
 
-  console.log('useHash', { hash, isOpen });
+  const isOpen = useMemo(() => {
+    return hash === initialState;
+  }, [hash, initialState]);
+
+  const setOpen = useCallback((value: boolean) => {
+    handleChangeHash(value ? initialState : '');
+  }, [handleChangeHash, initialState]);
+
+  const onHashChange = useTimeout(() => {
+    const location = window.location.hash.replace('#', '');
+    setHash(location);
+  }, 255);
+
+  useEffect(() => {
+    window.addEventListener('hashchange', onHashChange);
+    onHashChange();
+    return () => {
+      window.removeEventListener('hashchange', onHashChange);
+    };
+  }, [isOpen, onHashChange]);
+
+
   return [isOpen, setOpen] as const;
 }
