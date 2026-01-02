@@ -8,7 +8,8 @@ import ListContainer from '@/app/components/elements/ListContainer';
 import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
 import ListItemInput from '@/app/components/elements/ListItemInput';
 
-import EntryList from '@/app/components/ui/EntryList/EntryList.layout';
+import EntryList from '@/app/components/composites/EntryList/EntryList.layout';
+import { MODALS } from '@/app/hooks/useModalHandler';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import Grid from '@mui/material/Grid';
@@ -19,12 +20,11 @@ interface GridDashboardLayoutProps {
   listItemCollapseProps?: Partial<React.ComponentProps<typeof ListItemCollapse>>;
 }
 
-const entrySearchParamDefault = 'entry';
 const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
   const { entries, addEntries, remove, restore, set, board, accountUuid, balance, findEntries } = useEntriesContext();
 
   const params = useSearchParams();
-  const entryUuid = params.get(entrySearchParamDefault);
+  const entryUuid = params.get(MODALS.ENTRY_EDITOR);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [entry] = useMemo(() => !entryUuid ? [] : findEntries(e => e.uuid === entryUuid), [entryUuid]);
 
@@ -91,7 +91,6 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
             {...props.listItemCollapseProps}
           >
             <EntryList
-              editorModalName={entrySearchParamDefault}
               accountUuid={accountUuid}
               entries={incomes}
               type='INCOME'
@@ -123,7 +122,6 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
             {...props.listItemCollapseProps}
           >
             <EntryList
-              editorModalName={entrySearchParamDefault}
               accountUuid={accountUuid}
               entries={expenses}
               groupBy='category'
@@ -141,11 +139,7 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
             onError={async () => { alert('Minimo 3 caracteres'); }} />
         </ListContainer>
       </Grid>
-      <EntryForm
-        editorModalName={entrySearchParamDefault}
-        entry={entry}
-        onUpdate={handleUpdate}
-      />
+      <EntryForm entry={entry} onUpdate={handleUpdate} />
     </>
   );
 };

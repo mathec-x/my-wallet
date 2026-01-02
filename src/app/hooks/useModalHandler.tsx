@@ -3,6 +3,11 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
+export enum MODALS {
+  BALANCE_MODAL = 'balance',
+  ENTRY_EDITOR = 'entry'
+}
+
 export function useModalHandler(name: string) {
   const searchParams = useSearchParams();
   const pathName = usePathname();

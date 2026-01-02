@@ -1,5 +1,6 @@
 'use client';
 
+import { useHash } from '@/app/hooks/useHash';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
@@ -43,7 +44,8 @@ interface IAction {
 }
 
 export function PromptProvider(props: { children: React.ReactNode }) {
-	const [open, setOpen] = useState(false);
+	// const [open, setOpen] = useState(false);
+	const [open, setOpen] = useHash('window-prompt-open');
 	const [title, setTitle] = useState<string | undefined>(undefined);
 	const [caption, setCaption] = useState<string | undefined>(undefined);
 	const [type, setType] = useState<`${PromptType}`>();

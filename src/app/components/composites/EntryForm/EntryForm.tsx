@@ -3,7 +3,7 @@
 import { entriesUpdateAction, Entry } from '@/app/actions/entries/entries.actions';
 import FullScreenModal from '@/app/components/elements/Modal';
 import FormControlSchema from '@/app/components/primitives/Form/FormControlSchema';
-import useModalHandler from '@/app/hooks/useModalHandler';
+import useModalHandler, { MODALS } from '@/app/hooks/useModalHandler';
 import { EntryUpdateFormSchema, entryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { floatToMoney } from '@/shared/utils/money-format';
 import Button from '@mui/material/Button';
@@ -11,13 +11,12 @@ import Stack from '@mui/material/Stack';
 import { useTransition } from 'react';
 
 interface EntryFormProps {
-  editorModalName: string;
   entry: Entry | undefined;
   onUpdate: (data: EntryUpdateFormSchema) => ReturnType<typeof entriesUpdateAction>;
 }
 
-const EntryForm = ({ entry, editorModalName, onUpdate }: EntryFormProps) => {
-  const modal = useModalHandler(editorModalName);
+const EntryForm = ({ entry, onUpdate }: EntryFormProps) => {
+  const modal = useModalHandler(MODALS.ENTRY_EDITOR);
   const [isPending, startTransition] = useTransition();
 
   const handleUpdate = (data: EntryUpdateFormSchema) => {

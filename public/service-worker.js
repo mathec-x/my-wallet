@@ -1,5 +1,5 @@
 
-const CACHE_NAME = '1.1.0';
+const CACHE_NAME = '1.1.1';
 const urlsToCache = [];
 // const appIcon = 'default_icon_link';
 
@@ -62,6 +62,27 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((response) => response || fetch(event.request)),
   );
 });
+
+// self.addEventListener('fetch', (event) => {
+//   const url = new URL(event.request.url);
+
+//   // deixa SSE, APIs, POST, etc passarem direto
+//   if (
+//     event.request.method !== 'GET' ||
+//     url.pathname.startsWith('/api/') ||
+//     url.pathname.startsWith('/sse') ||
+//     event.request.headers.get('accept') === 'text/event-stream'
+//   ) {
+//     return;
+//   }
+
+//   // só cachear estáticos
+//   if (url.pathname.match(/\.(js|css|png|jpg|svg|woff2)$/)) {
+//     event.respondWith(
+//       caches.match(event.request).then((res) => res || fetch(event.request)),
+//     );
+//   }
+// });
 
 /**
  * cache all fetch data make inside app, this is not really usefull in some cases

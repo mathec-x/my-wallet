@@ -4,7 +4,7 @@ import { entriesUpdateAction, type Entry } from '@/app/actions/entries/entries.a
 import ListItemAction from '@/app/components/elements/ListItemAction';
 import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
 import ListItemRow from '@/app/components/elements/ListItemRow';
-import useModalHandler from '@/app/hooks/useModalHandler';
+import useModalHandler, { MODALS } from '@/app/hooks/useModalHandler';
 import { categoriesList } from '@/shared/schemas/categoriesList';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { arrayGroupBy } from '@/shared/utils/array-manipulation/group-by';
@@ -18,7 +18,6 @@ import { useId, useMemo } from 'react';
 
 interface EntryListProps {
 	accountUuid: string;
-	editorModalName: string;
 	type: 'INCOME' | 'EXPENSE';
 	entries: Entry[];
 	groupBy?: keyof Entry;
@@ -29,7 +28,7 @@ interface EntryListProps {
 
 export default function EntryList(props: EntryListProps) {
 	const id = useId();
-	const modal = useModalHandler(props.editorModalName);
+	const modal = useModalHandler(MODALS.ENTRY_EDITOR);
 	const group = useMemo(() => {
 		if (!props.groupBy) {
 			return [{

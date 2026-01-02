@@ -1,7 +1,8 @@
 import { accountGetAction } from '@/app/actions/accounts/account.actions';
 import { entriesListAction } from '@/app/actions/entries/entries.actions';
+import BalanceForm from '@/app/components/composites/BalanceForm/BalanceForm';
+import EntryBalance from '@/app/components/composites/EntryBalance/EntryBalance.ui';
 import GridDashboardLayout from '@/app/components/layouts/Dashboard/Dashboard.layout';
-import EntryBalance from '@/app/components/ui/EntryBalance/EntryBalance.ui';
 import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import MoneyIcon from '@mui/icons-material/AttachMoney';
 import Grid from '@mui/material/Grid';
@@ -36,6 +37,7 @@ export default async function DashboardPageLayout(props: PageProps<'/dashboard/[
       <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
         <Grid size={{ xs: 12 }}>
           <EntryBalance accountUuid={accountUuid} />
+          <BalanceForm />
         </Grid>
         <GridDashboardLayout
           listItemCollapseProps={{
