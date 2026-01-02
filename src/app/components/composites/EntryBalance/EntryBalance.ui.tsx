@@ -4,6 +4,7 @@ import { ListContainer, ListItemInput, ListItemRow } from '@/app/components/elem
 import useLocalStorage, { STORAGE } from '@/app/hooks/useLocalStorage.hook';
 import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
+import { usePromptWindow } from '@/app/providers/prompt/PromptProvider';
 import AddIcon from '@mui/icons-material/AddOutlined';
 import BalanceIcon from '@mui/icons-material/Balance';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
@@ -21,6 +22,7 @@ export default function EntryBalance(props: { accountUuid: string }) {
 	const [lock, setLock] = useLocalStorage(STORAGE.LOCK_BOARD, true);
 	const { entries, balance, boards, board, setBoard } = useEntriesContext();
 	const { handleBoardNameSubmit, handleCloneBoard, handleDeleteBoard, handleShareBoard } = useEntriesActions(props.accountUuid);
+	const { loading } = usePromptWindow();
 	const id = useId();
 
 	return (
@@ -32,6 +34,17 @@ export default function EntryBalance(props: { accountUuid: string }) {
 					</IconButton>
 					<Grow in={!lock}>
 						<div style={{ width: !lock ? 'auto' : 0, display: 'flex' }}>
+							<IconButton onClick={() => {
+								const load = loading();
+								setTimeout(() => {
+									load.message('carregando 2');
+									setTimeout(() => {
+										loading(false);
+									}, 1000);
+								}, 1000);
+							}}>
+								t
+							</IconButton>
 							<IconButton onClick={() => handleShareBoard()} color='primary' disabled={!board?.id}>
 								<ShareIcon />
 							</IconButton>
@@ -51,7 +64,7 @@ export default function EntryBalance(props: { accountUuid: string }) {
 							variant={board?.uuid === b.uuid ? 'filled' : 'outlined'}
 						/>
 					))}
-				</Stack>
+				</Stack >
 			}
 			<ListItemInput
 				id='name-board'

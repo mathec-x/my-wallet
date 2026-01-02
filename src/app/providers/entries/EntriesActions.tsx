@@ -44,7 +44,7 @@ export const useEntriesActions = (accountUuid: string, entry?: Entry) => {
     if (!confirmation) {
       return;
     }
-    loading(true, 'Deletando painel...');
+    loading('Deletando painel...');
     const res = await boardDeleteAction({ uuid: boardUUid });
     if (res.success) {
       setEntriesBoard(list.map(e => e.id));
@@ -62,7 +62,7 @@ export const useEntriesActions = (accountUuid: string, entry?: Entry) => {
     if (!confirmation) {
       return;
     }
-    loading(true, `Clonando painel '${board!.name || '...'}'`);
+    loading(`Clonando painel '${board!.name || '...'}'`);
     const res = await boardCopyAction({
       accountUuid: accountUuid,
       boardId: board!.id,

@@ -7,29 +7,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { type TransitionProps } from '@mui/material/transitions';
 import Typography from '@mui/material/Typography';
-import { createContext, forwardRef, useContext, useRef, useState } from 'react';
-
-const Transition = forwardRef(function Transition(
-	props: TransitionProps & {
-		children: React.ReactElement;
-	},
-	ref: React.Ref<unknown>,
-) {
-	return <Slide direction="down" ref={ref} {...props} />;
-});
-
-
-interface IPromptContext {
-	confirm: (msg: string, caption: string) => Promise<boolean>;
-	alert: (msg: string) => Promise<boolean>;
-	loading: (state: boolean, msg?: string) => void;
-}
+import { createContext, useContext, useRef, useState } from 'react';
+import { IPromptContext } from './IPromptProvider';
 
 const PromptContext = createContext<IPromptContext | null>(null);
-
 enum PromptType {
 	CONFIRM = 'CONFIRM',
 	PROMPT = 'PROMPT',
@@ -53,13 +35,21 @@ export function PromptProvider(props: { children: React.ReactNode }) {
 	const resolveCallbackRef = useRef<(value: boolean) => void>(() => new Promise((res) => res));
 	useBackListener(open, () => handlePrompt(false));
 
-	const loading = (state: boolean, msg?: string) => {
-		setOpen(true);
+	const loading = (msgOrState?: string | boolean) => {
 		setType(PromptType.LOADING);
-		setTitle(msg || 'Carregando...');
-		if (!state) {
-			resetPrompt();
+		if (typeof msgOrState === 'boolean') {
+			setOpen(msgOrState);
+			if (msgOrState === false) {
+				resetPrompt();
+			}
+		} else {
+			setOpen(true);
+			setTitle(msgOrState || 'Carregando...');
 		}
+		return {
+			message: (msg: string) => setTitle(msg),
+			close: resetPrompt
+		};
 	};
 
 	const prompt = (promptType: PromptType, title?: string, caption?: string) => {
@@ -111,13 +101,8 @@ export function PromptProvider(props: { children: React.ReactNode }) {
 				maxWidth="sm"
 				fullWidth
 				tabIndex={-1}
-				slots={{
-					transition: Transition,
-				}}
 				sx={{
-					'& .MuiDialog-container': {
-						alignItems: 'flex-start',
-					},
+					'& .MuiDialog-container': { alignItems: 'center' },
 				}}
 			>
 				{type === PromptType.LOADING &&
@@ -131,14 +116,16 @@ export function PromptProvider(props: { children: React.ReactNode }) {
 
 				{type !== PromptType.LOADING && <>
 					{title &&
-						<DialogTitle>
+						<DialogTitle variant='body1'>
 							{title}
 						</DialogTitle>
 					}
-					<DialogContent dividers hidden={!caption}>
-						<Typography variant="body1" component="h4">{caption}</Typography>
+					<DialogContent hidden={!caption}>
+						<Typography variant="body2" component="h4">
+							{caption}
+						</Typography>
 					</DialogContent>
-					<DialogActions>
+					<DialogActions disableSpacing>
 						{actions.map((action, index) => (
 							<Button
 								key={`prompt-action-${index}`}
