@@ -85,13 +85,6 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
             actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
             {...props.listItemCollapseProps}
           >
-            <ListItemAction
-              disablePadding
-              avatarVariant='default'
-              icon={group ? <ListOpenedIcon /> : <ListClosedIcon />}
-              primary={group ? 'Desagrupar' : 'Agrupar'}
-              onClick={() => setGroup(!group)}
-            />
             <EntryList
               accountUuid={accountUuid}
               entries={expenses}
@@ -100,6 +93,13 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
               onSumbit={handleSubmit}
               onDelete={handleDelete}
               onUpdate={handleUpdate}
+            />
+            <ListItemAction
+              disablePadding
+              avatarVariant='default'
+              icon={group ? <ListOpenedIcon /> : <ListClosedIcon />}
+              primary={group ? 'Desagrupar' : 'Agrupar'}
+              onClick={() => setGroup(!group)}
             />
           </ListItemCollapse>
           <ListItemInput component='label'
