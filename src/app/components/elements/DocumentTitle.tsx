@@ -2,30 +2,41 @@
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const DocumentTitle: React.FC = () => {
   const [title, setTitle] = useState<string>('Wallet');
   const [subTitle, setSubtitle] = useState<string | null>(null);
-  const params = useParams<{ uuid: string }>();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (params.uuid && document) {
-      const [docTitle, docSubTitle] = document.title.split(' | ') || [];
-      setTitle(docTitle);
-      setSubtitle(docSubTitle);
-    }
-  }, [params]);
+    const updateTitle = () => {
+      if (typeof document !== 'undefined') {
+        const [docTitle, docSubTitle] = document.title.split(' | ');
+        setTitle(docTitle || 'Wallet');
+        setSubtitle(docSubTitle || null);
+      }
+    };
+
+    updateTitle();
+    const observer = new MutationObserver(updateTitle);
+    observer.observe(document.querySelector('title') || document.head, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => observer.disconnect();
+  }, [pathname]);
 
   return (
     <Stack justifyContent='center'>
       <Typography variant='body1' component='h1'>
         {title}
       </Typography>
-      {/* <Typography variant='caption' color='textDisabled'>
+      <Typography variant='caption' color='textDisabled'>
         {subTitle}
-      </Typography> */}
+      </Typography>
     </Stack>
   );
 };
