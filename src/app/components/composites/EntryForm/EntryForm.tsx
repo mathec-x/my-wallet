@@ -47,19 +47,14 @@ const EntryForm = ({ entry, onUpdate }: EntryFormProps) => {
       {entry ?
         <FormControlSchema
           id='form-entry-update'
+          onSubmit={handleUpdate}
+          schema={entryUpdateFormSchema}
           value={{
             ...entry,
             amount: floatToMoney(entry.amount),
             expected: floatToMoney(entry.expected)
           }}
-          onSubmit={handleUpdate}
-          schema={entryUpdateFormSchema}
-        >
-          {/* <Divider variant='fullWidth' sx={{ mt: 8 }} /> */}
-          {/* <Button loading={isPending} type='submit' form='form-entry-update' variant='contained' fullWidth>
-            Salvar
-          </Button> */}
-        </FormControlSchema>
+        />
         : (
           <Stack minHeight={570} bgcolor='background.main'>
             Procurando ...

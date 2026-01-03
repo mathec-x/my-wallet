@@ -1,5 +1,3 @@
-'use client';
-
 import { type getCurrentUser } from '@/app/actions/user/user.actions';
 import Header from '@/app/components/layouts/Header/Header.layout';
 import { AuthProvider } from '@/app/providers/auth/AuthProvider';
@@ -13,7 +11,7 @@ interface ClientLayoutProps {
   user: Awaited<ReturnType<typeof getCurrentUser>>;
 }
 
-export default function MainLayout({ children, drawer, user }: ClientLayoutProps) {
+export default async function MainLayout({ children, drawer, user }: ClientLayoutProps) {
   return (
     <AuthProvider user={user}>
       <PwaProvider>

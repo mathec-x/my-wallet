@@ -12,8 +12,8 @@ import { usePromptWindow } from '../prompt/PromptProvider';
 import { useEntriesContext } from './EntriesProvider';
 import { Entry } from './EntriesType';
 
-export const useEntriesActions = (accountUuid: string, entry?: Entry) => {
-  const { entries, board, setBoard, setEntriesBoard, addEntries, findEntries, remove, restore, set } = useEntriesContext();
+export const useEntriesActions = (entry?: Entry) => {
+  const { entries, board, setBoard, setEntriesBoard, addEntries, findEntries, remove, restore, set, accountUuid } = useEntriesContext();
   const { confirm, alert, loading } = usePromptWindow();
 
   const handleBoardNameSubmit = async (value: string) => {

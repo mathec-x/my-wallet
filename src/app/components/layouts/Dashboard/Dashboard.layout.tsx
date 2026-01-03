@@ -21,14 +21,14 @@ interface GridDashboardLayoutProps {
 }
 
 const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
+  const params = useSearchParams();
+  const entryUuid = params.get(MODALS.ENTRY_EDITOR);
   const { entries, accountUuid, balance, findEntries } = useEntriesContext();
   const [group, setGroup] = useLocalStorage(STORAGE.GROUP_CATEGORY, true);
 
-  const params = useSearchParams();
-  const entryUuid = params.get(MODALS.ENTRY_EDITOR);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [entry] = useMemo(() => !entryUuid ? [] : findEntries(e => e.uuid === entryUuid), [entryUuid]);
-  const { handleSubmit, handleDelete, handleUpdate } = useEntriesActions(accountUuid, entry);
+  const { handleSubmit, handleDelete, handleUpdate } = useEntriesActions(entry);
 
   const incomes = useMemo(() => {
     return entries.filter(entry => entry.type === 'INCOME');

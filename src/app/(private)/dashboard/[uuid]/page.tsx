@@ -1,10 +1,13 @@
 import { accountGetAction } from '@/app/actions/accounts/account.actions';
 import { entriesListAction } from '@/app/actions/entries/entries.actions';
+import BalanceForm from '@/app/components/composites/BalanceForm/BalanceForm';
+import BoardsChip from '@/app/components/composites/BoardsChip/BoardsChip';
 import EntryBalance from '@/app/components/composites/EntryBalance/EntryBalance.ui';
 import GridDashboardLayout from '@/app/components/layouts/Dashboard/Dashboard.layout';
 import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import MoneyIcon from '@mui/icons-material/AttachMoney';
 import Grid from '@mui/material/Grid';
+import Toolbar from '@mui/material/Toolbar';
 import { notFound } from 'next/navigation';
 
 export async function generateMetadata(props: PageProps<'/dashboard/[uuid]'>) {
@@ -33,11 +36,12 @@ export default async function DashboardPageLayout(props: PageProps<'/dashboard/[
 
   return (
     <EntriesProvider entries={entries.data} accountUuid={accountUuid}>
+      <Toolbar>
+        <BoardsChip />
+      </Toolbar>
+      <EntryBalance />
+      <BalanceForm />
       <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
-        <Grid size={{ xs: 12 }}>
-          <EntryBalance accountUuid={accountUuid} />
-          {/* <BalanceForm /> */}
-        </Grid>
         <GridDashboardLayout
           listItemCollapseProps={{
             disablePadding: true,

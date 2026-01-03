@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = (props) => (
           <MenuIcon />
         </IconButton>
       </LinkButton>
-      <LinkButton href='/menu' variant='h5' sx={{ flexGrow: 1 }} aria-label='home'>
+      <LinkButton href='/menu' scroll={false} variant='h5' sx={{ flexGrow: 1 }} aria-label='home'>
         <DocumentTitle />
       </LinkButton>
       {!props.user ? (
@@ -29,9 +29,6 @@ const Header: React.FC<HeaderProps> = (props) => (
         </LinkButton>
       ) : (
         <Stack justifyContent='center'>
-          {/* <Typography variant='body1' component='h1'>
-            {props.user.name}
-          </Typography> */}
           <Typography variant='caption' color='textDisabled'>
             {props.user.email}
           </Typography>
