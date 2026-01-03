@@ -23,7 +23,7 @@ const LoginForm = () => {
   const { error, handleLogin, handleRegister, handleReset, loading } = useAuthHandlers({
     onLoginSuccess: () => {
       console.log('login success, redirecting to home...');
-      return window.location.href = '/';
+      return window.location.href = '/menu';
     },
     onRegisterSuccess: ({ email, password }) => {
       loginFormRef.current?.setValue('email', email);
