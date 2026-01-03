@@ -1,6 +1,7 @@
 import theme from '@/app/theme/theme';
-import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import CssBaseline from '@mui/material/CssBaseline';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
@@ -44,7 +45,7 @@ export default async function RootLayout(props: RootLayoutProps) {
   const user = await getCurrentUser();
 
   return (
-    <html lang='pt-BR' className={roboto.variable}>
+    <html lang='pt-BR' className={roboto.variable} suppressHydrationWarning>
       <meta
         name='viewport'
         content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
@@ -84,8 +85,9 @@ export default async function RootLayout(props: RootLayoutProps) {
       <meta property="og:url" content="https://ecarteira.vercel.app" />
 
       <body>
+        <InitColorSchemeScript attribute="class" defaultMode='system' colorSchemeStorageKey='theme' />
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme} defaultMode='system'>
+          <ThemeProvider theme={theme}>
             <CssBaseline />
             <MainLayout user={user} drawer={drawer}>
               {children}

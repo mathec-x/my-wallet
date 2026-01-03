@@ -11,8 +11,8 @@ declare module '@mui/material/Avatar' {
 
 const globalTheme = createTheme({
   colorSchemes: {
-    dark: true,
     light: true,
+    dark: true,
   },
   palette: {
     primary: {
@@ -44,7 +44,7 @@ const globalTheme = createTheme({
           props: { variant: 'default' },
           style: ({ theme }: { theme: Theme }) => ({
             backgroundColor: 'transparent',
-            color: theme.palette.getContrastText(theme.palette.primary.contrastText)
+            color: theme.palette.text.primary
           }),
         },
         {

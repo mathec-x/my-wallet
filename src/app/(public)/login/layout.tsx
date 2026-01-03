@@ -19,11 +19,11 @@ export default function LoginPageLayout(props: { children: React.ReactNode }) {
       alignItems='center'
       justifyContent='center'
       bgcolor='background.main'
-      height='100%'
+      height='100dvh'
       width='100%'
       boxSizing='border-box'
     >
-      <Card sx={{ maxWidth: { md: 650, xs: 550 }, width: '100%', position: 'relative' }} variant='outlined'>
+      <Card sx={{ maxWidth: { md: 650, xs: 550 }, width: '100%', position: 'relative', border: 'none' }} variant='outlined'>
         <CardContent>
           <FlexBox col p={{ md: 4, xs: 2 }} overflow='hidden'>
             <Avatar sx={{ width: 56, height: 56, bgcolor: 'aliceblue' }} variant='circular'>

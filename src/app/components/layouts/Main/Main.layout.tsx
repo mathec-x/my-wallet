@@ -15,7 +15,7 @@ export default async function MainLayout({ children, drawer, user }: ClientLayou
   return (
     <AuthProvider user={user}>
       <PwaProvider>
-        <Header user={user} />
+        {user && <Header user={user} />}
         <PromptProvider>
           <Container
             maxWidth="xl"
