@@ -1,5 +1,4 @@
 'use client';
-
 import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
 import EntryList from '@/app/components/composites/EntryList/EntryList.layout';
 import ListContainer from '@/app/components/elements/ListContainer';
@@ -9,6 +8,7 @@ import useLocalStorage, { STORAGE } from '@/app/hooks/useLocalStorage.hook';
 import { MODALS } from '@/app/hooks/useModalHandler';
 import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
+import MoneyIcon from '@mui/icons-material/AttachMoney';
 import ListOpenedIcon from '@mui/icons-material/Ballot';
 import ListClosedIcon from '@mui/icons-material/BallotOutlined';
 import Grid from '@mui/material/Grid';
@@ -16,11 +16,15 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { ListItemAction } from '../../elements';
 
-interface GridDashboardLayoutProps {
-  listItemCollapseProps?: Partial<React.ComponentProps<typeof ListItemCollapse>>;
-}
+const listItemCollapseProps: Partial<React.ComponentProps<typeof ListItemCollapse>> = {
+  disablePadding: true,
+  defaultOpen: true,
+  divider: false,
+  icon: <MoneyIcon />,
+  avatarVariant: 'circular'
+};
 
-const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
+const GridDashboardLayout: React.FC = () => {
   const params = useSearchParams();
   const entryUuid = params.get(MODALS.ENTRY_EDITOR);
   const { entries, accountUuid, balance, findEntries } = useEntriesContext();
@@ -39,7 +43,7 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
   }, [entries]);
 
   return (
-    <>
+    <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
       <Grid size={{ xs: 12, sm: 6 }}>
         <ListContainer component='div'>
           <ListItemCollapse
@@ -52,7 +56,7 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
             secondary={'Valor total'}
             hideExpandIcon={incomes.length === 0}
             actionLabel={![balance.income, '0,00'].includes(balance.futureIncome) && `R$ ${balance.futureIncome}`}
-            {...props.listItemCollapseProps}
+            {...listItemCollapseProps}
           >
             <EntryList
               accountUuid={accountUuid}
@@ -83,7 +87,7 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
             secondary={'Valor total'}
             hideExpandIcon={expenses.length === 0}
             actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
-            {...props.listItemCollapseProps}
+            {...listItemCollapseProps}
           >
             <EntryList
               accountUuid={accountUuid}
@@ -111,7 +115,7 @@ const GridDashboardLayout: React.FC<GridDashboardLayoutProps> = (props) => {
         </ListContainer>
       </Grid>
       <EntryForm entry={entry} onUpdate={handleUpdate} />
-    </>
+    </Grid>
   );
 };
 

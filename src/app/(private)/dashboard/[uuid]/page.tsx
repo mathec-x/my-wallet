@@ -5,8 +5,6 @@ import BoardsChip from '@/app/components/composites/BoardsChip/BoardsChip';
 import EntryBalance from '@/app/components/composites/EntryBalance/EntryBalance.ui';
 import GridDashboardLayout from '@/app/components/layouts/Dashboard/Dashboard.layout';
 import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
-import MoneyIcon from '@mui/icons-material/AttachMoney';
-import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import { notFound } from 'next/navigation';
 
@@ -41,17 +39,7 @@ export default async function DashboardPageLayout(props: PageProps<'/dashboard/[
       </Toolbar>
       <EntryBalance />
       <BalanceForm />
-      <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
-        <GridDashboardLayout
-          listItemCollapseProps={{
-            disablePadding: true,
-            defaultOpen: true,
-            divider: false,
-            icon: <MoneyIcon />,
-            avatarVariant: 'circular'
-          }}
-        />
-      </Grid>
+      <GridDashboardLayout />
     </EntriesProvider>
   );
 }
