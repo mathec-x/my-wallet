@@ -1,25 +1,33 @@
 'use client';
 
 import Drawer from '@/app/components/elements/Drawer';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
-export default function DrawerLayout(props: PropsWithChildren) {
+export default function ModalLayout(props: PropsWithChildren) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const segment = useSelectedLayoutSegment();
 
   useEffect(() => {
-    if (['/menu', '/login'].includes(pathname)) {
+    const current = segment?.replace('(.)', '/') || '';
+    if (current === pathname) {
+      // console.log('Open ModalLayout', { pathname, current });
       setOpen(true);
     } else {
+      // console.log('Close ModalLayout', { pathname, current });
       setOpen(false);
     }
-  }, [pathname]);
+  }, [pathname, segment]);
 
   return (
     <Drawer
       open={open}
+      anchor='bottom'
+      sx={{
+        minHeight: '30dvh',
+      }}
       onClose={() => {
         if (open) {
           setOpen(false);
@@ -29,7 +37,7 @@ export default function DrawerLayout(props: PropsWithChildren) {
       onOpen={() => {
         if (!open) {
           setOpen(true);
-          router.push('/menu');
+          router.push(pathname);
         }
       }}
     >

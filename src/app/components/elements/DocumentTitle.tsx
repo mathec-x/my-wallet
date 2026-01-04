@@ -7,15 +7,18 @@ import { useEffect, useState } from 'react';
 
 const DocumentTitle: React.FC = () => {
   const [title, setTitle] = useState<string>('Wallet');
-  const [subTitle, setSubtitle] = useState<string | null>(null);
+  // const [subTitle, setSubtitle] = useState<string | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
     const updateTitle = () => {
       if (typeof document !== 'undefined') {
-        const [docTitle, docSubTitle] = document.title.split(' | ');
+        const docTitle = document.title;
         setTitle(docTitle || 'Wallet');
-        setSubtitle(docSubTitle || null);
+
+        // const docDescription = document.querySelector('meta[name="description"]')?.textContent;
+        // console.log({ docTitle, docDescription });
+        // setSubtitle(docDescription || null);
       }
     };
 
@@ -34,9 +37,9 @@ const DocumentTitle: React.FC = () => {
       <Typography variant='body1' component='h1'>
         {title}
       </Typography>
-      <Typography variant='caption' color='textDisabled'>
+      {/* <Typography variant='caption' color='textDisabled'>
         {subTitle}
-      </Typography>
+      </Typography> */}
     </Stack>
   );
 };

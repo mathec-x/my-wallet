@@ -8,10 +8,11 @@ import Container from '@mui/material/Container';
 interface ClientLayoutProps {
   children: React.ReactNode;
   drawer: React.ReactNode;
+  modal: React.ReactNode;
   user: Awaited<ReturnType<typeof getCurrentUser>>;
 }
 
-export default async function MainLayout({ children, drawer, user }: ClientLayoutProps) {
+export default async function MainLayout({ children, drawer, user, modal }: ClientLayoutProps) {
   return (
     <AuthProvider user={user}>
       <PwaProvider>
@@ -27,6 +28,7 @@ export default async function MainLayout({ children, drawer, user }: ClientLayou
           </Container>
         </PromptProvider>
         {drawer}
+        {modal}
       </PwaProvider>
     </AuthProvider>
   );

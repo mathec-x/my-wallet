@@ -8,10 +8,10 @@ import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import Toolbar from '@mui/material/Toolbar';
 import { notFound } from 'next/navigation';
 
-export async function generateMetadata(props: PageProps<'/dashboard/[uuid]'>) {
-  const { uuid } = await props.params;
+export async function generateMetadata(props: PageProps<'/dashboard/[account]'>) {
+  const { account: accountUuid } = await props.params;
   const response = await accountGetAction({
-    accountUuid: uuid
+    accountUuid
   });
 
   if (!response.success) {
@@ -20,12 +20,12 @@ export async function generateMetadata(props: PageProps<'/dashboard/[uuid]'>) {
 
   return {
     title: response.data.name,
-    description: `Dashboard of account ${response.data?.name}`
+    description: `Dashboard account ${response.data?.name}`,
   };
 }
 
-export default async function DashboardPageLayout(props: PageProps<'/dashboard/[uuid]'>) {
-  const { uuid: accountUuid } = await props.params;
+export default async function DashboardPageLayout(props: PageProps<'/dashboard/[account]'>) {
+  const { account: accountUuid } = await props.params;
 
   const entries = await entriesListAction({ accountUuid });
   if (!entries.success) {

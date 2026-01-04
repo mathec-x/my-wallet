@@ -1,13 +1,15 @@
 'use client';
 
-import { ListContainer, ListItemInput, ListItemRow } from '@/app/components/elements';
+import { ListContainer, ListItemAction, ListItemInput } from '@/app/components/elements';
 import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
 import BalanceIcon from '@mui/icons-material/Balance';
 import Typography from '@mui/material/Typography';
+import { useRouter } from 'next/navigation';
 
 export default function EntryBalance() {
-	const { entries, balance, board } = useEntriesContext();
+	const router = useRouter();
+	const { entries, balance, board, accountUuid } = useEntriesContext();
 	const { handleBoardNameSubmit } = useEntriesActions();
 
 	return (
@@ -23,15 +25,18 @@ export default function EntryBalance() {
 				placeholder='Nomear este Painel'
 			/>
 			<ListContainer header={entries.length > 0 && balance.income !== '0,00' && 'Balance'} disablePadding>
-				<ListItemRow
+				<ListItemAction
+					disablePadding
 					hide={balance.income === '0,00'}
+					onClick={() => {
+						router.push(`/calculate?accountUuid=${accountUuid}`);
+					}}
 					primary={<>R$ <Typography variant='body1' display='inline'>{balance.balance}</Typography></>}
 					secondary={'Saldo total considerando entradas e saídas'}
 					caption={<>Devedor R$ <Typography variant='body1' display='inline'>{balance.futureBalance}</Typography></>}
 					avatarVariant='rounded'
-					avatarIcon={<BalanceIcon />}
-				>
-				</ListItemRow>
+					icon={<BalanceIcon />}
+				/>
 			</ListContainer>
 		</>
 	);

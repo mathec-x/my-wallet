@@ -1,13 +1,15 @@
 'use client';
 
+import { SxProps } from '@mui/material/styles';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 interface DrawerProps {
   onClose: () => void;
   open: boolean;
   onOpen: () => void;
-  anchor?: 'left' | 'right' | 'top' | 'bottom';
   children: React.ReactNode;
+  anchor?: 'left' | 'right' | 'top' | 'bottom';
+  sx?: SxProps
 }
 
 const Drawer: React.FC<DrawerProps> = (props) => {
@@ -21,14 +23,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
       onClose={props.onClose}
       slotProps={{
         paper: {
-          sx: {
-            height: '100%',
-            width: {
-              md: '450px',
-              lg: '550px',
-              xs: '100%'
-            }
-          }
+          sx: props.sx
         }
       }}>
       {props.children}

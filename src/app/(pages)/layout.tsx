@@ -5,12 +5,13 @@ import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
-import { getCurrentUser } from './actions/user/user.actions';
-import MainLayout from './components/layouts/Main/Main.layout';
+import { getCurrentUser } from '../actions/user/user.actions';
+import MainLayout from '../components/layouts/Main/Main.layout';
 
 interface RootLayoutProps {
   children: React.ReactNode,
   drawer: React.ReactNode
+  modal: React.ReactNode
 }
 
 const roboto = Roboto({
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout(props: RootLayoutProps) {
-  const { children, drawer } = props;
+  const { children, drawer, modal } = props;
   const user = await getCurrentUser();
 
   return (
@@ -89,7 +90,7 @@ export default async function RootLayout(props: RootLayoutProps) {
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <MainLayout user={user} drawer={drawer}>
+            <MainLayout user={user} drawer={drawer} modal={modal}>
               {children}
             </MainLayout>
           </ThemeProvider>

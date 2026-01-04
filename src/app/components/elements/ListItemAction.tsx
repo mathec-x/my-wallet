@@ -34,10 +34,11 @@ const ListItemBox = styled(Box)(({ theme }) => ({
 interface ListItemActionProps extends Omit<ListItemOwnProps, 'onTouchStart' | 'onTouchMove' | 'onTouchEnd'> {
   children?: React.ReactNode;
   isLoading?: boolean;
-  primary: string;
+  primary: React.ReactNode | string;
   secondary?: React.ReactNode | string;
-  caption?: string | null;
+  caption?: React.ReactNode | string | null;
   icon?: React.ReactNode | string;
+  hide?: boolean;
   component?: React.ElementType;
   onClick: () => void;
   onSwipeLeft?: () => void;
@@ -55,6 +56,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
   secondary,
   caption,
   icon,
+  hide,
   onSwipeLeft,
   onSwipeRight,
   SwipRightLabel,
@@ -73,6 +75,11 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
       onClick();
     }
   }, [onClick, isSwiping]);
+
+
+  if (hide) {
+    return null;
+  }
 
   return (
     <ListItem
