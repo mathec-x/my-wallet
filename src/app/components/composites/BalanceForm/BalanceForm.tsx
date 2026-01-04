@@ -1,12 +1,8 @@
 'use client';
 
-
 const BalanceForm = () => {
-
-
   return (
     <>
-      Balance Form
     </>
   );
 };

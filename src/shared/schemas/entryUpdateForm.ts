@@ -27,7 +27,8 @@ export const entryUpdateFormSchema = z.object({
       description: 'Valor deve ser no formato $.$$$,¢¢ ou $,¢¢',
       type: 'text',
       inputMode: 'decimal',
-      autoSelect: true
+      autoSelect: true,
+      width: '40%'
     }),
   expected: z
     .union([
@@ -38,30 +39,20 @@ export const entryUpdateFormSchema = z.object({
     ])
     .meta({
       label: 'Valor Esperado',
-      description: 'Valor esperado deve ser no formato $.$$$,¢¢ ou $,¢¢',
       type: 'text',
       inputMode: 'decimal',
-      autoSelect: true
+      autoSelect: true,
+      width: '40%'
     }),
   order: z
     .coerce.number()
     .optional()
     .meta({
-      label: 'Pagamento/Ordem',
-      description: 'Dia do pagamento',
+      label: 'Dia',
+      autoSelect: true,
       type: 'text',
       inputMode: 'decimal',
-    }),
-  type: z
-    .enum(['INCOME', 'EXPENSE'])
-    .meta({
-      label: 'Tipo',
-      description: 'Tipo da entrada de dinheiro',
-      type: 'select',
-      options: [
-        { label: 'Entrada', value: 'INCOME' },
-        { label: 'Saída', value: 'EXPENSE' },
-      ]
+      width: '20%'
     }),
   category: z
     .string()
@@ -73,6 +64,17 @@ export const entryUpdateFormSchema = z.object({
       description: 'Atribua uma categoria para essa entrada',
       type: 'select',
       options: categoriesOptions
+    }),
+  type: z
+    .enum(['INCOME', 'EXPENSE'])
+    .meta({
+      label: 'Tipo',
+      description: 'Tipo da entrada de dinheiro',
+      type: 'choice',
+      options: [
+        { label: 'Entrada', value: 'INCOME' },
+        { label: 'Saída', value: 'EXPENSE' },
+      ]
     }),
   future: z
     .boolean()

@@ -21,6 +21,7 @@ interface FormInputMetaProps {
   title?: string;
   type?: string;
   error?: boolean;
+  width?: string;
   helperText?: string;
   description?: string;
   multiline?: boolean;
@@ -33,7 +34,7 @@ interface FormInputMetaProps {
 }
 const FormInputMeta: React.FC<FormInputMetaProps> = ({
   fullWidth, label, title, error, helperText, form, inputMode, description, multiline, options, control, autoSelect,
-  type = 'text', align = 'left', autoComplete
+  type = 'text', align = 'left', width, autoComplete
 }) => {
 
   switch (type) {
@@ -87,23 +88,42 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
           <FormHelperText>{helperText || description}</FormHelperText>
         </FormControl>
       );
-    default:
+    case 'choice':
       return (
         <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin='normal' size='medium'>
+          <Typography variant='caption' color='textDisabled'>{title || label}</Typography>
+          <Controller
+            control={control}
+            {...form}
+            defaultValue=""
+            render={({ field: { onChange, value } }) => (
+              <Box display="flex" justifyContent='space-evenly'>
+                {options?.map(option => (
+                  <MenuItem
+                    key={option.value}
+                    sx={{ width: '100%' }}
+                    onClick={() => onChange(option.value)}
+                    selected={option.value === value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Box>
+            )}
+          />
+          <FormHelperText>{helperText || description}</FormHelperText>
+        </FormControl>
+      );
+    default:
+      return (
+        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin='normal' size='medium' sx={{ width }}>
           {type === 'date'
             ? <InputLabel shrink>{title || label}</InputLabel>
             : <InputLabel>{title || label}</InputLabel>
           }
           <Input
-            // variant="standard"
-            // margin="normal"
-            // size='medium'
-            // fullWidth={fullWidth}
-            // error={!!error}
-            // label={title || label}
-            // helperText={helperText || description}
             autoComplete={autoComplete}
             onFocus={(e) => autoSelect && e.target.select()}
+            sx={{ mr: width ? 1 : 0 }}
             type={type || 'text'}
             multiline={multiline}
             slotProps={{
@@ -113,7 +133,9 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
             }}
             {...form}
           />
-          <FormHelperText>{helperText || description}</FormHelperText>
+          <FormHelperText sx={{ textWrap: 'nowrap' }}>
+            {helperText || description}
+          </FormHelperText>
         </FormControl>
       );
   }
