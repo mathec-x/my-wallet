@@ -1,6 +1,7 @@
 'use client';
 
 import Drawer from '@/app/components/elements/Drawer';
+import { parseSegment } from '@/shared/utils/parse-segment';
 import { usePathname, useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
@@ -11,8 +12,7 @@ export default function DrawerLayout(props: PropsWithChildren) {
   const segment = useSelectedLayoutSegment();
 
   useEffect(() => {
-    const current = segment?.replace('(.)', '/') || '';
-    if (current === pathname) {
+    if (parseSegment(segment) === pathname) {
       // console.log('Open DrawerLayout', { pathname, current });
       setOpen(true);
     } else {
@@ -35,13 +35,15 @@ export default function DrawerLayout(props: PropsWithChildren) {
       onClose={() => {
         if (open) {
           setOpen(false);
-          setTimeout(() => router.back(), 255);
+          if (pathname === parseSegment(segment)) {
+            setTimeout(() => router.back(), 255);
+          }
         }
       }}
       onOpen={() => {
         if (!open) {
           setOpen(true);
-          router.push('/menu');
+          router.push(parseSegment(segment));
         }
       }}
     >

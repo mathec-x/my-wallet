@@ -1,6 +1,9 @@
 'use client';
 
 import Drawer from '@/app/components/elements/Drawer';
+import { Puller } from '@/app/components/ui/Puller';
+import { parseSegment } from '@/shared/utils/parse-segment';
+import Box from '@mui/material/Box';
 import { usePathname, useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
@@ -11,8 +14,7 @@ export default function ModalLayout(props: PropsWithChildren) {
   const segment = useSelectedLayoutSegment();
 
   useEffect(() => {
-    const current = segment?.replace('(.)', '/') || '';
-    if (current === pathname) {
+    if (parseSegment(segment) === pathname) {
       // console.log('Open ModalLayout', { pathname, current });
       setOpen(true);
     } else {
@@ -27,20 +29,27 @@ export default function ModalLayout(props: PropsWithChildren) {
       anchor='bottom'
       sx={{
         minHeight: '30dvh',
+        borderRadius: 2
       }}
       onClose={() => {
         if (open) {
           setOpen(false);
-          setTimeout(() => router.back(), 255);
+          if (pathname === parseSegment(segment)) {
+            setTimeout(() => router.back(), 255);
+          }
         }
       }}
       onOpen={() => {
         if (!open) {
           setOpen(true);
-          router.push(pathname);
+          router.push(parseSegment(segment));
         }
       }}
     >
+      <Box pb={3}>
+        <Puller sx={{ visibility: { md: 'hidden' } }} />
+      </Box>
+
       {props.children}
     </Drawer >
   );
