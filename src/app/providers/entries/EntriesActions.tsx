@@ -81,7 +81,7 @@ export const useEntriesActions = (entry?: Entry) => {
   };
 
 
-  const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE') => {
+  const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE', callback?: (e: Entry) => void) => {
     const newEntry = await entriesCreateAction({
       accountUuid: accountUuid,
       data: {
@@ -92,7 +92,10 @@ export const useEntriesActions = (entry?: Entry) => {
         }
       }
     });
-    addEntries(newEntry.success ? [newEntry.data] : undefined);
+    if (newEntry.success) {
+      addEntries([newEntry.data]);
+      callback?.(newEntry.data);
+    }
   };
 
   const handleDelete = async (param: { uuid: string }) => {

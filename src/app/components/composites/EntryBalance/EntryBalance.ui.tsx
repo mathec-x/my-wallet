@@ -3,6 +3,7 @@
 import { ListContainer, ListItemAction, ListItemInput } from '@/app/components/elements';
 import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
+import AddIcon from '@mui/icons-material/Add';
 import BalanceIcon from '@mui/icons-material/Balance';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
@@ -10,7 +11,7 @@ import { useRouter } from 'next/navigation';
 export default function EntryBalance() {
 	const router = useRouter();
 	const { entries, balance, board, accountUuid } = useEntriesContext();
-	const { handleBoardNameSubmit } = useEntriesActions();
+	const { handleBoardNameSubmit, handleSubmit } = useEntriesActions();
 
 	return (
 		<>
@@ -37,6 +38,15 @@ export default function EntryBalance() {
 					avatarVariant='rounded'
 					icon={<BalanceIcon />}
 				/>
+				<ListItemInput
+					hide={entries.length <= 5}
+					id={'input-add-entry-income'}
+					icon={<AddIcon />}
+					sx={{ zIndex: 2, bgcolor: e => e.palette.background.paper }}
+					iconVariant='rounded'
+					onSubmit={(value) => handleSubmit(value, 'INCOME', (e) => router.push(`?entry=${e.uuid}`))}
+					placeholder={'Adicionar item e ir para detalhes...'}
+					onError={async () => { alert('Minimo 3 caracteres'); }} />
 			</ListContainer>
 		</>
 	);
