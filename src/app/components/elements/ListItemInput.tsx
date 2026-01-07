@@ -2,7 +2,7 @@
 
 import AddBusinessIcon from '@mui/icons-material/AddBusinessOutlined';
 import SendIcon from '@mui/icons-material/SendOutlined';
-import Avatar from '@mui/material/Avatar';
+import Avatar, { type AvatarProps } from '@mui/material/Avatar';
 import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
@@ -20,6 +20,7 @@ export interface ListInputProps {
   value?: string;
   hide?: boolean;
   autoSelect?: boolean;
+  iconVariant?: AvatarProps['variant'];
   component?: ListItemProps['component'];
   sx?: ListItemProps['sx'];
   onSubmit: (value: string) => Promise<string | void>;
@@ -32,6 +33,7 @@ const ListItemInput: React.FC<ListInputProps> = ({
   id,
   placeholder,
   icon,
+  iconVariant = 'default',
   value: defaultValue,
   hide,
   autoSelect,
@@ -83,8 +85,8 @@ const ListItemInput: React.FC<ListInputProps> = ({
     >
       <ListItemButton>
         <ListItemAvatar>
-          <Avatar variant='default'>
-            {pending ? <CircularProgress size={20} /> : icon || <AddBusinessIcon />}
+          <Avatar variant={iconVariant}>
+            {pending ? <CircularProgress color='info' size={20} /> : icon || <AddBusinessIcon />}
           </Avatar>
         </ListItemAvatar>
         <FormControl

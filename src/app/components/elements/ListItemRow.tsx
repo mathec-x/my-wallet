@@ -11,6 +11,7 @@ interface ListItemRowProps extends ListItemOwnProps {
 	secondary?: ListItemTextProps['secondary'];
 	component?: React.ElementType;
 	caption?: string | React.ReactNode;
+	children?: string | React.ReactNode
 	hide?: boolean;
 }
 
@@ -21,6 +22,7 @@ const ListItemRow: React.FC<ListItemRowProps> = ({
 	avatarVariant = 'default',
 	avatarIcon,
 	hide = false,
+	children,
 	...listItemProps
 }) => {
 
@@ -30,15 +32,17 @@ const ListItemRow: React.FC<ListItemRowProps> = ({
 
 	return (
 		<ListItem {...listItemProps}>
-			<ListItemAvatar>
-				<Avatar variant={avatarVariant}>
-					{avatarIcon}
-				</Avatar>
-			</ListItemAvatar>
+			{avatarIcon &&
+				<ListItemAvatar>
+					<Avatar variant={avatarVariant}>
+						{avatarIcon}
+					</Avatar>
+				</ListItemAvatar>
+			}
 			<ListItemText
 				primary={<>
 					{caption && <Typography variant='caption' color='textDisabled' display='block'>{caption}</Typography>}
-					{primary}
+					{primary || children}
 				</>}
 				secondary={secondary}
 			/>
