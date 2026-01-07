@@ -9,6 +9,7 @@ import { categoriesList } from '@/shared/schemas/categoriesList';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { arrayGroupBy } from '@/shared/utils/array-manipulation/group-by';
 import { floatToMoney } from '@/shared/utils/money-format';
+import { parseArrayLimit } from '@/shared/utils/parse-limit';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import DoneAllIcon from '@mui/icons-material/DoneAllOutlined';
 import DoneIcon from '@mui/icons-material/DoneOutlined';
@@ -64,6 +65,7 @@ export default function EntryList(props: EntryListProps) {
 							openValue={category || null}
 							isOpenOn={(e) => e === category}
 							icon={icon}
+							caption={parseArrayLimit(data, 'title')}
 							primary={label ? `${label} (${data.length})` : null}
 							secondary={`R$ ${floatToMoney(amount)}`}
 							actionLabel={data.every(e => !e.future) && <DoneIcon color='disabled' />}
