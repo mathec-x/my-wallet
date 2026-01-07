@@ -1,6 +1,5 @@
 import { accountGetAction } from '@/app/actions/accounts/account.actions';
 import { entriesListAction } from '@/app/actions/entries/entries.actions';
-import BalanceForm from '@/app/components/composites/BalanceForm/BalanceForm';
 import BoardsChip from '@/app/components/composites/BoardsChip/BoardsChip';
 import EntryBalance from '@/app/components/composites/EntryBalance/EntryBalance.ui';
 import GridDashboardLayout from '@/app/components/layouts/Dashboard/Dashboard.layout';
@@ -38,7 +37,6 @@ export default async function DashboardPageLayout(props: PageProps<'/dashboard/[
         <BoardsChip />
       </Toolbar>
       <EntryBalance />
-      <BalanceForm />
       <GridDashboardLayout />
     </EntriesProvider>
   );

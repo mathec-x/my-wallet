@@ -1,0 +1,1 @@
+export const parseSegment = (segment: string | null) => segment?.replace('(.)', '/') || '';

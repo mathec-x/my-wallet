@@ -68,6 +68,7 @@ const GridDashboardLayout: React.FC = () => {
             />
           </ListItemCollapse>
           <ListItemInput component='label'
+            hide={entries.length > 5}
             id={'input-add-entry-income'}
             icon={<></>}
             onSubmit={(value) => handleSubmit(value, 'INCOME')}
@@ -107,6 +108,7 @@ const GridDashboardLayout: React.FC = () => {
             />
           </ListItemCollapse>
           <ListItemInput component='label'
+            hide={entries.length > 5}
             id={'input-add-entry-expense'}
             icon={<></>}
             onSubmit={(value) => handleSubmit(value, 'EXPENSE')}
