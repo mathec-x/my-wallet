@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export enum STORAGE {
   LOCK_BOARD = 'lock-boards',
-  GROUP_CATEGORY = 'group-category',
+  GROUP_CATEGORY = 'group-category', // unused
   SELECTED_BOARD = 'selected-board' // unused
 }
 

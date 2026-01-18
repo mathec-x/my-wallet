@@ -4,17 +4,15 @@ import EntryList from '@/app/components/composites/EntryList/EntryList.layout';
 import ListContainer from '@/app/components/elements/ListContainer';
 import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
 import ListItemInput from '@/app/components/elements/ListItemInput';
-import useLocalStorage, { STORAGE } from '@/app/hooks/useLocalStorage.hook';
 import { MODALS } from '@/app/hooks/useModalHandler';
 import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
+import type { Entry } from '@/app/providers/entries/EntriesType';
 import MoneyIcon from '@mui/icons-material/AttachMoney';
-import ListOpenedIcon from '@mui/icons-material/Ballot';
-import ListClosedIcon from '@mui/icons-material/BallotOutlined';
 import Grid from '@mui/material/Grid';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
-import { ListItemAction } from '../../elements';
+import { useCallback, useMemo, useState } from 'react';
+import TabAction from '../../elements/TabActions';
 
 const listItemCollapseProps: Partial<React.ComponentProps<typeof ListItemCollapse>> = {
   disablePadding: true,
@@ -28,7 +26,15 @@ const GridDashboardLayout: React.FC = () => {
   const params = useSearchParams();
   const entryUuid = params.get(MODALS.ENTRY_EDITOR);
   const { entries, accountUuid, balance, findEntries } = useEntriesContext();
-  const [group, setGroup] = useLocalStorage(STORAGE.GROUP_CATEGORY, true);
+  const [customFilter, setCustomFilter] = useState<keyof Entry | `!${keyof Entry}`>();
+  const handleCustomFilter = useCallback((entry: Entry) => {
+    if (customFilter && customFilter.startsWith('!')) {
+      return entry[customFilter.substring(1) as keyof Entry] ? false : true;
+    } else if (customFilter) {
+      return entry[customFilter as keyof Entry] ? true : false;
+    }
+    return true;
+  }, [customFilter]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [entry] = useMemo(() => !entryUuid ? [] : findEntries(e => e.uuid === entryUuid), [entryUuid]);
@@ -39,8 +45,9 @@ const GridDashboardLayout: React.FC = () => {
   }, [entries]);
 
   const expenses = useMemo(() => {
-    return entries.filter(entry => entry.type === 'EXPENSE');
-  }, [entries]);
+    return entries.filter(entry => entry.type === 'EXPENSE' && handleCustomFilter(entry)
+    );
+  }, [entries, handleCustomFilter]);
 
   return (
     <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
@@ -90,21 +97,21 @@ const GridDashboardLayout: React.FC = () => {
             actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
             {...listItemCollapseProps}
           >
+            <TabAction
+              options={[
+                { label: 'Tudo', onSelect: () => setCustomFilter(undefined) },
+                { label: 'Pendentes', onSelect: () => setCustomFilter('future') },
+                { label: 'Pagos', onSelect: () => setCustomFilter('!future') }
+              ]}
+            />
             <EntryList
               accountUuid={accountUuid}
               entries={expenses}
-              groupBy={group ? 'category' : undefined}
+              groupBy={!customFilter ? 'category' : undefined}
               type='EXPENSE'
               onSumbit={handleSubmit}
               onDelete={handleDelete}
               onUpdate={handleUpdate}
-            />
-            <ListItemAction
-              disablePadding
-              avatarVariant='default'
-              icon={group ? <ListOpenedIcon /> : <ListClosedIcon />}
-              primary={group ? 'Desagrupar' : 'Agrupar'}
-              onClick={() => setGroup(!group)}
             />
           </ListItemCollapse>
           <ListItemInput component='label'
