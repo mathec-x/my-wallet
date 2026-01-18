@@ -5,14 +5,17 @@ import { Sum } from '@/shared/utils/math';
 import { floatToMoney } from '@/shared/utils/money-format';
 
 export type Entry = ResponseServiceAsync<typeof entriesCreateAction>
-
+export type CustomFilterKeys = keyof Entry | `!${keyof Entry}`
 export interface IEntriesContextType {
   entries: Entry[];
+  filterBy: (filter?: CustomFilterKeys) => void;
+  filterVal?: CustomFilterKeys;
   restore: () => void;
   remove: (param: { uuid: string }) => void;
   set: (callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) => Partial<Entry>;
   addEntries: (data?: Partial<Entry>[]) => void;
   accountUuid: string;
+  size: number;
   balance: ReturnType<typeof calculateBalance>;
   boards: {
     id: number;

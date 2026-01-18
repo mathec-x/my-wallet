@@ -2,8 +2,8 @@
 
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { moneyToFloat } from '@/shared/utils/money-format';
-import { createContext, useContext, useMemo, useState } from 'react';
-import { calculateBalance, type Entry, type IEntriesContextType } from './EntriesType';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { calculateBalance, type CustomFilterKeys, type Entry, type IEntriesContextType } from './EntriesType';
 
 const EntriesContext = createContext<IEntriesContextType | undefined>(undefined);
 
@@ -14,6 +14,16 @@ interface EntriesProviderProps {
 
 export function EntriesProvider({ children, entries: values, ...props }: React.PropsWithChildren<EntriesProviderProps>) {
   const [entries, setEntries] = useState(values);
+  const [customFilter, setCustomFilter] = useState<CustomFilterKeys>();
+
+  const handleCustomFilter = useCallback((entry: Entry) => {
+    if (customFilter && customFilter.startsWith('!')) {
+      return entry[customFilter.substring(1) as keyof Entry] ? false : true;
+    } else if (customFilter) {
+      return entry[customFilter as keyof Entry] ? true : false;
+    }
+    return true;
+  }, [customFilter]);
 
   const boards = useMemo(() => {
     const boards: IEntriesContextType['boards'] = [];
@@ -32,9 +42,9 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   const [board, setBoard] = useState(() => boards.length > 0 ? boards[boards.length - 1] : undefined);
 
-  const filteredEntries = useMemo(() => entries
+  const filteredEntries = useMemo(() => [...entries] // o .sort() muta o array original.
     .sort((a, b) => (a?.order || 0) - (b?.order || 0))
-    .filter(entry => !board?.id || entry.boardId === board?.id), [entries, board]);
+    .filter(entry => (!board?.id || entry.boardId === board?.id) && handleCustomFilter(entry)), [entries, board, handleCustomFilter]);
 
   const balance = useMemo(() => calculateBalance(filteredEntries), [filteredEntries]);
 
@@ -101,6 +111,8 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
   return (
     <EntriesContext.Provider value={{
       entries: filteredEntries,
+      filterBy: setCustomFilter,
+      filterVal: customFilter,
       remove,
       set,
       addEntries,
@@ -110,6 +122,7 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
       board,
       setBoard,
       setEntriesBoard,
+      size: entries.length,
       findEntries: (callback: (entry: Entry) => boolean) => entries.filter(callback),
       ...props
     }}>{children}</EntriesContext.Provider>

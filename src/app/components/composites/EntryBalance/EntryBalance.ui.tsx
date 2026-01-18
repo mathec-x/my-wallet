@@ -7,17 +7,18 @@ import AddIcon from '@mui/icons-material/Add';
 import BalanceIcon from '@mui/icons-material/Balance';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
+import TabAction from '../../elements/TabActions';
 
 export default function EntryBalance() {
 	const router = useRouter();
-	const { entries, balance, board, accountUuid } = useEntriesContext();
+	const { balance, board, accountUuid, filterBy, size } = useEntriesContext();
 	const { handleBoardNameSubmit, handleSubmit } = useEntriesActions();
 
 	return (
 		<>
 			<ListItemInput
 				id='name-board'
-				hide={entries.length === 0 || !!board?.name}
+				hide={size === 0 || !!board?.name}
 				autoSelect
 				sx={{ py: 2 }}
 				component='div'
@@ -25,10 +26,10 @@ export default function EntryBalance() {
 				onSubmit={handleBoardNameSubmit}
 				placeholder='Nomear este Painel'
 			/>
-			<ListContainer header={entries.length > 0 && balance.income !== '0,00' && 'Balance'} disablePadding>
+			<ListContainer header={size > 0 && 'Balance'} disablePadding>
 				<ListItemAction
 					disablePadding
-					hide={balance.income === '0,00'}
+					hide={size < 1}
 					onClick={() => {
 						router.push(`/calculate?accountUuid=${accountUuid}`);
 					}}
@@ -39,7 +40,7 @@ export default function EntryBalance() {
 					icon={<BalanceIcon />}
 				/>
 				<ListItemInput
-					hide={entries.length <= 5}
+					hide={size <= 5}
 					id={'input-add-entry-income'}
 					icon={<AddIcon />}
 					sx={{ zIndex: 2, bgcolor: e => e.palette.background.paper }}
@@ -48,6 +49,14 @@ export default function EntryBalance() {
 					placeholder={'Adicionar item e ir para detalhes...'}
 					onError={async () => { alert('Minimo 3 caracteres'); }} />
 			</ListContainer>
+			<TabAction
+				hide={size <= 5}
+				options={[
+					{ label: 'Tudo', onSelect: () => filterBy() },
+					{ label: 'Pendentes', onSelect: () => filterBy('future') },
+					{ label: 'Pagos', onSelect: () => filterBy('!future') }
+				]}
+			/>
 		</>
 	);
 }

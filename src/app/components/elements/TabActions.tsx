@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import { useState } from 'react';
 
 interface TabActionProps {
+  hide?: boolean
   options: {
     label?: TabProps['label'],
     icon?: TabProps['icon']
@@ -19,8 +20,8 @@ const TabAction: React.FC<TabActionProps> = (props) => {
     props.options[newValue].onSelect();
   };
 
-  return (
-    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+  return !props.hide && (
+    <Box>
       <Tabs value={value} onChange={handleChange} variant='fullWidth'>
         {props.options.map((option, index) => (
           <Tab
