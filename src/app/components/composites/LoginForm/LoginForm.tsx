@@ -40,7 +40,7 @@ const LoginForm = () => {
   });
 
   return (
-    <Box position={'relative'} sx={{ width: '100%', minHeight: 650, typography: 'body1' }}>
+    <Box position={'relative'} sx={{ width: '100%', minHeight: 550, typography: 'body1' }}>
       <Tabs value={tab} onChange={(_, newValue) => setTab(newValue)} centered onError={console.log}>
         <Tab label="Logar" />
         <Tab label="Registrar" />
@@ -75,7 +75,8 @@ const LoginForm = () => {
           ref={registerFormRef}
           schema={loginRegisterFormSchema}
           onSubmit={handleRegister}
-          errorMessage={error.register}>
+          errorMessage={error.register}
+          margin='dense'>
           <Box textAlign='center'>
             <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
               Cadastrar
@@ -87,7 +88,8 @@ const LoginForm = () => {
         <FormControlSchema
           schema={loginResetFormSchema}
           onSubmit={handleReset}
-          errorMessage={error.reset}>
+          errorMessage={error.reset}
+          margin='none'>
           <Box textAlign='center'>
             <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
               Enviar

@@ -20,7 +20,6 @@ export const loginResetFormSchema = z.object({
       description: 'Sua senha de acesso',
       type: 'password',
       autoComplete: 'new-password',
-      hide: true
     }),
 
   newPassword: z
@@ -31,8 +30,7 @@ export const loginResetFormSchema = z.object({
       title: 'Nova Senha',
       description: 'Sua nova senha de acesso',
       type: 'password',
-      autoComplete: 'new-password',
-      hide: true
+      autoComplete: 'new-password'
     }),
 
   confirmPassword: z
@@ -43,8 +41,7 @@ export const loginResetFormSchema = z.object({
       title: 'Confirmar Senha',
       description: 'Redigite sua senha',
       type: 'password',
-      autoComplete: 'new-password',
-      hide: true
+      autoComplete: 'new-password'
     }),
 
   confirmationCode: z

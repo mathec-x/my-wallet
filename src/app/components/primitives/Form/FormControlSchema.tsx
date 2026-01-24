@@ -18,11 +18,12 @@ interface FormControlSchemaProps {
   errorMessage?: string | null;
   id?: string;
   value?: Record<string, unknown>;
+  margin?: 'dense' | 'normal' | 'none';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit?: (data: any) => void;
 }
 const FormControlSchema = forwardRef(
-  ({ schema, onSubmit, children, errorMessage, id: propId, value }: FormControlSchemaProps, ref) => {
+  ({ schema, onSubmit, children, errorMessage, id: propId, value, margin }: FormControlSchemaProps, ref) => {
     const id = useId();
     const { register, handleSubmit, formState: { errors }, reset, setValue, control } = useForm({
       resolver: zodResolver(schema),
@@ -55,6 +56,7 @@ const FormControlSchema = forwardRef(
             <FormInputMeta
               key={`${id}-${key}`}
               fullWidth
+              margin={margin}
               error={!!errors[key]}
               helperText={errors?.[key]?.message}
               form={register(key)}

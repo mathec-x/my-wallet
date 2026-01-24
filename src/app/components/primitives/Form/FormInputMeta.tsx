@@ -30,12 +30,13 @@ interface FormInputMetaProps {
   control?: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   options?: { label: string; value: string }[];
   autoComplete?: string;
+  margin?: 'dense' | 'normal' | 'none';
   align?: 'left' | 'right' | 'center';
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 }
 const FormInputMeta: React.FC<FormInputMetaProps> = ({
   fullWidth, label, title, error, helperText, form, inputMode, description, multiline, options, control, autoSelect,
-  type = 'text', align = 'left', width, autoComplete
+  margin = 'normal', type = 'text', align = 'left', width, autoComplete
 }) => {
 
   switch (type) {
@@ -68,7 +69,7 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
       );
     case 'select':
       return (
-        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin='normal' size='medium'>
+        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin={margin} size='medium'>
           <InputLabel>{title || label}</InputLabel>
           <Controller
             control={control}
@@ -91,7 +92,7 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
       );
     case 'choice':
       return (
-        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin='normal' size='medium'>
+        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin={margin} size='medium'>
           <Typography variant='caption' color='textDisabled'>{title || label}</Typography>
           <Controller
             control={control}
@@ -116,7 +117,7 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
       );
     default:
       return (
-        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin='normal' size='medium' sx={{ width }}>
+        <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin={margin} sx={{ width }}>
           {type === 'date'
             ? <InputLabel shrink>{title || label}</InputLabel>
             : <InputLabel>{title || label}</InputLabel>
