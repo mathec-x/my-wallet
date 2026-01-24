@@ -1,9 +1,9 @@
+import { LoggerService } from '@/server/application/services/logger/logger.service';
 import { ResponseService } from '@/server/domain/common/response.service';
 import { HashService } from '@/server/domain/services/hash/hash.service';
 import { prisma } from '@/server/infra/prisma/client';
 import { loginResetFormSchema, LoginResetFormSchema } from '@/shared/schemas';
 import 'server-only';
-import { LoggerService } from '../../services/logger/logger.service';
 
 export class UserResetPasswordUseCase {
   private readonly logger = new LoggerService(UserResetPasswordUseCase.name);
@@ -26,6 +26,12 @@ export class UserResetPasswordUseCase {
         return ResponseService.NotFound('Usuário/Senha invalido');
       }
 
+      this.logger.info(`Comparing body password to reset: ${user.email} id: ${user.id}`);
+      const hashString = await this.hashService.compare(data.password, user.password);
+      if (!hashString) {
+        return ResponseService.NotFound('Usuário/Senha invalido');
+      }
+
       const confirmationCode = await prisma.userConfirmationCode.findFirst({
         where: { email: user.email, code: data.confirmationCode }
       });
@@ -37,12 +43,6 @@ export class UserResetPasswordUseCase {
       // 6h expiration
       if (confirmationCode.createdAt.getTime() + 6 * 60 * 60 * 1000 < Date.now()) {
         return ResponseService.BadRequest('Código de confirmação expirado');
-      }
-
-      this.logger.info(`Comparing body password to reset: ${user.email} id: ${user.id}`);
-      const hashString = await this.hashService.compare(data.password, user.password);
-      if (!hashString) {
-        return ResponseService.NotFound('Usuário/Senha invalido');
       }
 
       const updatedUser = await this.updateUserPassword(user, data.newPassword);
