@@ -36,7 +36,7 @@ export default function EntryBalance() {
 					}}
 					primary={(
 						<Typography variant='body1'>
-							<small>Saldo R$</small> {
+							<small>R$</small> {
 								filterVal === 'future' ? balance.futureBalance
 									: filterVal === '!future' ? balance.futureExpense
 										: balance.balance
