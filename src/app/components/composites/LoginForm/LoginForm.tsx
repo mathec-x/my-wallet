@@ -30,11 +30,17 @@ const LoginForm = () => {
       loginFormRef.current?.setValue('password', password);
       registerFormRef.current?.reset();
       setTab(0);
-    }
+    },
+    onResetPasswordSuccess: ({ email, newPassword }) => {
+      loginFormRef.current?.setValue('email', email);
+      loginFormRef.current?.setValue('password', newPassword);
+      registerFormRef.current?.reset();
+      setTab(0);
+    },
   });
 
   return (
-    <Box position={'relative'} sx={{ width: '100%', minHeight: 550, typography: 'body1' }}>
+    <Box position={'relative'} sx={{ width: '100%', minHeight: 650, typography: 'body1' }}>
       <Tabs value={tab} onChange={(_, newValue) => setTab(newValue)} centered onError={console.log}>
         <Tab label="Logar" />
         <Tab label="Registrar" />
@@ -80,7 +86,8 @@ const LoginForm = () => {
       <SlidePanel direction={'left'} in={tab === 2}>
         <FormControlSchema
           schema={loginResetFormSchema}
-          onSubmit={handleReset}>
+          onSubmit={handleReset}
+          errorMessage={error.reset}>
           <Box textAlign='center'>
             <Button loading={loading} type='submit' fullWidth variant="contained" sx={{ mt: 4, width: 250 }}>
               Enviar

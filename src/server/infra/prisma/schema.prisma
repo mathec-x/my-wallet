@@ -26,6 +26,15 @@ model User {
   createdAt DateTime  @default(now())
 }
 
+model UserConfirmationCode {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String
+  createdAt DateTime @default(now())
+
+  @@unique([email, code])
+}
+
 model Account {
   id        Int       @id @default(autoincrement())
   uuid      String    @unique @default(uuid())

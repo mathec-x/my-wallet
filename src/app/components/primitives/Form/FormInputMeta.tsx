@@ -12,6 +12,7 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 import { Control, Controller, UseFormRegisterReturn } from 'react-hook-form';
+import InputVisibilityAdornment from './InputVisibilityAdornment';
 
 
 interface FormInputMetaProps {
@@ -126,6 +127,7 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
             sx={{ mr: width ? 1 : 0 }}
             type={type || 'text'}
             multiline={multiline}
+            endAdornment={type === 'password' && <InputVisibilityAdornment />}
             slotProps={{
               input: {
                 inputMode: inputMode,
