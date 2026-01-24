@@ -11,9 +11,10 @@ import TabAction from '../../elements/TabActions';
 
 export default function EntryBalance() {
 	const router = useRouter();
-	const { balance, board, accountUuid, filterBy, size } = useEntriesContext();
+	const { balance, board, accountUuid, filterBy, size, filterVal } = useEntriesContext();
 	const { handleBoardNameSubmit, handleSubmit } = useEntriesActions();
 
+	console.log(filterVal);
 	return (
 		<>
 			<ListItemInput
@@ -33,12 +34,29 @@ export default function EntryBalance() {
 					onClick={() => {
 						router.push(`/calculate?accountUuid=${accountUuid}`);
 					}}
-					primary={<>R$ <Typography variant='body1' display='inline'>{balance.balance}</Typography></>}
-					secondary={'Saldo total considerando entradas e saídas'}
-					caption={<>Devedor R$ <Typography variant='body1' display='inline'>{balance.futureBalance}</Typography></>}
+					primary={(
+						<Typography variant='body1'>
+							<small>Saldo R$</small> {
+								filterVal === 'future' ? balance.futureBalance
+									: filterVal === '!future' ? balance.futureExpense
+										: balance.balance
+							}
+						</Typography>
+					)}
+					caption={
+						filterVal === 'future' ? 'Todas saídas futuras'
+							: filterVal === '!future' ? 'Todas saídas pagas'
+								: 'Todas entradas - saídas'
+					}
 					avatarVariant='rounded'
 					icon={<BalanceIcon />}
-				/>
+				>
+					{!filterVal && (
+						<Typography variant='caption' >
+							<small>Devedor R$</small> {balance.futureBalance}
+						</Typography>
+					)}
+				</ListItemAction>
 				<ListItemInput
 					hide={size <= 5}
 					id={'input-add-entry-income'}
