@@ -1,8 +1,8 @@
+import { LoggerService } from '@/server/application/services/logger/logger.service';
 import { ResponseService } from '@/server/domain/common/response.service';
 import { CookieService } from '@/server/domain/services/cookie/cookie.service';
 import { prisma } from '@/server/infra/prisma/client';
 import 'server-only';
-import { LoggerService } from '../../services/logger/logger.service';
 
 export interface EntriesListUseCaseParams {
 	accountUuid: string;

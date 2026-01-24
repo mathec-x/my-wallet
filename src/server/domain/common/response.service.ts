@@ -5,6 +5,7 @@ import {
   PrismaClientUnknownRequestError,
   PrismaClientValidationError
 } from '@/server/infra/prisma/generated/runtime/library';
+import 'server-only';
 
 export type ResponseStatus = 200 | 201 | 400 | 401 | 403 | 404 | 409 | 412 | 500;
 
