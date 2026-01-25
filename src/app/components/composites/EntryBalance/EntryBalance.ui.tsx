@@ -14,7 +14,6 @@ export default function EntryBalance() {
 	const { balance, board, accountUuid, filterBy, size, filterVal } = useEntriesContext();
 	const { handleBoardNameSubmit, handleSubmit } = useEntriesActions();
 
-	console.log(filterVal);
 	return (
 		<>
 			<ListItemInput
