@@ -19,6 +19,7 @@ export interface ListInputProps {
   icon?: React.ReactNode;
   value?: string;
   hide?: boolean;
+  enableGutters?: boolean;
   autoSelect?: boolean;
   iconVariant?: AvatarProps['variant'];
   component?: ListItemProps['component'];
@@ -38,6 +39,7 @@ const ListItemInput: React.FC<ListInputProps> = ({
   hide,
   autoSelect,
   sx,
+  enableGutters,
   component = 'li',
   disablePadding = true
 }) => {
@@ -79,11 +81,15 @@ const ListItemInput: React.FC<ListInputProps> = ({
   return (
     <ListItem
       disablePadding={disablePadding}
+      disableGutters={!enableGutters}
       component={component}
       sx={sx}
     // onSelect={(e) => e?.preventDefault()}
     >
-      <ListItemButton>
+      <ListItemButton sx={{
+        minHeight: enableGutters ? 68 : 'initial',
+        mt: enableGutters ? 1 : 'initial'
+      }}>
         <ListItemAvatar>
           <Avatar variant={iconVariant}>
             {pending ? <CircularProgress color='info' size={20} /> : icon || <AddBusinessIcon />}

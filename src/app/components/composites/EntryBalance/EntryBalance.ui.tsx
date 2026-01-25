@@ -57,6 +57,7 @@ export default function EntryBalance() {
 					)}
 				</ListItemAction>
 				<ListItemInput
+					enableGutters
 					hide={size <= 5}
 					id={'input-add-entry-income'}
 					icon={<AddIcon />}
