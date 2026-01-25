@@ -10,10 +10,13 @@ import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { arrayGroupBy } from '@/shared/utils/array-manipulation/group-by';
 import { floatToMoney } from '@/shared/utils/money-format';
 import { parseArrayLimit } from '@/shared/utils/parse-limit';
+import MoneyOnIcon from '@mui/icons-material/AttachMoneyOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import DoneAllIcon from '@mui/icons-material/DoneAllOutlined';
 import DoneIcon from '@mui/icons-material/DoneOutlined';
 import InfoIcon from '@mui/icons-material/InfoOutline';
+import MoneyOffIcon from '@mui/icons-material/MoneyOffCsredOutlined';
+import TaskIcon from '@mui/icons-material/PlayArrow';
 import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { useId, useMemo } from 'react';
@@ -70,6 +73,7 @@ export default function EntryList(props: EntryListProps) {
 							secondary={`R$ ${floatToMoney(amount)}`}
 							actionLabel={data.every(e => !e.future) && <DoneIcon color='disabled' />}
 							disablePadding
+							divider={false}
 							avatarVariant='default'
 						>
 							{data.map((entry, i) => (
@@ -77,17 +81,22 @@ export default function EntryList(props: EntryListProps) {
 									key={id + entry.title + entry.uuid + i}
 									component="div"
 									dense
+									divider={i === data.length - 1}
 									disablePadding={(props.groupBy && entry.category) ? false : true}
 									SwipRightLabel={entry.future ? <DoneAllIcon color='success' /> : <DoneIcon color='info' />}
 									onSwipeRight={() => props.onUpdate({ future: !entry.future, uuid: entry.uuid } as EntryUpdateFormSchema)}
 									SwipLeftLabel={<DeleteIcon color='error' />}
 									onSwipeLeft={() => props.onDelete(entry)}
-									icon={entry.order}
+									icon={
+										entry.order || (entry.amount === 0
+											? <TaskIcon /> : entry.type === 'INCOME'
+												? <MoneyOnIcon /> : <MoneyOffIcon />)
+									}
 									onClick={() => modal.open(entry.uuid)}
 									primary={entry.title}
 									avatarVariant='primary'
-									secondary={`R$ ${floatToMoney(entry.amount)}`}
-									caption={entry.description || entry.board?.name || ''}
+									secondary={entry.amount ? `R$ ${floatToMoney(entry.amount)}` : ''}
+									caption={entry.description}
 									isLoading={!entry.uuid}
 								>
 									<Stack direction='row' spacing={1}>
