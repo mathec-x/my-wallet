@@ -21,8 +21,8 @@ export default function BoardsChip() {
         <MenuContext
           key={id + b.name + i}
           header={`Ações do quadro ${b.name}`}
+          childActionProp='onDelete'
           childProps={{
-            actionProp: 'onDelete',
             deleteIcon: <MoreIcon />
           }}
           options={[
@@ -30,10 +30,13 @@ export default function BoardsChip() {
             { icon: DeleteIcon, label: 'Deletar', action: () => handleDeleteBoard(b.uuid) },
           ]}>
           <Chip
+            size='small'
             label={
               <Typography
                 variant='subtitle2'
-                sx={{ borderRight: 1, pr: 1.5, borderColor: 'divider' }}>
+                fontSize={9}
+                fontWeight={600}
+                sx={{ borderRight: 1, pr: 1, borderColor: 'divider' }}>
                 {b.name || '_______'}
               </Typography>
             }

@@ -18,15 +18,13 @@ const StyledListHeader = styled(ListSubheader)({
 export interface MenuContextProps {
   header?: React.ReactNode;
   suffix?: React.ReactNode;
-  childProps?: {
-    actionProp?: string
-    [key: string]: unknown
-  };
+  childActionProp?: string;
+  childProps?: Record<string, unknown>;
   options: { label: React.ReactNode, icon: React.ElementType, action: () => void, caption?: React.ReactNode }[]
   children: React.ReactNode;
 }
 
-export const MenuContext: React.FC<MenuContextProps> = ({ children, options, header, suffix, childProps }) => {
+export const MenuContext: React.FC<MenuContextProps> = ({ children, options, header, suffix, childProps, childActionProp }) => {
   const [contextMenu, setOpened] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -42,8 +40,8 @@ export const MenuContext: React.FC<MenuContextProps> = ({ children, options, hea
     setOpened(false);
   };
 
-  const childActionProp = childProps?.actionProp && {
-    [childProps.actionProp]: handleOpen,
+  const childActionPropHandler = childActionProp && {
+    [childActionProp]: handleOpen,
   };
 
   return (
@@ -51,7 +49,7 @@ export const MenuContext: React.FC<MenuContextProps> = ({ children, options, hea
       {Children.map(children, (child) =>
         cloneElement(child as React.ReactElement, {
           ...childProps,
-          ...childActionProp,
+          ...childActionPropHandler,
         })
       )}
       <Menu
