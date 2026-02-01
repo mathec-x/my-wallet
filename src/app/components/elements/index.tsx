@@ -7,6 +7,7 @@ export { default as ListItemAction } from './ListItemAction';
 export { default as ListItemInput } from './ListItemInput';
 export { default as ListItemInputFullScreen } from './ListItemInputFullScreen';
 export { default as ListItemRow } from './ListItemRow';
+export { default as MenuContext } from './MenuContext';
 export { default as Modal } from './Modal';
 export { default as SlidePanel } from './SlidePanel';
 

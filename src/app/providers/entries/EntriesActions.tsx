@@ -54,18 +54,24 @@ export const useEntriesActions = (entry?: Entry) => {
     loading(false);
   };
 
-  const handleCloneBoard = async () => {
+  const handleCloneBoard = async (boardUUid: string) => {
+    const [{ board: selectedBoard }] = findEntries(e => e.board?.uuid === boardUUid);
+    if (!selectedBoard) {
+      alert('Painel não encontrado');
+      return;
+    }
+
     const confirmation = await confirm(
       'Clonar painel',
-      `Deseja clonar o painel '${board!.name || ''}' com todas as suas entradas?`,
+      `Deseja clonar o painel '${selectedBoard!.name || ''}' com todas as suas entradas?`,
     );
     if (!confirmation) {
       return;
     }
-    loading(`Clonando painel '${board!.name || '...'}'`);
+    loading(`Clonando painel '${selectedBoard!.name || '...'}'`);
     const res = await boardCopyAction({
       accountUuid: accountUuid,
-      boardId: board!.id,
+      boardId: selectedBoard!.id,
     });
     if (res.success) {
       addEntries(res.data);
