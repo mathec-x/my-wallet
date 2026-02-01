@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { Children, cloneElement, useState } from 'react';
 
 const StyledListHeader = styled(ListSubheader)({
   backgroundImage: 'var(--Paper-overlay)',
@@ -18,11 +18,15 @@ const StyledListHeader = styled(ListSubheader)({
 export interface MenuContextProps {
   header?: React.ReactNode;
   suffix?: React.ReactNode;
+  childProps?: {
+    actionProp?: string
+    [key: string]: unknown
+  };
   options: { label: React.ReactNode, icon: React.ElementType, action: () => void, caption?: React.ReactNode }[]
   children: React.ReactNode;
 }
 
-export const MenuContext: React.FC<MenuContextProps> = ({ children, options, header, suffix }) => {
+export const MenuContext: React.FC<MenuContextProps> = ({ children, options, header, suffix, childProps }) => {
   const [contextMenu, setOpened] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -38,9 +42,18 @@ export const MenuContext: React.FC<MenuContextProps> = ({ children, options, hea
     setOpened(false);
   };
 
+  const childActionProp = childProps?.actionProp && {
+    [childProps.actionProp]: handleOpen,
+  };
+
   return (
     <div onContextMenu={handleOpen}>
-      {children}
+      {Children.map(children, (child) =>
+        cloneElement(child as React.ReactElement, {
+          ...childProps,
+          ...childActionProp,
+        })
+      )}
       <Menu
         anchorEl={anchorEl}
         open={contextMenu}
