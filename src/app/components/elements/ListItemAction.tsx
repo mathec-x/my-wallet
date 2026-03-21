@@ -65,6 +65,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
   ...listItemProps
 }) => {
   const { dragOffset, isSwiping, handleMouseDown, handleTouchStart } = useSweep({
+    holdDelay: 150,
     threshould: 100,
     onSwipeLeft,
     onSwipeRight,
