@@ -105,7 +105,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
         onTouchStart={handleTouchStart}
         sx={{
           transform: `translateX(${dragOffset}px)`,
-          transition: 'transform 0.1s cubic-bezier(0.65, 0.1, 0.46, 1.07)',
+          transition: 'transform 0.1s ease-out',
         }}
       >
         <ListItemButton onClick={handleClick} disabled={isLoading}>
