@@ -4,7 +4,8 @@ import {
   boardDeleteAction,
   entriesCreateAction,
   entriesDeleteAction,
-  entriesUpdateAction
+  entriesUpdateAction,
+  subEntriesUpdateAction
 } from '@/app/actions/entries/entries.actions';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { useCallback } from 'react';
@@ -114,11 +115,20 @@ export const useEntriesActions = (entry?: Entry) => {
 
   const handleUpdate = useCallback(
     async (data: EntryUpdateFormSchema) => {
-      const parsed = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
+      const { subEntries, ...parsed } = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
+      const sub = await subEntriesUpdateAction({
+        entryUuid: data?.uuid || entry!.uuid,
+        subEntries: subEntries || []
+      });
+
+      if (!sub.success) {
+        console.error(`Erro ao atualizar sub divisão ${sub.error}`);
+      }
+
       const res = await entriesUpdateAction({
         accountUuid: accountUuid,
         entryUuid: data?.uuid || entry!.uuid,
-        data: parsed as never,
+        data: parsed as never
       });
       if (res?.success) {
         set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);

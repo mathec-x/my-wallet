@@ -22,6 +22,14 @@ export class BoardCopyUseCase {
       const currentBoardEntries = await prisma.entry.findMany({
         where: {
           boardId: params.boardId!
+        },
+        include: {
+          subEntries: {
+            select: {
+              title: true,
+              amount: true
+            }
+          },
         }
       });
 
@@ -60,7 +68,21 @@ export class BoardCopyUseCase {
         }
       });
 
-      this.logger.info(`${entries.length} Entries copiadas para novo board: ${board.id}`);
+      /**
+       * @todo finish implementation
+       * copy sub entries to new board entries, matching by title and amount (since the new board entries will have different uuids)
+       */
+      // this.logger.debug(`${entries.length} Entries copiadas para novo board: ${board.id}`, currentBoardEntries);
+      // const subentries = currentBoardEntries.flatMap(e => {
+      //   const newData = entries.find(en => en.title === e.title && en.amount === e.amount);
+      //   return e.subEntries.map(s => ({
+      //     entryId: newData?.id,
+      //     title: s.title,
+      //     amount: s.amount
+      //   }));
+      // }).filter(e => e.entryId);
+      // this.logger.debug(`Coping current ${subentries.length} subentries`, { subentries });
+
       return ResponseService.Ok(entries);
     } catch (error) {
       return ResponseService.unknow(error);

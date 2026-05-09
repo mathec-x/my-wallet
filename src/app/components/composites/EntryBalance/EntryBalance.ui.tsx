@@ -13,7 +13,7 @@ export default function EntryBalance() {
 	const router = useRouter();
 	const { balance, board, accountUuid, filterBy, size, filterVal } = useEntriesContext();
 	const { handleBoardNameSubmit, handleSubmit } = useEntriesActions();
-
+	// console.log(balance);
 	return (
 		<>
 			<ListItemInput

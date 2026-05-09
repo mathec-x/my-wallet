@@ -7,6 +7,7 @@ import { EntriesCreateUseCase, type EntriesCreateUseCaseParams } from '@/server/
 import { EntriesDeleteUseCase, type EntriesDeleteUseCaseParams } from '@/server/application/useCases/entriesDelete/entriesDelete.useCase';
 import { EntriesListUseCase, type EntriesListUseCaseParams } from '@/server/application/useCases/entriesList/entriesList.useCase';
 import { EntriesUpdateUseCase, type EntriesUpdateUseCaseParams } from '@/server/application/useCases/entriesUpdate/entriesUpdate.useCase';
+import { SubEntriesUpdateUseCase, SubEntriesUpdateUseCaseParams } from '@/server/application/useCases/entriesUpdate/subEntriesUpdate.useCase';
 import { CookieService } from '@/server/domain/services/cookie/cookie.service';
 import { ResponseServiceAsync } from '@/server/interfaces/next';
 import { cache } from 'react';
@@ -16,6 +17,7 @@ const entriesListUseCase = new EntriesListUseCase(cookieService);
 const entriesDeleteUseCase = new EntriesDeleteUseCase(cookieService);
 const entriesUpdateUseCase = new EntriesUpdateUseCase(cookieService);
 const entriesCreateUseCase = new EntriesCreateUseCase(cookieService);
+const subEntriesUpdateUseCase = new SubEntriesUpdateUseCase(cookieService);
 const boardCreateUseCase = new BoardCreateUseCase(cookieService);
 const boardCopyUseCase = new BoardCopyUseCase(cookieService);
 const boardDeleteUseCase = new BoardDeleteUseCase(cookieService);
@@ -36,6 +38,10 @@ export async function entriesDeleteAction(params: EntriesDeleteUseCaseParams) {
 
 export async function entriesUpdateAction(params: EntriesUpdateUseCaseParams) {
 	return entriesUpdateUseCase.execute(params);
+};
+
+export async function subEntriesUpdateAction(params: SubEntriesUpdateUseCaseParams) {
+	return subEntriesUpdateUseCase.execute(params);
 };
 
 export async function boardCreateAction(params: BoardCreateUseCaseParams) {

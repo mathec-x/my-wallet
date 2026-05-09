@@ -52,7 +52,11 @@ const EntryForm = ({ entry, onUpdate }: EntryFormProps) => {
           value={{
             ...entry,
             amount: floatToMoney(entry.amount),
-            expected: floatToMoney(entry.expected)
+            expected: floatToMoney(entry.expected),
+            subEntries: entry.subEntries?.map(subEntry => ({
+              ...subEntry,
+              amount: floatToMoney(subEntry.amount),
+            }))
           }}
         />
         : (

@@ -17,20 +17,23 @@ export class EntriesDeleteUseCase {
 
 	async execute(params: EntriesDeleteUseCaseParams) {
 		try {
-			const userUuid = await this.cookieService.getUUidFromCookie();
+			const userStm = await this.cookieService.forPrismaAccountInstance();
 			const data = await prisma.entry.delete({
 				where: {
 					uuid: params.entryUuid!,
 					account: {
 						uuid: params.accountUuid!,
-						user: {
-							some: {
-								uuid: userUuid
-							}
-						}
+						user: userStm
 					}
 				},
 				include: {
+					subEntries: {
+						select: {
+							uuid: true,
+							title: true,
+							amount: true
+						}
+					},
 					board: {
 						select: {
 							id: true,

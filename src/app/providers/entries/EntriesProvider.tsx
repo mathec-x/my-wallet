@@ -1,7 +1,7 @@
 'use client';
 
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
-import { moneyToFloat } from '@/shared/utils/money-format';
+import { expectEmpty, moneyToFloat } from '@/shared/utils/money-format';
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { calculateBalance, type CustomFilterKeys, type Entry, type IEntriesContextType } from './EntriesType';
 
@@ -80,10 +80,11 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   function set(callback: (entry: Entry) => boolean, updatedEntry: EntryUpdateFormSchema | Entry) {
     const data: Partial<Entry> = {};
+
     if ('title' in updatedEntry) data.title = updatedEntry.title;
     if ('description' in updatedEntry) data.description = updatedEntry.description;
     if ('amount' in updatedEntry) data.amount = moneyToFloat(updatedEntry.amount);
-    if ('expected' in updatedEntry) data.expected = moneyToFloat(updatedEntry?.expected || data.amount);
+    if ('expected' in updatedEntry) data.expected = moneyToFloat(expectEmpty(updatedEntry?.expected) || data.amount);
     if ('order' in updatedEntry) data.order = updatedEntry.order;
     if ('type' in updatedEntry) data.type = updatedEntry.type;
     if ('category' in updatedEntry) data.category = updatedEntry.category;
@@ -92,6 +93,17 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
       data.boardId = updatedEntry.board?.id;
       data.board = updatedEntry.board;
     };
+
+    if ('subEntries' in updatedEntry) {
+      data.subEntries = updatedEntry
+        .subEntries
+        .filter(se => se?.title?.length > 0)
+        .map((se) => ({
+          ...se,
+          title: se.title,
+          amount: moneyToFloat(se.amount)
+        })) as Omit<Entry['subEntries'], 'uuid'>;
+    }
 
     setEntries(() => entries.map(entry => callback(entry) ? { ...entry, ...data } : entry));
     // if (data.board) {

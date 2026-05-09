@@ -32,6 +32,13 @@ export class EntriesCreateUseCase {
 					}
 				},
 				include: {
+					subEntries: {
+						select: {
+							uuid: true,
+							title: true,
+							amount: true
+						}
+					},
 					board: {
 						select: {
 							id: true,

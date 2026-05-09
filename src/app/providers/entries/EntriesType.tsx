@@ -37,14 +37,21 @@ export interface IEntriesContextType {
 }
 
 export function calculateBalance(entries: Entry[]) {
-  const income = Sum(entries.filter(e => e.type === 'INCOME'), 'amount');
-  const expense = Sum(entries.filter(e => e.type === 'EXPENSE'), 'amount');
+  const list = {
+    income: entries.filter(e => e.type === 'INCOME'),
+    expense: entries.filter(e => e.type === 'EXPENSE')
+  };
+
+  const income = Sum(list.income, 'amount');
+  const expense = Sum(list.expense, 'amount');
 
   const futureIncome = Sum(entries.filter(e => !e.future && e.type === 'INCOME'), 'amount');
   const futureExpense = Sum(entries.filter(e => !e.future && e.type === 'EXPENSE'), 'amount');
   return {
     income: floatToMoney(income), // To receive
+    incomeSize: list.income.length,
     expense: floatToMoney(expense), // To pay
+    expenseSize: list.expense.length,
     futureIncome: floatToMoney(futureIncome), // Received
     futureExpense: floatToMoney(futureExpense), // Received - To receive
     balance: floatToMoney(futureIncome - futureExpense), // Received - Paid

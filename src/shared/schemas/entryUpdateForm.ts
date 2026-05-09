@@ -1,5 +1,6 @@
 import z from 'zod';
 import { categoriesOptions } from './categoriesList';
+import { subEntryUpdateFormSchema } from './subEntryUpdateForm';
 
 export const entryUpdateFormSchema = z.object({
   title: z
@@ -85,6 +86,7 @@ export const entryUpdateFormSchema = z.object({
       type: 'checkbox',
       align: 'right'
     }),
+  subEntries: z.array(subEntryUpdateFormSchema)
 });
 
 export type EntryUpdateFormSchema = z.infer<typeof entryUpdateFormSchema> & { uuid?: string };

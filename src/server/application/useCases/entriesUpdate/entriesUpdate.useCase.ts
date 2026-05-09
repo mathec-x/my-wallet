@@ -20,9 +20,9 @@ export class EntriesUpdateUseCase {
 
 	async execute(params: EntriesUpdateUseCaseParams) {
 		try {
-			this.logger.debug('Atualizando Entry', params);
+			this.logger.debug('Atualizando Entry com os parametros', params);
 			const userUuid = await this.cookieService.getUUidFromCookie();
-			const data = await prisma.entry.update({
+			const entry = await prisma.entry.update({
 				where: {
 					uuid: params.entryUuid!,
 					account: {
@@ -36,6 +36,13 @@ export class EntriesUpdateUseCase {
 				},
 				data: params.data,
 				include: {
+					subEntries: {
+						select: {
+							uuid: true,
+							title: true,
+							amount: true
+						}
+					},
 					board: {
 						select: {
 							id: true,
@@ -46,7 +53,8 @@ export class EntriesUpdateUseCase {
 				}
 			});
 
-			return ResponseService.Ok(data);
+			this.logger.debug('Entry completamente atualizada', entry);
+			return ResponseService.Ok(entry);
 		} catch (error) {
 			return ResponseService.unknow(error);
 		}
