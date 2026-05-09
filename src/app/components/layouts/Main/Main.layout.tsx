@@ -4,6 +4,7 @@ import { AuthProvider } from '@/app/providers/auth/AuthProvider';
 import { PromptProvider } from '@/app/providers/prompt/PromptProvider';
 import PwaProvider from '@/app/providers/pwa/PwaProvider';
 import Container from '@mui/material/Container';
+import { ViewTransition } from 'react';
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -24,7 +25,9 @@ export default async function MainLayout({ children, drawer, user, modal }: Clie
               p: 1,
               minHeight: 'calc(100vh - 64px)',
             }}>
-            {children}
+            <ViewTransition>
+              {children}
+            </ViewTransition>
           </Container>
         </PromptProvider>
         {drawer}
