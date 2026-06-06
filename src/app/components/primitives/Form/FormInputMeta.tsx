@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Input from '@mui/material/Input';
+import InputBase from '@mui/material/InputBase';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -27,6 +28,7 @@ interface FormInputMetaProps {
   description?: string;
   multiline?: boolean;
   autoSelect?: boolean;
+  inputType?: 'base'
   control?: Control<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   options?: { label: string; value: string }[];
   autoComplete?: string;
@@ -36,8 +38,31 @@ interface FormInputMetaProps {
 }
 const FormInputMeta: React.FC<FormInputMetaProps> = ({
   fullWidth, label, title, error, helperText, form, inputMode, description, multiline, options, control, autoSelect,
-  margin = 'normal', type = 'text', align = 'left', width, autoComplete
+  margin = 'normal', type = 'text', align = 'left', width, autoComplete, inputType
 }) => {
+
+  if (inputType === 'base') {
+    return (
+      <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin={margin} sx={{ width }}>
+        <Controller control={control} {...form}
+          render={({ field: { onChange, value } }) => (
+            <>
+              <InputBase
+                placeholder={title || label}
+                onChange={onChange}
+                defaultValue={value}
+              />
+              {value &&
+                <FormHelperText sx={{ textWrap: 'nowrap', mt: -1 }}>
+                  {title || label}
+                </FormHelperText>
+              }
+            </>
+          )}
+        />
+      </FormControl>
+    );
+  }
 
   switch (type) {
     case 'checkbox':
@@ -125,7 +150,7 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
           <Input
             autoComplete={autoComplete}
             onFocus={(e) => autoSelect && e.target.select()}
-            sx={{ mr: width ? 1 : 0 }}
+            sx={{ mr: width ? 1 : 0, borderBottom: 'none' }}
             type={type || 'text'}
             multiline={multiline}
             endAdornment={type === 'password' && <InputVisibilityAdornment />}

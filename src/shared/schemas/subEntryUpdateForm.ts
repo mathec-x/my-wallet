@@ -6,8 +6,8 @@ export const subEntryUpdateFormSchema = z.object({
     .string('Título é obrigatório')
     .meta({
       label: 'Nome da sub entrada',
-      width: '75%',
-      margin: 'none'
+      // width: '75%',
+      // margin: 'none'
     }),
   amount: z
     .union([
@@ -19,14 +19,15 @@ export const subEntryUpdateFormSchema = z.object({
       label: 'Valor',
       type: 'text',
       variant: 'outlined',
-      margin: 'none',
       inputMode: 'decimal',
-      width: '25%'
+      width: '35%',
+      // margin: 'none',
     }),
 }).meta({
   title: 'Subdivisões',
   description: 'Subdivisões dessa entrada',
-  width: '100%'
+  width: '100%',
+  calculate: 'amount'
 });
 
 export type SubEntryUpdateFormSchema = z.infer<typeof subEntryUpdateFormSchema> & { uuid?: string };
