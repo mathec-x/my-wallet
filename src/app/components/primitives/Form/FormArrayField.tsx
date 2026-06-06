@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Control, Controller, useFieldArray } from 'react-hook-form';
 import { type ZodObject } from 'zod';
 import { FlexBox } from '../../elements';
@@ -29,6 +29,16 @@ const FormArrayField: React.FC<FormArrayFieldProps> = ({
 }) => {
   const { fields, append, remove } = useFieldArray({ control, name });
 
+  const calculateTotal = useCallback(() => {
+    const meta = schema?.meta();
+    if (fields?.length > 0 && meta?.calculate && typeof meta.calculate === 'string') {
+      const calc = Sum(fields as unknown as Record<string, number | undefined>[], (e) => moneyToFloat(e?.[meta.calculate as string] || 0) || 0);
+      return 'R$ ' + floatToMoney(calc);
+    }
+
+    return null;
+  }, [fields, schema]);
+
   if (!schema?.shape) return null;
 
   const meta = schema.meta();
@@ -40,16 +50,6 @@ const FormArrayField: React.FC<FormArrayFieldProps> = ({
       return acc;
     }, {} as Record<string, unknown>));
   };
-
-  const calculateTotal = () => {
-    if (fields?.length > 0 && meta?.calculate && typeof meta.calculate === 'string') {
-      const calc = Sum(fields as unknown as Record<string, number | undefined>[], (e) => moneyToFloat(e?.[meta.calculate as string] || 0) || 0);
-      return 'R$ ' + floatToMoney(calc);
-    }
-
-    return null;
-  };
-
 
   return (
     <Box>
@@ -63,9 +63,8 @@ const FormArrayField: React.FC<FormArrayFieldProps> = ({
         </>)}
       </FlexBox>
       {fields.map((field, index) => (
-        <Box key={field.id} display="flex" justifyContent="center" alignItems="end" gap={1}>
-          {/* Renderizar campos usando o control do parent */}
-          {schema && schema.shape && Object.keys(schema.shape).map((key) => {
+        <Box key={field.id} display="flex" justifyContent="center" alignItems="center" gap={1}>
+          {Object.keys(schema.shape).map((key) => {
             const meta = schema.shape[key].meta?.();
 
             if (!meta)
@@ -91,8 +90,8 @@ const FormArrayField: React.FC<FormArrayFieldProps> = ({
               />
             );
           })}
-          <IconButton onClick={() => remove(index)} type="button">
-            <DeleteIcon />
+          <IconButton onClick={() => remove(index)} type="button" size='small'>
+            <DeleteIcon fontSize='small' />
           </IconButton>
           {children}
         </Box>

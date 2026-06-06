@@ -5,7 +5,7 @@ export const subEntryUpdateFormSchema = z.object({
   title: z
     .string('Título é obrigatório')
     .meta({
-      label: 'Nome da sub entrada',
+      label: 'Nome',
       // width: '75%',
       // margin: 'none'
     }),

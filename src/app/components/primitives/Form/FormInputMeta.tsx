@@ -51,6 +51,11 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
                 placeholder={title || label}
                 onChange={onChange}
                 defaultValue={value}
+                slotProps={{
+                  input: {
+                    inputMode: inputMode
+                  }
+                }}
               />
               {value &&
                 <FormHelperText sx={{ textWrap: 'nowrap', mt: -1 }}>
