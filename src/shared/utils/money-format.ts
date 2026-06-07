@@ -20,6 +20,7 @@ export function moneyToFloat(value?: string | number) {
 
 export function expectEmpty(value?: string | number | null) {
   if (['0', '0,00', '0.00'].includes(String(value))) return '0';
+  return value;
 }
 
 export class NumberFormat {
