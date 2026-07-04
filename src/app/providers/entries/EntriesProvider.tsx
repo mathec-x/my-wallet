@@ -42,11 +42,13 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   const [board, setBoard] = useState(() => boards.length > 0 ? boards[boards.length - 1] : undefined);
 
-  const filteredEntries = useMemo(() => [...entries] // o .sort() muta o array original.
+  const entriesFilteredByBoard = useMemo(() => [...entries] // o .sort() muta o array original.
     .sort((a, b) => (a?.order || 0) - (b?.order || 0))
-    .filter(entry => (!board?.id || entry.boardId === board?.id) && handleCustomFilter(entry)), [entries, board, handleCustomFilter]);
+    .filter(entry => (!board?.id || entry.boardId === board?.id)), [entries, board]);
 
-  const balance = useMemo(() => calculateBalance(filteredEntries), [filteredEntries]);
+  const entriesFilteredByProp = useMemo(() => [...entriesFilteredByBoard].filter(handleCustomFilter), [entriesFilteredByBoard, handleCustomFilter]);
+
+  const balance = useMemo(() => calculateBalance(entriesFilteredByBoard), [entriesFilteredByBoard]);
 
   function remove(param: { uuid: string }) {
     const list = entries.filter(entry => entry.uuid !== param.uuid);
@@ -122,7 +124,8 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   return (
     <EntriesContext.Provider value={{
-      entries: filteredEntries,
+      entries: entriesFilteredByBoard,
+      entriesFilteredByProp,
       filterBy: setCustomFilter,
       filterVal: customFilter,
       remove,

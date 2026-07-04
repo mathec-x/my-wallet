@@ -1,22 +1,19 @@
 'use client';
 
-import { entriesUpdateAction, Entry } from '@/app/actions/entries/entries.actions';
 import FullScreenModal from '@/app/components/elements/Modal';
 import FormControlSchema from '@/app/components/primitives/Form/FormControlSchema';
 import useModalHandler, { MODALS } from '@/app/hooks/useModalHandler';
+import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { EntryUpdateFormSchema, entryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { floatToMoney } from '@/shared/utils/money-format';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useTransition } from 'react';
 
-interface EntryFormProps {
-  entry: Entry | undefined;
-  onUpdate: (data: EntryUpdateFormSchema) => ReturnType<typeof entriesUpdateAction>;
-}
 
-const EntryForm = ({ entry, onUpdate }: EntryFormProps) => {
+const EntryForm = () => {
   const modal = useModalHandler(MODALS.ENTRY_EDITOR);
+  const { handleUpdate: onUpdate, entry } = useEntriesActions();
   const [isPending, startTransition] = useTransition();
 
   const handleUpdate = (data: EntryUpdateFormSchema) => {

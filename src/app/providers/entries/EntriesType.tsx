@@ -6,8 +6,10 @@ import { floatToMoney } from '@/shared/utils/money-format';
 
 export type Entry = ResponseServiceAsync<typeof entriesCreateAction>
 export type CustomFilterKeys = keyof Entry | `!${keyof Entry}`
+export type ENTRY_TYPE = 'INCOME' | 'EXPENSE' | 'SAVING' | 'TASK'
 export interface IEntriesContextType {
   entries: Entry[];
+  entriesFilteredByProp: Entry[];
   filterBy: (filter?: CustomFilterKeys) => void;
   filterVal?: CustomFilterKeys;
   restore: () => void;
@@ -39,22 +41,34 @@ export interface IEntriesContextType {
 export function calculateBalance(entries: Entry[]) {
   const list = {
     income: entries.filter(e => e.type === 'INCOME'),
-    expense: entries.filter(e => e.type === 'EXPENSE')
+    expense: entries.filter(e => e.type === 'EXPENSE'),
+    saving: entries.filter(e => e.type === 'SAVING' && !e.future)
   };
 
+  const saving = Sum(list.saving, 'amount');
   const income = Sum(list.income, 'amount');
-  const expense = Sum(list.expense, 'amount');
+  const expense = Sum(list.expense, 'amount') - saving;
 
-  const futureIncome = Sum(entries.filter(e => !e.future && e.type === 'INCOME'), 'amount');
-  const futureExpense = Sum(entries.filter(e => !e.future && e.type === 'EXPENSE'), 'amount');
+  const futureIncome = Sum(entries.filter(e => e.future && e.type === 'INCOME'), 'amount');
+  const futureExpense = Sum(entries.filter(e => e.future && e.type === 'EXPENSE'), 'amount');
+
+  const expectedIncome = Sum(entries.filter(e => e.future && e.type === 'INCOME'), 'expected');
+  const expectedExpense = Sum(entries.filter(e => e.future && e.type === 'EXPENSE'), 'expected');
+
   return {
-    income: floatToMoney(income), // To receive
-    incomeSize: list.income.length,
-    expense: floatToMoney(expense), // To pay
-    expenseSize: list.expense.length,
-    futureIncome: floatToMoney(futureIncome), // Received
-    futureExpense: floatToMoney(futureExpense), // Received - To receive
-    balance: floatToMoney(futureIncome - futureExpense), // Received - Paid
-    futureBalance: floatToMoney(expense - futureExpense), // To receive - To pay
+    /** - total de entradas. */
+    income: floatToMoney(income),
+    /** - total de entradas. */
+    expense: floatToMoney(expense),
+    /** - saldo atual (entradas - saídas) */
+    balance: floatToMoney(income - expense),
+    /** - entradas que Faltam resolver. retorna null se 0*/
+    futureToIncome: floatToMoney(futureIncome, true),
+    /** - saídas que Faltam resolver. retorna null se 0 */
+    futureToExpense: floatToMoney(futureExpense, true),
+    /** - entradas fixas (que é marcado com expected no valor)*/
+    expectedIncome: floatToMoney(expectedIncome, true),
+    /** - saídas fixas (que é marcado com expected no valor)*/
+    expectedExpense: floatToMoney(expectedExpense, true),
   };
 };

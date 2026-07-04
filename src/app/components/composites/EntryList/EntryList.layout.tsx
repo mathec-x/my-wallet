@@ -1,10 +1,11 @@
 'use client';
 
-import { entriesUpdateAction, type Entry } from '@/app/actions/entries/entries.actions';
+import { type Entry } from '@/app/actions/entries/entries.actions';
 import ListItemAction from '@/app/components/elements/ListItemAction';
 import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
-import ListItemRow from '@/app/components/elements/ListItemRow';
 import useModalHandler, { MODALS } from '@/app/hooks/useModalHandler';
+import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
+import { type ENTRY_TYPE } from '@/app/providers/entries/EntriesType';
 import { categoriesList } from '@/shared/schemas/categoriesList';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { arrayGroupBy } from '@/shared/utils/array-manipulation/group-by';
@@ -14,24 +15,23 @@ import MoneyOnIcon from '@mui/icons-material/AttachMoneyOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import DoneAllIcon from '@mui/icons-material/DoneAllOutlined';
 import DoneIcon from '@mui/icons-material/DoneOutlined';
-import InfoIcon from '@mui/icons-material/InfoOutline';
 import MoneyOffIcon from '@mui/icons-material/MoneyOffCsredOutlined';
 import TaskIcon from '@mui/icons-material/PlayArrow';
+import SavingsIcon from '@mui/icons-material/SavingsOutlined';
 import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { useId, useMemo } from 'react';
 
 interface EntryListProps {
 	accountUuid: string;
-	type: 'INCOME' | 'EXPENSE';
+	type: ENTRY_TYPE;
 	entries: Entry[];
+	displayHint?: boolean;
 	groupBy?: keyof Entry;
-	onSumbit: (value: string, type: 'INCOME' | 'EXPENSE') => Promise<void>;
-	onDelete: (entry: Entry) => Promise<void>;
-	onUpdate: (data: EntryUpdateFormSchema) => ReturnType<typeof entriesUpdateAction>;
 }
 
 export default function EntryList(props: EntryListProps) {
+	const { handleDelete, handleUpdate } = useEntriesActions();
 	const id = useId();
 	const modal = useModalHandler(MODALS.ENTRY_EDITOR);
 	const group = useMemo(() => {
@@ -84,14 +84,15 @@ export default function EntryList(props: EntryListProps) {
 									divider={i === data.length - 1}
 									disablePadding={(props.groupBy && entry.category) ? false : true}
 									SwipRightLabel={entry.future ? <DoneAllIcon color='success' /> : <DoneIcon color='info' />}
-									onSwipeRight={() => props.onUpdate({ future: !entry.future, uuid: entry.uuid } as EntryUpdateFormSchema)}
+									onSwipeRight={() => handleUpdate({ future: !entry.future, uuid: entry.uuid } as EntryUpdateFormSchema)}
 									SwipLeftLabel={<DeleteIcon color='error' />}
-									onSwipeLeft={() => props.onDelete(entry)}
-									icon={
-										entry.order || (entry.amount === 0
-											? <TaskIcon /> : entry.type === 'INCOME'
-												? <MoneyOnIcon /> : <MoneyOffIcon />)
-									}
+									onSwipeLeft={() => handleDelete(entry)}
+									icon={entry.order || (
+										entry.type === 'SAVING' ? <SavingsIcon />
+											: entry.type === 'INCOME' ? <MoneyOnIcon />
+												: entry.type === 'EXPENSE' ? <MoneyOffIcon />
+													: <TaskIcon />
+									)}
 									onClick={() => modal.open(entry.uuid)}
 									primary={entry.title}
 									avatarVariant='primary'
@@ -109,15 +110,9 @@ export default function EntryList(props: EntryListProps) {
 									</Stack>
 								</ListItemAction>
 							))}
-						</ListItemCollapse>
+						</ListItemCollapse >
 					);
 				})}
-			<ListItemRow
-				component='div'
-				hide={group[0]?.data?.length !== 1}
-				avatarIcon={<InfoIcon color='disabled' />}
-				caption='Deslize para a esquerda para deletar ou para a direita para marcar como resolvido.'
-			/>
 		</>
 	);
 }

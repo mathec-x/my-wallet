@@ -1,110 +1,107 @@
 'use client';
-import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
+
 import EntryList from '@/app/components/composites/EntryList/EntryList.layout';
 import ListContainer from '@/app/components/elements/ListContainer';
-import ListItemCollapse from '@/app/components/elements/ListItemCollapse';
-import ListItemInput from '@/app/components/elements/ListItemInput';
-import { MODALS } from '@/app/hooks/useModalHandler';
-import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
-import MoneyIcon from '@mui/icons-material/AttachMoney';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 import Grid from '@mui/material/Grid';
-import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import { ListItemRow } from '../../elements';
+import TabAction from '../../elements/TabActions';
 
-const listItemCollapseProps: Partial<React.ComponentProps<typeof ListItemCollapse>> = {
-  disablePadding: true,
-  defaultOpen: true,
-  divider: false,
-  icon: <MoneyIcon />,
-  avatarVariant: 'circular'
-};
+// const listItemCollapseProps: Partial<React.ComponentProps<typeof ListItemCollapse>> = {
+//   disablePadding: true,
+//   defaultOpen: true,
+//   divider: false,
+//   icon: <MoneyIcon />,
+//   avatarVariant: 'circular'
+// };
 
-const GridDashboardLayout: React.FC = () => {
-  const params = useSearchParams();
-  const entryUuid = params.get(MODALS.ENTRY_EDITOR);
-  const { entries, accountUuid, balance, findEntries, filterVal, size } = useEntriesContext();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const [entry] = useMemo(() => !entryUuid ? [] : findEntries(e => e.uuid === entryUuid), [entryUuid]);
-  const { handleSubmit, handleDelete, handleUpdate } = useEntriesActions(entry);
+const GridDashboardLayout = (props: React.PropsWithChildren) => {
+  const { entriesFilteredByProp, accountUuid, balance, filterVal, filterBy, size } = useEntriesContext();
 
   const incomes = useMemo(() => {
-    return entries.filter(entry => entry.type === 'INCOME');
-  }, [entries]);
+    return entriesFilteredByProp.filter(entry => entry.type === 'INCOME');
+  }, [entriesFilteredByProp]);
 
   const expenses = useMemo(() => {
-    return entries.filter(entry => entry.type === 'EXPENSE');
-  }, [entries]);
+    return entriesFilteredByProp.filter(entry => entry.type === 'EXPENSE');
+  }, [entriesFilteredByProp]);
+
 
   return (
     <Grid container spacing={2} alignContent='flex-start' sx={{ mt: 1 }} height='calc(100vh - 100px)'>
-      <Grid size={{ xs: 12, sm: 6 }}>
-        <ListContainer component='div'>
-          <ListItemCollapse
-            id="list-item-collapse-incomes"
-            component='div'
-            openValue='incomes'
-            isOpenOn={(e) => e === 'incomes'}
-            caption={'Entradas'}
-            primary={`R$ ${balance.income}`}
-            secondary={'Valor total'}
-            hideExpandIcon={incomes.length === 0}
-            actionLabel={![balance.income, '0,00'].includes(balance.futureIncome) && `R$ ${balance.futureIncome}`}
-            {...listItemCollapseProps}
-          >
-            <EntryList
-              accountUuid={accountUuid}
-              entries={incomes}
-              type='INCOME'
-              onSumbit={handleSubmit}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
-          </ListItemCollapse>
-          <ListItemInput component='label'
-            hide={size > 5}
-            id={'input-add-entry-income'}
-            icon={<></>}
-            onSubmit={(value) => handleSubmit(value, 'INCOME')}
-            placeholder={'Adicionar Entrada (título)'}
-            onError={async () => { alert('Minimo 3 caracteres'); }} />
-        </ListContainer>
+      <Grid size={{ xs: 12, sm: 4 }}>
+        {props.children}
       </Grid>
-      <Grid size={{ xs: 12, sm: 6 }}>
-        <ListContainer component='div'>
-          <ListItemCollapse
-            id="list-item-collapse-expenses"
-            component='div'
-            openValue='expenses'
-            isOpenOn={(e) => e === 'expenses'}
-            caption={'Saídas'}
-            primary={`R$ ${balance.expense}`}
-            secondary={'Valor total'}
-            hideExpandIcon={expenses.length === 0}
-            actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
-            {...listItemCollapseProps}
-          >
-            <EntryList
-              accountUuid={accountUuid}
-              entries={expenses}
-              groupBy={!filterVal ? 'category' : undefined}
-              type='EXPENSE'
-              onSumbit={handleSubmit}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
+      <Grid size={{ xs: 12, sm: 8 }}>
+        <Grid container spacing={2}>
+          <Grid size={12} sx={{ p: 1 }}>
+            <TabAction
+              hide={size <= 5}
+              options={[
+                { label: 'Tudo', onSelect: () => filterBy() },
+                { label: 'Pendentes', onSelect: () => filterBy('future') },
+                { label: 'Pagos', onSelect: () => filterBy('!future') }
+              ]}
             />
-          </ListItemCollapse>
-          <ListItemInput component='label'
+          </Grid>
+          {incomes.length > 0 && (
+            <Grid size={{ xs: 12, sm: expenses.length > 0 ? 6 : 12 }}>
+              <ListContainer component='div'
+                header="Entradas"
+                headerAppend={balance.futureToIncome && (<>Falta: {balance.futureToIncome}</>)}>
+                {/* <ListItemCollapse
+                    component='div'
+                    openValue='incomes'
+                    icon={<MoneyOnIcon />}
+                    isOpenOn={(e) => e === 'incomes'}
+                    caption={'Entradas'}
+                    primary={`R$ ${balance.futureIncome}`}
+                    secondary={'Valor recebido'}
+                    actionLabel={![balance.futureIncome, '0,00'].includes(balance.futureIncome) && `R$ ${balance.futureIncome}`}
+                    {...listItemCollapseProps}
+                  > */}
+                <EntryList accountUuid={accountUuid} entries={incomes} type='INCOME' />
+                {/* </ListItemCollapse> */}
+              </ListContainer>
+            </Grid>
+          )}
+          {expenses.length > 0 && (
+            <Grid size={{ xs: 12, sm: incomes.length > 0 ? 6 : 12 }}>
+              <ListContainer component='div'
+                header="Saídas"
+                headerAppend={balance.futureToExpense && <>Falta: {balance.futureToExpense}</>}>
+                {/* <ListItemCollapse
+                    component='div'
+                    openValue='expenses'
+                    icon={<MoneyOffIcon />}
+                    isOpenOn={(e) => e === 'expenses'}
+                    caption={'Saídas'}
+                    primary={`R$ ${balance.futureExpense}`}
+                    secondary={'Valor pago'}
+                    actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
+                    {...listItemCollapseProps}
+                  > */}
+                <EntryList
+                  accountUuid={accountUuid}
+                  entries={expenses}
+                  groupBy={!filterVal ? 'category' : undefined}
+                  type='EXPENSE'
+                />
+                {/* </ListItemCollapse> */}
+              </ListContainer>
+            </Grid>
+          )}
+        </Grid>
+        <Grid size={12} sx={{ position: { sm: 'fixed', xs: 'relative' }, right: 0, bottom: 2 }}>
+          <ListItemRow
+            component='div'
             hide={size > 5}
-            id={'input-add-entry-expense'}
-            icon={<></>}
-            onSubmit={(value) => handleSubmit(value, 'EXPENSE')}
-            placeholder={'Adicionar Saída (título)'}
-            onError={async () => { alert('Minimo 3 caracteres'); }} />
-        </ListContainer>
+            avatarIcon={<InfoIcon color='disabled' />}
+            caption='Deslize para a esquerda para deletar ou para a direita para marcar como resolvido.' />
+        </Grid>
       </Grid>
-      <EntryForm entry={entry} onUpdate={handleUpdate} />
     </Grid>
   );
 };

@@ -5,7 +5,9 @@ const intl = new Intl.NumberFormat('pt-BR', {
   maximumFractionDigits: 2,
 });
 
-export function floatToMoney(value: number = 0): string {
+export function floatToMoney<B extends boolean = false>(value: number = 0, nullable: B = false as B): B extends true ? string | null : string {
+  if (nullable && value === 0) return null as B extends true ? string | null : string;
+
   return intl.format(value || 0);
 }
 

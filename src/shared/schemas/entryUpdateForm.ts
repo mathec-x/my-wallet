@@ -67,7 +67,7 @@ export const entryUpdateFormSchema = z.object({
       options: categoriesOptions
     }),
   type: z
-    .enum(['INCOME', 'EXPENSE'])
+    .enum(['INCOME', 'EXPENSE', 'SAVING', 'TASK'])
     .meta({
       label: 'Tipo',
       description: 'Tipo da entrada de dinheiro',
@@ -75,6 +75,8 @@ export const entryUpdateFormSchema = z.object({
       options: [
         { label: 'Entrada', value: 'INCOME' },
         { label: 'Saída', value: 'EXPENSE' },
+        { label: 'Cofre', value: 'SAVING' },
+        { label: 'Tarefa', value: 'TASK' },
       ]
     }),
   future: z

@@ -86,6 +86,8 @@ model SubEntry {
 enum EntryType {
   INCOME
   EXPENSE
+  SAVING
+  TASK
 }
 
 model Board {

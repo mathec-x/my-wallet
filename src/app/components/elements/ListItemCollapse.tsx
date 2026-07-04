@@ -26,7 +26,6 @@ interface ListItemCollapseProps {
   disablePadding?: boolean;
   divider?: boolean;
   component?: React.ElementType;
-  id?: string;
 }
 
 const ListItemCollapse: React.FC<ListItemCollapseProps> = (props) => {
@@ -42,7 +41,7 @@ const ListItemCollapse: React.FC<ListItemCollapseProps> = (props) => {
 
   return (
     <ListItem
-      id={props.id}
+      id={`list-item-collapse-${props.openValue}`}
       component={props.component || 'li'}
       sx={{ display: 'block' }}
       disablePadding={props.disablePadding}

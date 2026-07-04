@@ -7,15 +7,21 @@ import {
   entriesUpdateAction,
   subEntriesUpdateAction
 } from '@/app/actions/entries/entries.actions';
+import { MODALS } from '@/app/hooks/useModalHandler';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
-import { useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
 import { usePromptWindow } from '../prompt/PromptProvider';
 import { useEntriesContext } from './EntriesProvider';
-import { Entry } from './EntriesType';
+import type { Entry, ENTRY_TYPE } from './EntriesType';
 
-export const useEntriesActions = (entry?: Entry) => {
+export const useEntriesActions = () => {
   const { entries, board, setBoard, setEntriesBoard, addEntries, findEntries, remove, restore, set, accountUuid } = useEntriesContext();
   const { confirm, alert, loading } = usePromptWindow();
+  const params = useSearchParams();
+  const entryUuid = params.get(MODALS.ENTRY_EDITOR);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const [entry] = useMemo(() => !entryUuid ? [] : findEntries(e => e.uuid === entryUuid), [entryUuid]);
 
   const handleBoardNameSubmit = async (value: string) => {
     const res = await boardCreateAction({
@@ -88,7 +94,7 @@ export const useEntriesActions = (entry?: Entry) => {
   };
 
 
-  const handleSubmit = async (value: string, type: 'INCOME' | 'EXPENSE', callback?: (e: Entry) => void) => {
+  const handleSubmit = async (value: string, type: ENTRY_TYPE, callback?: (e: Entry) => void) => {
     const newEntry = await entriesCreateAction({
       accountUuid: accountUuid,
       data: {
@@ -116,8 +122,10 @@ export const useEntriesActions = (entry?: Entry) => {
   const handleUpdate = useCallback(
     async (data: EntryUpdateFormSchema) => {
       const { subEntries, ...parsed } = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
+      const entryUuid = data?.uuid || entry!.uuid;
+
       const sub = await subEntriesUpdateAction({
-        entryUuid: data?.uuid || entry!.uuid,
+        entryUuid,
         subEntries: subEntries || []
       });
 
@@ -127,11 +135,11 @@ export const useEntriesActions = (entry?: Entry) => {
 
       const res = await entriesUpdateAction({
         accountUuid: accountUuid,
-        entryUuid: data?.uuid || entry!.uuid,
+        entryUuid,
         data: parsed as never
       });
       if (res?.success) {
-        set((e) => e.uuid === (entry?.uuid || data.uuid), res.data);
+        set((e) => e.uuid === entryUuid, res.data);
       } else {
         restore();
       }
@@ -139,6 +147,7 @@ export const useEntriesActions = (entry?: Entry) => {
     }, [accountUuid, entry, restore, set]);
 
   return {
+    entry,
     handleBoardNameSubmit,
     handleDeleteBoard,
     handleShareBoard,

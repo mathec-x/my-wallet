@@ -2,6 +2,7 @@ import { accountGetAction } from '@/app/actions/accounts/account.actions';
 import { entriesListAction } from '@/app/actions/entries/entries.actions';
 import BoardsChip from '@/app/components/composites/BoardsChip/BoardsChip';
 import EntryBalance from '@/app/components/composites/EntryBalance/EntryBalance.ui';
+import EntryForm from '@/app/components/composites/EntryForm/EntryForm';
 import GridDashboardLayout from '@/app/components/layouts/Dashboard/Dashboard.layout';
 import { EntriesProvider } from '@/app/providers/entries/EntriesProvider';
 import Toolbar from '@mui/material/Toolbar';
@@ -36,8 +37,10 @@ export default async function DashboardPageLayout(props: PageProps<'/dashboard/[
       <Toolbar>
         <BoardsChip />
       </Toolbar>
-      <EntryBalance />
-      <GridDashboardLayout />
+      <GridDashboardLayout>
+        <EntryBalance />
+      </GridDashboardLayout>
+      <EntryForm />
     </EntriesProvider>
   );
 }
