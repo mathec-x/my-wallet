@@ -58,7 +58,7 @@ export default function EntryBalance() {
 					onClick={() => { }}
 					primary={(<Typography variant='body1'><small>R$</small> {balance.income}</Typography>)}
 					caption={'Entradas'}
-					secondary={balance.expectedIncome && `Valor esperado: ${balance.expectedIncome}`}
+					secondary={balance.expectedIncome && <>Recorrente <small>R$ {balance.expectedIncome}</small></>}
 				/>
 				<ListItemAction
 					disablePadding
@@ -68,7 +68,7 @@ export default function EntryBalance() {
 					onClick={() => { }}
 					primary={(<Typography variant='body1'><small>R$</small> {balance.expense}</Typography>)}
 					caption={'Saídas'}
-					secondary={balance.expectedExpense && `Valor esperado: ${balance.expectedExpense}`}
+					secondary={balance.expectedExpense && <>Recorrente <small>R$ {balance.expectedExpense}</small></>}
 				/>
 				<ListItemAction
 					disablePadding
@@ -77,7 +77,7 @@ export default function EntryBalance() {
 					hide={size < 1}
 					onClick={() => { }}
 					primary={(<Typography variant='body1'><small>R$</small> {balance.balance}</Typography>)}
-					caption={'Total'}
+					caption={'Resta'}
 				/>
 			</ListContainer>
 			<ListContainer component='div' header="Poupança" disablePadding hide={savings.length === 0}>

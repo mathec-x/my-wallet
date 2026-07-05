@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Tab, { TabProps } from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -14,6 +15,11 @@ interface TabActionProps {
 
 const TabAction: React.FC<TabActionProps> = (props) => {
   const [value, setValue] = useState(0);
+  const theme = useTheme();
+
+  // Detecta se a tela é menor que o breakpoint 'sm' (600px)
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -26,9 +32,10 @@ const TabAction: React.FC<TabActionProps> = (props) => {
         {props.options.map((option, index) => (
           <Tab
             key={index}
-            label={option.label}
+            label={(isMobile && option.icon) ? null : option.label}
             icon={option.icon}
-            sx={option.icon ? { maxWidth: 0 } : {}}
+            iconPosition='start'
+          // sx={option.icon ? { maxWidth: 0 } : {}}
           />
         ))}
       </Tabs>

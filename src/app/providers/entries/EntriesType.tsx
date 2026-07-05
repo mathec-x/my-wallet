@@ -42,18 +42,18 @@ export function calculateBalance(entries: Entry[]) {
   const list = {
     income: entries.filter(e => e.type === 'INCOME'),
     expense: entries.filter(e => e.type === 'EXPENSE'),
-    saving: entries.filter(e => e.type === 'SAVING' && !e.future)
+    saving: entries.filter(e => !e.future && e.type === 'SAVING')
   };
 
   const saving = Sum(list.saving, 'amount');
   const income = Sum(list.income, 'amount');
-  const expense = Sum(list.expense, 'amount') - saving;
+  const expense = Sum(list.expense, 'amount');
 
   const futureIncome = Sum(entries.filter(e => e.future && e.type === 'INCOME'), 'amount');
   const futureExpense = Sum(entries.filter(e => e.future && e.type === 'EXPENSE'), 'amount');
 
-  const expectedIncome = Sum(entries.filter(e => e.future && e.type === 'INCOME'), 'expected');
-  const expectedExpense = Sum(entries.filter(e => e.future && e.type === 'EXPENSE'), 'expected');
+  const expectedIncome = Sum(entries.filter(e => e.type === 'INCOME'), 'expected');
+  const expectedExpense = Sum(entries.filter(e => e.type === 'EXPENSE'), 'expected');
 
   return {
     /** - total de entradas. */
@@ -61,7 +61,7 @@ export function calculateBalance(entries: Entry[]) {
     /** - total de entradas. */
     expense: floatToMoney(expense),
     /** - saldo atual (entradas - saídas) */
-    balance: floatToMoney(income - expense),
+    balance: floatToMoney(income - expense - saving),
     /** - entradas que Faltam resolver. retorna null se 0*/
     futureToIncome: floatToMoney(futureIncome, true),
     /** - saídas que Faltam resolver. retorna null se 0 */

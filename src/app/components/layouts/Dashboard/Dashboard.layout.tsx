@@ -3,12 +3,16 @@
 import EntryList from '@/app/components/composites/EntryList/EntryList.layout';
 import ListContainer from '@/app/components/elements/ListContainer';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
+import CloseIcon from '@mui/icons-material/Close';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
+import LowPriorityIcon from '@mui/icons-material/LowPriority';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import Grid from '@mui/material/Grid';
 import React, { useMemo } from 'react';
 import { ListItemRow } from '../../elements';
 import TabAction from '../../elements/TabActions';
-
 // const listItemCollapseProps: Partial<React.ComponentProps<typeof ListItemCollapse>> = {
 //   disablePadding: true,
 //   defaultOpen: true,
@@ -40,9 +44,11 @@ const GridDashboardLayout = (props: React.PropsWithChildren) => {
             <TabAction
               hide={size <= 5}
               options={[
-                { label: 'Tudo', onSelect: () => filterBy() },
-                { label: 'Pendentes', onSelect: () => filterBy('future') },
-                { label: 'Pagos', onSelect: () => filterBy('!future') }
+                { label: 'Tudo', onSelect: () => filterBy(), icon: <PaymentsIcon /> },
+                { label: 'Pendentes', onSelect: () => filterBy('future'), icon: <CloseIcon /> },
+                { label: 'Resolvidos', onSelect: () => filterBy('!future'), icon: <DoneAllIcon /> },
+                { label: 'Recorrente', onSelect: () => filterBy('expected'), icon: <EventRepeatIcon /> },
+                { label: 'Eventual', onSelect: () => filterBy('!expected'), icon: <LowPriorityIcon /> },
               ]}
             />
           </Grid>

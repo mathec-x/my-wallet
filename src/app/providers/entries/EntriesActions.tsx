@@ -121,9 +121,9 @@ export const useEntriesActions = () => {
 
   const handleUpdate = useCallback(
     async (data: EntryUpdateFormSchema) => {
-      const { subEntries, ...parsed } = set((e) => e.uuid === (entry?.uuid || data.uuid), data); // Optimistic UI update
-      const entryUuid = data?.uuid || entry!.uuid;
+      const entryUuid = data?.uuid || entry!.uuid; // este é recebido via params caso nao venha do data;
 
+      const { subEntries, ...parsed } = set((e) => e.uuid === entryUuid, data); // Optimistic UI update
       const sub = await subEntriesUpdateAction({
         entryUuid,
         subEntries: subEntries || []
