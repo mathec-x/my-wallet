@@ -28,13 +28,17 @@ const TabAction: React.FC<TabActionProps> = (props) => {
 
   return !props.hide && (
     <Box>
-      <Tabs value={value} onChange={handleChange} variant='fullWidth'>
+      <Tabs value={value} onChange={handleChange} variant='scrollable'>
         {props.options.map((option, index) => (
           <Tab
             key={index}
-            label={(isMobile && option.icon) ? null : option.label}
+            label={option.label}
             icon={option.icon}
-            iconPosition='start'
+            iconPosition={isMobile ? 'bottom' : 'start'}
+            sx={{
+              fontSize: '0.875rem', // Equivalente a 14px (o padrão é 1rem)
+              textTransform: 'none' // Evita que o texto fique todo em maiúsculo  
+            }}
           // sx={option.icon ? { maxWidth: 0 } : {}}
           />
         ))}

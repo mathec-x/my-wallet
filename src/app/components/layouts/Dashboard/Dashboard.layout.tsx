@@ -40,7 +40,7 @@ const GridDashboardLayout = (props: React.PropsWithChildren) => {
       </Grid>
       <Grid size={{ xs: 12, sm: 8 }}>
         <Grid container spacing={2}>
-          <Grid size={12} sx={{ p: 1 }}>
+          <Grid size={12}>
             <TabAction
               hide={size <= 5}
               options={[
