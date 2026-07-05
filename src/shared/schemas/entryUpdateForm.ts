@@ -39,7 +39,7 @@ export const entryUpdateFormSchema = z.object({
       // z.coerce.number()
     ])
     .meta({
-      label: 'Valor Esperado',
+      label: 'Valor Recorrente',
       type: 'text',
       inputMode: 'decimal',
       autoSelect: true,

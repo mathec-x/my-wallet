@@ -39,7 +39,7 @@ const EntryForm = () => {
       description={
         entry?.board?.name
           ? `Quadro "${entry.board.name}".`
-          : `Aqui você pode atualizar as informações da sua ${entry?.type === 'INCOME' ? 'entrada' : 'saída'}.`
+          : `Aqui você pode atualizar as informações da sua ${entry?.type === 'INCOME' ? 'entrada' : entry?.type === 'EXPENSE' ? 'saída' : 'regra'}.`
       }>
       {entry ?
         <FormControlSchema
