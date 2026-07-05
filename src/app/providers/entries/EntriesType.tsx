@@ -42,7 +42,7 @@ export function calculateBalance(entries: Entry[]) {
   const list = {
     income: entries.filter(e => e.type === 'INCOME'),
     expense: entries.filter(e => e.type === 'EXPENSE'),
-    saving: entries.filter(e => !e.future && e.type === 'SAVING')
+    saving: entries.filter(e => !e.future && ['SAVING', 'TASK'].includes(e.type))
   };
 
   const saving = Sum(list.saving, 'amount');
