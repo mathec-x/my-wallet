@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Dispatch, SetStateAction } from 'react';
 
 export class EntryService<T> {
@@ -8,6 +9,18 @@ export class EntryService<T> {
 
   get items() {
     return this.entries;
+  }
+
+  board(idOrUudi: string | number) {
+    const items = this.entries.filter((entry: any) => {
+      if (typeof idOrUudi === 'number') {
+        return entry.boardId === idOrUudi;
+      }
+
+      return entry.board.uuid === idOrUudi;
+    });
+
+    return new EntryService(items, this.setEntries);
   }
 
   filterBy(params: Partial<T>): T[] {

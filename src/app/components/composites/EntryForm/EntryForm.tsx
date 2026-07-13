@@ -32,7 +32,8 @@ const EntryForm = () => {
     });
   };
 
-  const creditCardItems = entry && entryService.filterBy({ refCreditCardId: entry?.id });
+  const creditCardItems = entryService.filterBy({ refCreditCardId: entry?.id });
+  const availableCreditCards = entry?.boardId && entryService.board(entry.boardId).filterBy({ category: 'credit_card' });
 
   return (
     <FullScreenModal
@@ -55,11 +56,8 @@ const EntryForm = () => {
           schema={entryUpdateFormSchema}
           options={{
             refCreditCardId:
-              (entry.type === 'EXPENSE' && entry.category !== 'credit_card') &&
-              [
-                { label: 'Nenhum', value: null },
-                ...entryService.filterBy({ category: 'credit_card' }).map(e => ({ label: e.title, value: e.id }))
-              ]
+              (!!availableCreditCards && entry.type === 'EXPENSE' && entry.category !== 'credit_card') &&
+              [{ label: 'Nenhum', value: null }, ...availableCreditCards.map(e => ({ label: e.title, value: e.id }))]
           }}
           value={{
             ...entry,
@@ -70,24 +68,26 @@ const EntryForm = () => {
               amount: floatToMoney(subEntry.amount),
             }))
           }}>
-          <ListContainer hide={entry.type !== 'EXPENSE' || creditCardItems.length === 0} component='div' sx={{ my: 2 }}>
-            <ListItemRow caption="Compras neste cartão" component="div" />
-            {creditCardItems.map((entry) =>
-              <ListItemRow
-                key={entry.uuid}
-                component='div'
-                primary={entry.title}
-                secondary={entry.description}
-                secondaryAction={<b>R$ {floatToMoney(entry.amount)}</b>}
-              />
-            )}
+          <ListContainer hide={entry.type !== 'EXPENSE' || !creditCardItems || creditCardItems.length === 0} component='div' sx={{ my: 2 }}>
             <ListItemRow
               component="div"
+              caption="Compras neste cartão"
+              disableGutters
               secondaryAction={
                 <Typography variant='caption' color='textDisabled'>
                   Total: <b>R$ {floatToMoney(Sum(creditCardItems, 'amount') + entry.amount)}</b>
                 </Typography>
               } />
+            {creditCardItems.map((entry) =>
+              <ListItemRow
+                disableGutters
+                key={entry.uuid}
+                component='div'
+                primary={entry.title}
+                secondary={entry.description}
+                secondaryAction={<b>+ R$ {floatToMoney(entry.amount)}</b>}
+              />
+            )}
           </ListContainer>
         </FormControlSchema>
         : (
