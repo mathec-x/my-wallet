@@ -98,7 +98,7 @@ const FormInputMeta: React.FC<FormInputMetaProps> = ({
         />
       );
     case 'select':
-      return (
+      return options && options?.length > 0 && (
         <FormControl fullWidth={fullWidth} error={!!error} variant='standard' margin={margin} size='medium'>
           <InputLabel>{title || label}</InputLabel>
           <Controller

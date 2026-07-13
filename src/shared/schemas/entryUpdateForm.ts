@@ -88,6 +88,15 @@ export const entryUpdateFormSchema = z.object({
       type: 'checkbox',
       align: 'right'
     }),
+  refCreditCardId: z
+    .number()
+    .optional()
+    .nullable()
+    .meta({
+      label: 'Cartão de crédito',
+      description: 'Atribua um cartão de crédito para essa entrada',
+      type: 'select'
+    }),
   subEntries: z.array(subEntryUpdateFormSchema)
 });
 

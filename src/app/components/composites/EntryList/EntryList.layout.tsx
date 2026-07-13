@@ -9,6 +9,7 @@ import { type ENTRY_TYPE } from '@/app/providers/entries/EntriesType';
 import { categoriesList } from '@/shared/schemas/categoriesList';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { arrayGroupBy } from '@/shared/utils/array-manipulation/group-by';
+import { Sum } from '@/shared/utils/math';
 import { floatToMoney } from '@/shared/utils/money-format';
 import { parseArrayLimit } from '@/shared/utils/parse-limit';
 import MoneyOnIcon from '@mui/icons-material/AttachMoneyOutlined';
@@ -76,40 +77,51 @@ export default function EntryList(props: EntryListProps) {
 							divider={false}
 							avatarVariant='default'
 						>
-							{data.map((entry, i) => (
-								<ListItemAction
-									key={id + entry.title + entry.uuid + i}
-									component="div"
-									dense
-									divider={i === data.length - 1}
-									disablePadding={(props.groupBy && entry.category) ? false : true}
-									SwipRightLabel={entry.future ? <DoneAllIcon color='success' /> : <DoneIcon color='info' />}
-									onSwipeRight={() => handleUpdate({ future: !entry.future, uuid: entry.uuid } as EntryUpdateFormSchema)}
-									SwipLeftLabel={<DeleteIcon color='error' />}
-									onSwipeLeft={() => handleDelete(entry)}
-									icon={entry.order || (
-										entry.type === 'SAVING' ? <SavingsIcon />
-											: entry.type === 'INCOME' ? <MoneyOnIcon />
-												: entry.type === 'EXPENSE' ? <MoneyOffIcon />
-													: <TaskIcon />
-									)}
-									onClick={() => modal.open(entry.uuid)}
-									primary={entry.title}
-									avatarVariant='primary'
-									secondary={entry.amount ? `R$ ${floatToMoney(entry.amount)}` : ''}
-									caption={entry.description}
-									isLoading={!entry.uuid}
-								>
-									<Stack direction='row' spacing={1}>
-										{!props.groupBy &&
-											<Typography variant='caption' color='textDisabled'>
-												{categoriesList[entry.category as keyof typeof categoriesList]?.label}
-											</Typography>
-										}
-										{entry.future ? null : <DoneAllIcon color='success' />}
-									</Stack>
-								</ListItemAction>
-							))}
+							{data.map((entry, i) => {
+								const entryRef = props.entries.find(e => e.id === entry.refCreditCardId);
+								const entriesRef = props.entries.filter(e => e.refCreditCardId === entry.id);
+
+								return (
+									<ListItemAction
+										key={id + entry.title + entry.uuid + i}
+										component="div"
+										dense
+										divider={i === data.length - 1}
+										disablePadding={(props.groupBy && entry.category) ? false : true}
+										SwipRightLabel={entry.future ? <DoneAllIcon color='success' /> : <DoneIcon color='info' />}
+										onSwipeRight={() => handleUpdate({ future: !entry.future, uuid: entry.uuid } as EntryUpdateFormSchema)}
+										SwipLeftLabel={<DeleteIcon color='error' />}
+										onSwipeLeft={() => handleDelete(entry)}
+										icon={entry.order || (
+											entry.type === 'SAVING' ? <SavingsIcon />
+												: entry.type === 'INCOME' ? <MoneyOnIcon />
+													: entry.type === 'EXPENSE' ? <MoneyOffIcon />
+														: <TaskIcon />
+										)}
+										onClick={() => modal.open(entry.uuid)}
+										primary={entry.title}
+										avatarVariant='primary'
+										secondary={entry.amount ? `R$ ${floatToMoney(entry.amount)}` : ''}
+										caption={entry.description}
+										isLoading={!entry.uuid}
+									>
+										<Stack direction='row' spacing={1} alignItems="center">
+											{!props.groupBy &&
+												<Typography variant='caption' color='textDisabled'>
+													{categoriesList[entry.category as keyof typeof categoriesList]?.label}
+												</Typography>
+											}
+											{entryRef?.title && <Typography variant='caption' color='textDisabled'>({entryRef.title})</Typography>}
+											{entriesRef?.length > 0 && (
+												<Typography variant='caption' color='textDisabled'>
+													+ {floatToMoney(Sum(entriesRef, 'amount'))}
+												</Typography>
+											)}
+											{entry.future ? null : <DoneAllIcon color='success' />}
+										</Stack>
+									</ListItemAction>
+								);
+							})}
 						</ListItemCollapse >
 					);
 				})}

@@ -1,6 +1,7 @@
 import { entriesCreateAction } from '@/app/actions/entries/entries.actions';
 import { ResponseServiceAsync } from '@/server/interfaces/next';
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
+import { EntryService } from '@/shared/services/Entry';
 import { Sum } from '@/shared/utils/math';
 import { floatToMoney } from '@/shared/utils/money-format';
 
@@ -8,6 +9,7 @@ export type Entry = ResponseServiceAsync<typeof entriesCreateAction>
 export type CustomFilterKeys = keyof Entry | `!${keyof Entry}`
 export type ENTRY_TYPE = 'INCOME' | 'EXPENSE' | 'SAVING' | 'TASK'
 export interface IEntriesContextType {
+  entryService: EntryService<Entry>;
   entries: Entry[];
   entriesFilteredByProp: Entry[];
   filterBy: (filter?: CustomFilterKeys) => void;

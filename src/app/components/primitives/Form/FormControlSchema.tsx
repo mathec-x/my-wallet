@@ -22,11 +22,15 @@ interface FormControlSchemaProps<S = ZodObject> {
   value?: Record<string, unknown>;
   margin?: 'dense' | 'normal' | 'none';
   component?: React.ElementType;
+  options?: Record<string, boolean | {
+    label: string;
+    value: unknown;
+  }[]>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit?: (data: any) => void;
 }
 const FormControlSchema = forwardRef(
-  ({ schema, onSubmit, children, errorMessage, id: propId, value, margin, component = 'form' }: FormControlSchemaProps, ref) => {
+  ({ schema, onSubmit, children, errorMessage, id: propId, value, margin, component = 'form', options }: FormControlSchemaProps, ref) => {
     const id = useId();
     const { register, handleSubmit, formState: { errors }, reset, setValue, control } = useForm({
       resolver: zodResolver(schema),
@@ -73,15 +77,16 @@ const FormControlSchema = forwardRef(
               form={register(key)}
               control={control}
               {...meta}
+              options={options?.[key] || meta.options}
             />
           );
         })}
-        {children}
         {errorMessage &&
           <Typography color='error' variant='body2' align='center' mt={2}>
             {errorMessage}
           </Typography>
         }
+        {children}
       </Box>
     );
   });

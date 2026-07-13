@@ -57,6 +57,7 @@ model Entry {
   type        EntryType
   order       Int?
   future      Boolean    @default(true)
+  refCreditCardId Int?
   accountId   Int
   account     Account    @relation(fields: [accountId], references: [id])
   category    String?

@@ -1,6 +1,7 @@
 'use client';
 
 import { EntryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
+import { EntryService } from '@/shared/services/Entry';
 import { expectEmpty, moneyToFloat } from '@/shared/utils/money-format';
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { calculateBalance, type CustomFilterKeys, type Entry, type IEntriesContextType } from './EntriesType';
@@ -91,6 +92,7 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
     if ('type' in updatedEntry) data.type = updatedEntry.type;
     if ('category' in updatedEntry) data.category = updatedEntry.category;
     if ('future' in updatedEntry) data.future = updatedEntry.future;
+    if ('refCreditCardId' in updatedEntry) data.refCreditCardId = updatedEntry.refCreditCardId;
     if ('board' in updatedEntry) {
       data.boardId = updatedEntry.board?.id;
       data.board = updatedEntry.board;
@@ -124,6 +126,7 @@ export function EntriesProvider({ children, entries: values, ...props }: React.P
 
   return (
     <EntriesContext.Provider value={{
+      entryService: new EntryService(entries, setEntries as never),
       entries: entriesFilteredByBoard,
       entriesFilteredByProp,
       filterBy: setCustomFilter,
