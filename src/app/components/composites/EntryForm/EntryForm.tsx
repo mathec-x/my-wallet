@@ -5,6 +5,7 @@ import FormControlSchema from '@/app/components/primitives/Form/FormControlSchem
 import useModalHandler, { MODALS } from '@/app/hooks/useModalHandler';
 import { useEntriesActions } from '@/app/providers/entries/EntriesActions';
 import { useEntriesContext } from '@/app/providers/entries/EntriesProvider';
+import { categoriesList } from '@/shared/schemas/categoriesList';
 import { EntryUpdateFormSchema, entryUpdateFormSchema } from '@/shared/schemas/entryUpdateForm';
 import { Sum } from '@/shared/utils/math';
 import { floatToMoney } from '@/shared/utils/money-format';
@@ -68,24 +69,26 @@ const EntryForm = () => {
               amount: floatToMoney(subEntry.amount),
             }))
           }}>
-          <ListContainer hide={entry.type !== 'EXPENSE' || !creditCardItems || creditCardItems.length === 0} component='div' sx={{ my: 2 }}>
+          <ListContainer dense hide={entry.type !== 'EXPENSE' || !creditCardItems || creditCardItems.length === 0} component='div' sx={{ my: 2 }}>
             <ListItemRow
               component="div"
               caption="Compras neste cartão"
               disableGutters
               secondaryAction={
                 <Typography variant='caption' color='textDisabled'>
-                  Total: <b>R$ {floatToMoney(Sum(creditCardItems, 'amount') + entry.amount)}</b>
+                  Total: R$ {floatToMoney(Sum(creditCardItems, 'amount') + entry.amount)}
                 </Typography>
               } />
             {creditCardItems.map((entry) =>
               <ListItemRow
                 disableGutters
+                divider
                 key={entry.uuid}
                 component='div'
+                caption={categoriesList[entry?.category as keyof typeof categoriesList]?.label}
                 primary={entry.title}
                 secondary={entry.description}
-                secondaryAction={<b>+ R$ {floatToMoney(entry.amount)}</b>}
+                secondaryAction={<Typography variant='caption'>+ R$ {floatToMoney(entry.amount)}</Typography>}
               />
             )}
           </ListContainer>
