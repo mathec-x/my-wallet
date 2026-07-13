@@ -21,7 +21,8 @@ export class BoardCopyUseCase {
 
       const currentBoardEntries = await prisma.entry.findMany({
         where: {
-          boardId: params.boardId!
+          boardId: params.boardId!,
+          refCreditCardId: null
         },
         include: {
           subEntries: {
