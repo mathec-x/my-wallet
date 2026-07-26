@@ -13,7 +13,7 @@ import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useTransition } from 'react';
-import { ListContainer, ListItemRow } from '../../elements';
+import { ListContainer, ListItemAction, ListItemRow } from '../../elements';
 
 const EntryForm = () => {
   const modal = useModalHandler(MODALS.ENTRY_EDITOR);
@@ -57,7 +57,7 @@ const EntryForm = () => {
           schema={entryUpdateFormSchema}
           options={{
             refCreditCardId:
-              (!!availableCreditCards && entry.type === 'EXPENSE' && entry.category !== 'credit_card') &&
+              (!!availableCreditCards && ['EXPENSE', 'TASK'].includes(entry.type) && entry.category !== 'credit_card') &&
               [{ label: 'Nenhum', value: null }, ...availableCreditCards.map(e => ({ label: e.title, value: e.id }))]
           }}
           value={{
@@ -69,7 +69,10 @@ const EntryForm = () => {
               amount: floatToMoney(subEntry.amount),
             }))
           }}>
-          <ListContainer dense hide={entry.type !== 'EXPENSE' || !creditCardItems || creditCardItems.length === 0} component='div' sx={{ my: 2 }}>
+          <ListContainer dense
+            component='div'
+            hide={!['EXPENSE', 'TASK'].includes(entry.type) || !creditCardItems || creditCardItems.length === 0}
+            sx={{ my: 2 }}>
             <ListItemRow
               component="div"
               caption="Compras neste cartão"
@@ -79,17 +82,21 @@ const EntryForm = () => {
                   Total: R$ {floatToMoney(Sum(creditCardItems, 'amount') + entry.amount)}
                 </Typography>
               } />
-            {creditCardItems.map((entry) =>
-              <ListItemRow
+            {creditCardItems.map((e) =>
+              <ListItemAction
                 disableGutters
-                divider
-                key={entry.uuid}
+                disablePadding
+                avatarVariant='hidden'
+                key={e.uuid}
                 component='div'
-                caption={categoriesList[entry?.category as keyof typeof categoriesList]?.label}
-                primary={entry.title}
-                secondary={entry.description}
-                secondaryAction={<Typography variant='caption'>+ R$ {floatToMoney(entry.amount)}</Typography>}
-              />
+                sx={{ backgroundColor: 'transparent' }}
+                SwipLeftLabel="Desvincular"
+                onSwipeLeft={() => onUpdate({ refCreditCardId: null, uuid: e.uuid } as EntryUpdateFormSchema)}
+                caption={categoriesList[e?.category as keyof typeof categoriesList]?.label}
+                primary={e.title}
+                secondary={e.description}>
+                <Typography variant='caption'>+ R$ {floatToMoney(e.amount)}</Typography>
+              </ListItemAction>
             )}
           </ListContainer>
         </FormControlSchema>

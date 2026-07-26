@@ -40,12 +40,12 @@ interface ListItemActionProps extends Omit<ListItemOwnProps, 'onTouchStart' | 'o
   icon?: React.ReactNode | string;
   hide?: boolean;
   component?: React.ElementType;
-  onClick: () => void;
+  onClick?: () => void;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
   SwipRightLabel?: string | React.ReactNode;
   SwipLeftLabel?: string | React.ReactNode;
-  avatarVariant?: AvatarProps['variant'];
+  avatarVariant?: 'hidden' | AvatarProps['variant'];
 }
 
 const ListItemAction: React.FC<ListItemActionProps> = ({
@@ -66,13 +66,13 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
 }) => {
   const { dragOffset, isSwiping, handleMouseDown, handleTouchStart } = useSweep({
     holdDelay: 150,
-    threshould: 100,
+    threshould: 150,
     onSwipeLeft,
     onSwipeRight,
   });
 
   const handleClick = useCallback(() => {
-    if (!isSwiping) {
+    if (!isSwiping && onClick) {
       onClick();
     }
   }, [onClick, isSwiping]);
@@ -89,13 +89,13 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
       onDragOver={e => e.preventDefault()}
     >
       {SwipRightLabel && (
-        <SwipOverlay justifyContent='flex-start' left={0}>
+        <SwipOverlay justifyContent='flex-start' left={0} sx={{ opacity: (dragOffset / 100), zIndex: 0 }}>
           {SwipRightLabel}
         </SwipOverlay>
       )}
 
       {SwipLeftLabel && (
-        <SwipOverlay justifyContent='flex-end' right={0}>
+        <SwipOverlay justifyContent='flex-end' right={0} sx={{ opacity: (-dragOffset / 100), zIndex: 0 }}>
           {SwipLeftLabel}
         </SwipOverlay>
       )}
@@ -104,16 +104,19 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
         sx={{
+          bgcolor: 'transparent',
           transform: `translateX(${dragOffset}px)`,
           transition: 'transform 0.1s ease-out',
         }}
       >
-        <ListItemButton onClick={handleClick} disabled={isLoading}>
-          <ListItemAvatar>
-            <Avatar variant={avatarVariant}>
-              {icon || <WalletIcon />}
-            </Avatar>
-          </ListItemAvatar>
+        <ListItemButton onClick={handleClick} disabled={isLoading} disableRipple={!onClick}>
+          {avatarVariant !== 'hidden' && (
+            <ListItemAvatar>
+              <Avatar variant={avatarVariant}>
+                {icon || <WalletIcon />}
+              </Avatar>
+            </ListItemAvatar>
+          )}
           <ListItemText
             primary={<>
               {caption && <Typography variant='caption' color='textDisabled' display='block'>{caption}</Typography>}
@@ -122,7 +125,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
             secondary={secondary}
           />
           {isLoading ? (
-            <Avatar variant={avatarVariant} sx={{ backgroundColor: 'transparent' }}>
+            <Avatar variant={avatarVariant === 'hidden' ? 'default' : avatarVariant} sx={{ backgroundColor: 'transparent' }}>
               <CircularProgress size={20} />
             </Avatar>
           ) : children}
