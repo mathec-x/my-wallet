@@ -1,6 +1,6 @@
 'use client';
 
-import useSweep from '@/app/hooks/useSwip';
+import useSweep from '@/app/hooks/useSweep';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { Box, styled, Typography } from '@mui/material';
 import Avatar, { type AvatarProps } from '@mui/material/Avatar';
@@ -9,7 +9,7 @@ import ListItem, { type ListItemOwnProps } from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 // Background action components
 const SwipOverlay = styled(Box)(({ theme }) => ({
@@ -43,6 +43,7 @@ interface ListItemActionProps extends Omit<ListItemOwnProps, 'onTouchStart' | 'o
   onClick?: () => void;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
+  onHold?: () => void;
   SwipRightLabel?: string | React.ReactNode;
   SwipLeftLabel?: string | React.ReactNode;
   avatarVariant?: 'hidden' | AvatarProps['variant'];
@@ -61,22 +62,29 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
   onSwipeRight,
   SwipRightLabel,
   SwipLeftLabel,
+  onHold,
   avatarVariant = 'rounded',
   ...listItemProps
 }) => {
-  const { dragOffset, isSwiping, handleMouseDown, handleTouchStart } = useSweep({
-    holdDelay: 150,
-    threshould: 150,
+  const { dragOffset, hasMoved, handleMouseDown, handleTouchStart } = useSweep({
+    holdDelay: 500,
+    threshold: 150,
     onSwipeLeft,
     onSwipeRight,
+    onHold
   });
 
-  const handleClick = useCallback(() => {
-    if (!isSwiping && onClick) {
-      onClick();
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    if (hasMoved.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
     }
-  }, [onClick, isSwiping]);
 
+    onClick?.();
+  },
+    [onClick, hasMoved],
+  );
 
   if (hide) {
     return null;
@@ -103,6 +111,7 @@ const ListItemAction: React.FC<ListItemActionProps> = ({
       <ListItemBox
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
+        onContextMenu={(e) => e.preventDefault()}
         sx={{
           bgcolor: 'transparent',
           transform: `translateX(${dragOffset}px)`,

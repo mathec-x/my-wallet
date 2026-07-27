@@ -13,13 +13,6 @@ import Grid from '@mui/material/Grid';
 import React, { useMemo } from 'react';
 import { ListItemRow } from '../../elements';
 import TabAction from '../../elements/TabActions';
-// const listItemCollapseProps: Partial<React.ComponentProps<typeof ListItemCollapse>> = {
-//   disablePadding: true,
-//   defaultOpen: true,
-//   divider: false,
-//   icon: <MoneyIcon />,
-//   avatarVariant: 'circular'
-// };
 
 const GridDashboardLayout = (props: React.PropsWithChildren) => {
   const { entriesFilteredByProp, accountUuid, balance, filterVal, filterBy, size } = useEntriesContext();
@@ -57,19 +50,7 @@ const GridDashboardLayout = (props: React.PropsWithChildren) => {
               <ListContainer component='div'
                 header="Entradas"
                 headerAppend={balance.futureToIncome && (<>Falta: {balance.futureToIncome}</>)}>
-                {/* <ListItemCollapse
-                    component='div'
-                    openValue='incomes'
-                    icon={<MoneyOnIcon />}
-                    isOpenOn={(e) => e === 'incomes'}
-                    caption={'Entradas'}
-                    primary={`R$ ${balance.futureIncome}`}
-                    secondary={'Valor recebido'}
-                    actionLabel={![balance.futureIncome, '0,00'].includes(balance.futureIncome) && `R$ ${balance.futureIncome}`}
-                    {...listItemCollapseProps}
-                  > */}
                 <EntryList accountUuid={accountUuid} entries={incomes} type='INCOME' />
-                {/* </ListItemCollapse> */}
               </ListContainer>
             </Grid>
           )}
@@ -78,24 +59,12 @@ const GridDashboardLayout = (props: React.PropsWithChildren) => {
               <ListContainer component='div'
                 header="Saídas"
                 headerAppend={balance.futureToExpense && <>Falta: {balance.futureToExpense}</>}>
-                {/* <ListItemCollapse
-                    component='div'
-                    openValue='expenses'
-                    icon={<MoneyOffIcon />}
-                    isOpenOn={(e) => e === 'expenses'}
-                    caption={'Saídas'}
-                    primary={`R$ ${balance.futureExpense}`}
-                    secondary={'Valor pago'}
-                    actionLabel={![balance.expense, '0,00'].includes(balance.futureExpense) && `R$ ${balance.futureExpense}`}
-                    {...listItemCollapseProps}
-                  > */}
                 <EntryList
                   accountUuid={accountUuid}
                   entries={expenses}
                   groupBy={!filterVal ? 'category' : undefined}
                   type='EXPENSE'
                 />
-                {/* </ListItemCollapse> */}
               </ListContainer>
             </Grid>
           )}

@@ -19,9 +19,11 @@ import DoneIcon from '@mui/icons-material/DoneOutlined';
 import MoneyOffIcon from '@mui/icons-material/MoneyOffCsredOutlined';
 import TaskIcon from '@mui/icons-material/PlayArrow';
 import SavingsIcon from '@mui/icons-material/SavingsOutlined';
-import { Typography } from '@mui/material';
+import { Checkbox, Typography } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
-import { useId, useMemo } from 'react';
+import { useId, useMemo, useState } from 'react';
 
 interface EntryListProps {
 	accountUuid: string;
@@ -32,6 +34,7 @@ interface EntryListProps {
 }
 
 export default function EntryList(props: EntryListProps) {
+	const [holders, setHolders] = useState<{ id: string; value: number }[]>([]);
 	const { handleDelete, handleUpdate } = useEntriesActions();
 	const id = useId();
 	const modal = useModalHandler(MODALS.ENTRY_EDITOR);
@@ -55,8 +58,54 @@ export default function EntryList(props: EntryListProps) {
 
 	}, [props.entries, props.groupBy]);
 
+	const iconHandler = (entry: Entry) => {
+		if (holders.length > 0) {
+			return (
+				<Checkbox color='info'
+					checked={holders.some(item => item.id === entry.uuid)}
+					onChange={() => clickHandler(entry)} />);
+		}
+
+
+		if (entry.order) {
+			return entry.order;
+		}
+
+		return entry.type === 'SAVING' ? <SavingsIcon />
+			: entry.type === 'INCOME' ? <MoneyOnIcon />
+				: entry.type === 'EXPENSE' ? <MoneyOffIcon />
+					: <TaskIcon />;
+	};
+
+	const clickHandler = (entry: Entry) => {
+		if (holders.length > 0) {
+			setHolders((prev) => prev.some(item => item.id === entry.uuid)
+				? prev.filter(item => item.id !== entry.uuid)
+				: [...prev, { id: entry.uuid, value: entry.amount }]
+			);
+			return;
+		}
+
+		modal.open(entry.uuid);
+	};
+
+	const holdHandlers = (entry: Entry) => {
+		return (holders.length > 0)
+			? setHolders([])
+			: setHolders((prev) => [...prev, { id: entry.uuid, value: entry.amount }]);
+	};
+
 	return (
 		<>
+			<Snackbar open={holders.length > 0} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} >
+				<Alert
+					onClick={() => setHolders([])}
+					severity="info"
+					variant="standard"
+					sx={{ width: '100%' }}>
+					Total R$ {floatToMoney(Sum(holders, 'value'))}
+				</Alert>
+			</Snackbar>
 			{group
 				.sort((a, b) => (a.category || '').localeCompare(b.category || ''))
 				.map(({ category, data, amount }, i) => {
@@ -91,14 +140,10 @@ export default function EntryList(props: EntryListProps) {
 										SwipRightLabel={entry.future ? <DoneAllIcon color='success' /> : <DoneIcon color='info' />}
 										onSwipeRight={() => handleUpdate({ future: !entry.future, uuid: entry.uuid } as EntryUpdateFormSchema)}
 										SwipLeftLabel={<DeleteIcon color='error' />}
+										onHold={() => holdHandlers(entry)}
 										onSwipeLeft={() => handleDelete(entry)}
-										icon={entry.order || (
-											entry.type === 'SAVING' ? <SavingsIcon />
-												: entry.type === 'INCOME' ? <MoneyOnIcon />
-													: entry.type === 'EXPENSE' ? <MoneyOffIcon />
-														: <TaskIcon />
-										)}
-										onClick={() => modal.open(entry.uuid)}
+										icon={iconHandler(entry)}
+										onClick={() => clickHandler(entry)}
 										primary={entry.title}
 										avatarVariant='primary'
 										secondary={entry.amount ? `R$ ${floatToMoney(entry.amount)}` : ''}
