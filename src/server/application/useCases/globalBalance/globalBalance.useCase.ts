@@ -22,13 +22,17 @@ export class GlobalBalanceUseCase {
     const reducer = balances.reduce((acc, cur) => {
       acc[cur.accountId] ??= 0;
 
-      if (cur.type === 'EXPENSE') {
-        acc[cur.accountId] = acc[cur.accountId] - (cur._sum.amount || 0);
-      }
-
-      if (cur.type === 'INCOME') {
+      if (cur.type === 'SAVING') {
         acc[cur.accountId] = acc[cur.accountId] + (cur._sum.amount || 0);
       }
+
+      // if (cur.type === 'EXPENSE') {
+      //   acc[cur.accountId] = acc[cur.accountId] - (cur._sum.amount || 0);
+      // }
+
+      // if (cur.type === 'INCOME') {
+      //   acc[cur.accountId] = acc[cur.accountId] + (cur._sum.amount || 0);
+      // }
 
       return acc;
     }, {} as { [accountId: number]: number });
