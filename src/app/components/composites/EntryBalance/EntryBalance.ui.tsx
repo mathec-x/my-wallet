@@ -55,7 +55,9 @@ export default function EntryBalance() {
 					avatarVariant='rounded'
 					icon={<MoneyOnIcon />}
 					hide={size < 1}
-					onClick={() => { }}
+					onClick={() => {
+						router.push(`/calculate?accountUuid=${accountUuid}`);
+					}}
 					primary={(<Typography variant='body1'><small>R$</small> {balance.income}</Typography>)}
 					caption={'Entradas'}
 					secondary={balance.expectedIncome && <>Recorrente <small>R$ {balance.expectedIncome}</small></>}

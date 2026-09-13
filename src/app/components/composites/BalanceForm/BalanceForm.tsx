@@ -1,83 +1,147 @@
 'use client';
 import { useBalanceFactory } from '@/app/providers/balance/BalanceProvider';
-import CloseIcon from '@mui/icons-material/Close';
-import DoneIcon from '@mui/icons-material/Done';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import SavingsIcon from '@mui/icons-material/Savings';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-
-import { NumberFormat } from '@/shared/utils/money-format';
-import Toolbar from '@mui/material/Toolbar';
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import LinearProgress from '@mui/material/LinearProgress';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
+
+const FinancialMetricCard = ({ label, value, percentage, icon }: { label: string; value: string; percentage: string; icon?: React.ReactNode }) => (
+  <Card sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2 }}>
+    <Avatar>
+      {icon}
+    </Avatar>
+    <Box>
+      <Typography variant="body1">{label}</Typography>
+      <Typography variant="body2" fontSize="20px">R$ {value}</Typography>
+      <Typography variant="caption">{percentage}%</Typography>
+    </Box>
+  </Card>
+);
+
+const FinancialStatsCard = ({ label, value, children }: { label: string; value: string; children?: React.ReactNode }) => (
+  <Card sx={{ p: 2 }}>
+    <Stack direction="row" justifyContent="space-between">
+      <Typography>{label}</Typography>
+      <Typography>{value}%</Typography>
+    </Stack>
+    <LinearProgress variant="determinate" value={Number(value)} />
+    <Typography variant="caption">
+      {children}
+    </Typography>
+  </Card>
+);
+
 const BalanceForm = () => {
-  // const [value, setValue] = useState(1);
   const balance = useBalanceFactory();
 
-  const incomes = balance.search(e => e.type === 'INCOME');
+  const income = balance
+    .incomes()
+    .groupAndMean('amount', 'boardId');
+
+  const expenses = balance
+    .expenses()
+    .categoryNotIn(['house'])
+    .groupAndMean('amount', 'boardId');
+
+  const house = balance
+    .expenses()
+    .categoryIn(['house'])
+    .groupAndMean('amount', 'boardId');
+
+  const carsAndTransport = balance
+    .expenses()
+    .categoryIn(['car', 'transport'])
+    .groupAndMean('amount', 'boardId');
+
+  const taxes = balance
+    .expenses()
+    .categoryIn(['tax'])
+    .groupAndMean('amount', 'boardId');
+
+  const healthAndFun = balance
+    .expenses()
+    .categoryIn(['health', 'fun'])
+    .groupAndMean('amount', 'boardId');
+
+  const savings = balance.savings().groupAndMean('amount', 'boardId');
+
+  const incomeAmount = income.toInt();
+  const expenseAmount = expenses.toInt();
+  const savingAmount = savings.toInt();
+
+  const availableRate = 1 - (expenseAmount / incomeAmount) - (savingAmount / incomeAmount);
+
   return (
-    <Box>
-      <Toolbar>
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="subtitle1"
-          color='textDisabled'
-        >
-          Entradas: {incomes.size()}
-        </Typography>
-        {/* <Box p={2}>
-        <Input
-          fullWidth
-          label="Quantidade de boards"
-          type='number'
-          inputMode='numeric'
-          onFocus={e => e.target.select()}
-          slotProps={{
-            htmlInput: {
-              min: 1,
-              max: 24
-            }
-          }}
-          value={value}
-          onChange={({ target }) => setValue(Number(target.value))}
-        />
-      </Box> */}
-      </Toolbar>
-      <TableContainer>
-        <Table size='small' sx={{ '& td': { fontSize: '0.8rem' } }}>
-          <caption>
-            <Typography sx={{ float: 'right' }}>
-              {/* total de entradas em {value} boards: {incomes.multiply(e => e.expected || e.amount, value).toMoney()} */}
-              total: {incomes.multiply(e => e.expected || e.amount, 1).toMoney()}
-            </Typography>
-          </caption>
-          <TableHead>
-            <TableRow>
-              <TableCell>Quadro</TableCell>
-              <TableCell>Nome</TableCell>
-              <TableCell>R$</TableCell>
-              <TableCell>Fixo</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {incomes.sort('boardId').map(e => (
-              <TableRow key={'table-' + e.uuid}>
-                <TableCell>{e.board?.name}</TableCell>
-                <TableCell>
-                  <Typography variant='caption' color='textDisabled' fontSize={9}>{e.description}</Typography>
-                  <Typography variant='body2'>{e.title}</Typography>
-                </TableCell>
-                <TableCell>{NumberFormat.money(e.amount)}</TableCell>
-                <TableCell>{e.expected === 0 ? <CloseIcon fontSize="small" /> : <DoneIcon fontSize="small" />}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <Box p={2}>
+      <Typography variant="h6">Resumo Financeiro</Typography>
+      <Grid container spacing={2} my={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialMetricCard
+            label="Entradas"
+            value={income.toMoney()}
+            percentage="100"
+            icon={<TrendingUpIcon />} />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialMetricCard
+            label="Gastos"
+            value={expenses.toMoney()}
+            percentage={(expenses.percentage(incomeAmount, 1))}
+            icon={<TrendingDownIcon />}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialMetricCard
+            label="Poupança"
+            value={savings.toMoney()}
+            percentage={(savings.percentage(incomeAmount, 1))}
+            icon={<SavingsIcon />}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialMetricCard
+            label="Sobra"
+            value={availableRate.toFixed(2)}
+            percentage={(availableRate * 100).toFixed(1)}
+            icon={<AccountBalanceWalletIcon />}
+          />
+        </Grid>
+      </Grid>
+
+      <Typography variant="h6">Saúde financeira</Typography>
+      <Grid container spacing={2} my={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialStatsCard label='Moradia' value={house.percentage(incomeAmount)} >
+            Referência: até 30%
+          </FinancialStatsCard>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialStatsCard label='Saúde & Lazer' value={healthAndFun.percentage(incomeAmount)} >
+            Referência: até 15%
+          </FinancialStatsCard>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialStatsCard label='Transporte & Carro' value={carsAndTransport.percentage(incomeAmount)} >
+            Referência: até 15%
+          </FinancialStatsCard>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FinancialStatsCard label='Impostos' value={taxes.percentage(incomeAmount)} >
+            Referência: até 10%
+          </FinancialStatsCard>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

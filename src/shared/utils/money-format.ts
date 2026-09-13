@@ -53,6 +53,15 @@ export class NumberFormat {
     return parseFloat(normalized);
   }
 
+  toInt() {
+    const value = (typeof this.value === 'string') ? Number(this.value) : this.value;
+    return Math.floor(value || 0);
+  }
+
+  percentage(total: number, round = 0) {
+    const value = (typeof this.value === 'string') ? Number(this.value) : this.value;
+    return (total ? (value / total * 100) : 0).toFixed(round);
+  }
 
   static money(value: string | number) {
     return new NumberFormat(value).toMoney();
