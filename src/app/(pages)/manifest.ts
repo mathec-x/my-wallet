@@ -11,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     id: '/menu',
     start_url: '/menu',
     background_color: '#FFFFFF',
-    theme_color: '#9c27b0',
+    theme_color: '#FFFFFF',
     display: 'standalone',
     display_override: ['standalone', 'window-controls-overlay'],
     categories: [

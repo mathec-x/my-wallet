@@ -13,7 +13,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = (props) => (
-  <AppBar position="static">
+  <AppBar position="static" color='default'>
     <Toolbar>
       <LinkButton href='/menu' scroll={false} sx={{ mr: 2 }}>
         <IconButton size="large" edge="start" color="inherit" aria-label="menu">

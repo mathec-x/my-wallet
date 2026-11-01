@@ -55,8 +55,8 @@ export default async function RootLayout(props: RootLayoutProps) {
       <meta name="description" content="My wallet" />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
-      <meta name="msapplication-TileColor" content="#9c27b0" />
-      <meta name="theme-color" content="#9c27b0" />
+      <meta name="msapplication-TileColor" content="#FFFFFF" />
+      <meta name="theme-color" content="#FFFFFF" />
       <meta name="msapplication-tap-highlight" content="no" />
 
       <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -72,7 +72,7 @@ export default async function RootLayout(props: RootLayoutProps) {
 
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-      <link rel="mask-icon" href="/logo.svg" color="#9c27b0" />
+      <link rel="mask-icon" href="/logo.svg" color="#FFFFFF" />
 
       <meta name="twitter:card" content="" />
       <meta name="twitter:url" content="https://ecarteira.vercel.app" />
